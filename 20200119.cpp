@@ -4478,13 +4478,105 @@ int main()
 // template <typename T>
 // Blob<T>::Blob(initializer_list<T> i1) : data(make_shared<vector<T>>(i1)) {}
 
-
 // int main()
 // {
 //     constexpr int a=10;
 //     int b[a];
 //    constexpr int c=10;
 //     int d[c];
-    
+
 //     return 0;
 // }
+
+//拷贝控制实例 13.4 p460
+#include <string>
+#include <set>
+using namespace std;
+class Message;
+class Folder
+{
+    friend class Message;
+public:
+    void addMsg(Message &);
+    void remMsg(Message &);
+};
+void Message::addMsg(Message & m)
+{
+
+}
+void Message::remMsg(Message & m)
+{
+
+}
+
+class Message
+{
+    friend class Folder;
+
+public:
+
+
+    //folders 被银式初始化为空集合
+    explicit Message(const std::string &str = "") : contents(str) {}
+    //拷贝控制成员，用来管理指向本Message的指针
+    Message(const Message &);            //拷贝构造函数
+    Message &operator=(const Message &); //拷贝赋值
+    ~Message();
+    //从给定folder中添加删除文本
+    void save(Folder &);
+    void remove(Folder &);
+
+private:
+    std::string contents;       //实际消息文本
+    std::set<Folder *> folders; //包含本Message的Folder
+    //拷贝构造函数、拷贝赋值运算符和析构函数所使用的的工具函数
+    //将本Message添加到指向参数的Folder中去
+    void add_to_Folders(const Message &);
+    //从folders中的每个Folder中删除本Message
+    void remove_from_Folders();
+};
+//save 和remove 成员
+void Message::save(Folder &f)
+{
+    folders.insert(&f); //将给定FOlder添加到我们的Folder列表中
+    f.addMsg(this);
+}
+void Message::remove(Folder &f)
+{
+    folders.erase(&f); //将给定Folder从我们的Foler列表中删除
+    f.remMsg(this);    //将本Message从f的Message集合中删除
+}
+//message类的拷贝控制成员
+//将本Message添加到指向m的Folder中
+void Message::add_to_Folders(const Message &m)
+{
+    for (auto f : m.folders) //对每个包含m的folder
+        f->addMsg(this);     //向给Folder添加一个指向Message的指针
+}
+//message的拷贝构造函数拷贝给定对象的数据成员
+Message::Message(const Message &m) : contents(m.contents), folders(m.folders)
+{
+    add_to_Folders(m); //将本消息添加到指向m的Folder中
+}
+//message 的析构函数
+//从对应的Folder中删除本Message
+void Message:: remove_from_Folders()
+{
+    for(auto f:folders)//针对folders中每个指针
+    f->remMsg(this);//从该Folder中删除本Message
+}
+//析构函数
+Message::~Message()
+{
+    remove_from_Folders();
+}
+
+Message& Message::operator=(const Message &rhs)
+{
+    //通过先删除指针再插入他们来处理自赋值情况
+    remove_from_Folders();//更新已有folder
+    contents=rhs.contents;
+    folders=rhs.folders;
+    add_to_Folders(rhs);
+    return *this;
+}
