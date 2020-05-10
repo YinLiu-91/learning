@@ -1,0 +1,3 @@
+D:\cmake-3.17.0-rc3-win64-x64\bin\cmake.exe -E rm -f CMakeFiles\20200119.dir/objects.a
+"D:\Program Files\mingw64\bin\ar.exe" cr CMakeFiles\20200119.dir/objects.a @CMakeFiles\20200119.dir\objects1.rsp
+"D:\Program Files\mingw64\bin\g++.exe" -g   -Wl,--whole-archive CMakeFiles\20200119.dir/objects.a -Wl,--no-whole-archive  -o 20200119.exe -Wl,--out-implib,lib20200119.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\20200119.dir\linklibs.rsp
