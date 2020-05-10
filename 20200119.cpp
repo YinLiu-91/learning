@@ -4477,3 +4477,14 @@ int main()
 
 // template <typename T>
 // Blob<T>::Blob(initializer_list<T> i1) : data(make_shared<vector<T>>(i1)) {}
+
+
+int main()
+{
+    constexpr int a=10;
+    int b[a];
+   constexpr int c=10;
+    int d[c];
+    
+    return 0;
+}
