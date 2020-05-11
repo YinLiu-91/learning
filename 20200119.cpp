@@ -3969,7 +3969,7 @@ int main()
 // {
 //     chk_n_alloc(); //确保有空间容纳元素
 //     //在first_free指向的元素中构造s的副本
-//     alloc.construct(first_free++, s);
+//     alloc.construct(f irst_free++, s);
 // }
 
 // void StrVec::push_back(string &&s)
@@ -4488,95 +4488,113 @@ int main()
 //     return 0;
 // }
 
-//拷贝控制实例 13.4 p460
-#include <string>
-#include <set>
-using namespace std;
-class Message;
-class Folder
-{
-    friend class Message;
-public:
-    void addMsg(Message &);
-    void remMsg(Message &);
-};
-void Message::addMsg(Message & m)
-{
+// //拷贝控制实例 13.4 p460
+// #include <string>
+// #include <set>
+// using namespace std;
+// class Message;
+// class Folder
+// {
+//     friend class Message;
+// public:
+//     void addMsg(Message &);
+//     void remMsg(Message &);
+// };
+// void Message::addMsg(Message & m)
+// {
 
-}
-void Message::remMsg(Message & m)
-{
+// }
+// void Message::remMsg(Message & m)
+// {
 
-}
+// }
 
-class Message
-{
-    friend class Folder;
+// class Message
+// {
+//     friend class Folder;
 
-public:
+// public:
 
 
-    //folders 被银式初始化为空集合
-    explicit Message(const std::string &str = "") : contents(str) {}
-    //拷贝控制成员，用来管理指向本Message的指针
-    Message(const Message &);            //拷贝构造函数
-    Message &operator=(const Message &); //拷贝赋值
-    ~Message();
-    //从给定folder中添加删除文本
-    void save(Folder &);
-    void remove(Folder &);
+//     //folders 被银式初始化为空集合
+//     explicit Message(const std::string &str = "") : contents(str) {}
+//     //拷贝控制成员，用来管理指向本Message的指针
+//     Message(const Message &);            //拷贝构造函数
+//     Message &operator=(const Message &); //拷贝赋值
+//     ~Message();
+//     //从给定folder中添加删除文本
+//     void save(Folder &);
+//     void remove(Folder &);
 
-private:
-    std::string contents;       //实际消息文本
-    std::set<Folder *> folders; //包含本Message的Folder
-    //拷贝构造函数、拷贝赋值运算符和析构函数所使用的的工具函数
-    //将本Message添加到指向参数的Folder中去
-    void add_to_Folders(const Message &);
-    //从folders中的每个Folder中删除本Message
-    void remove_from_Folders();
-};
-//save 和remove 成员
-void Message::save(Folder &f)
-{
-    folders.insert(&f); //将给定FOlder添加到我们的Folder列表中
-    f.addMsg(this);
-}
-void Message::remove(Folder &f)
-{
-    folders.erase(&f); //将给定Folder从我们的Foler列表中删除
-    f.remMsg(this);    //将本Message从f的Message集合中删除
-}
-//message类的拷贝控制成员
-//将本Message添加到指向m的Folder中
-void Message::add_to_Folders(const Message &m)
-{
-    for (auto f : m.folders) //对每个包含m的folder
-        f->addMsg(this);     //向给Folder添加一个指向Message的指针
-}
-//message的拷贝构造函数拷贝给定对象的数据成员
-Message::Message(const Message &m) : contents(m.contents), folders(m.folders)
-{
-    add_to_Folders(m); //将本消息添加到指向m的Folder中
-}
-//message 的析构函数
-//从对应的Folder中删除本Message
-void Message:: remove_from_Folders()
-{
-    for(auto f:folders)//针对folders中每个指针
-    f->remMsg(this);//从该Folder中删除本Message
-}
-//析构函数
-Message::~Message()
-{
-    remove_from_Folders();
-}
+// private:
+//     std::string contents;       //实际消息文本
+//     std::set<Folder *> folders; //包含本Message的Folder
+//     //拷贝构造函数、拷贝赋值运算符和析构函数所使用的的工具函数
+//     //将本Message添加到指向参数的Folder中去
+//     void add_to_Folders(const Message &);
+//     //从folders中的每个Folder中删除本Message
+//     void remove_from_Folders();
+// };
+// //save 和remove 成员
+// void Message::save(Folder &f)
+// {
+//     folders.insert(&f); //将给定FOlder添加到我们的Folder列表中
+//     f.addMsg(this);
+// }
+// void Message::remove(Folder &f)
+// {
+//     folders.erase(&f); //将给定Folder从我们的Foler列表中删除
+//     f.remMsg(this);    //将本Message从f的Message集合中删除
+// }
+// //message类的拷贝控制成员
+// //将本Message添加到指向m的Folder中
+// void Message::add_to_Folders(const Message &m)
+// {
+//     for (auto f : m.folders) //对每个包含m的folder
+//         f->addMsg(this);     //向给Folder添加一个指向Message的指针
+// }
+// //message的拷贝构造函数拷贝给定对象的数据成员
+// Message::Message(const Message &m) : contents(m.contents), folders(m.folders)
+// {
+//     add_to_Folders(m); //将本消息添加到指向m的Folder中
+// }
+// //message 的析构函数
+// //从对应的Folder中删除本Message
+// void Message:: remove_from_Folders()
+// {
+//     for(auto f:folders)//针对folders中每个指针
+//     f->remMsg(this);//从该Folder中删除本Message
+// }
+// //析构函数
+// Message::~Message()
+// {
+//     remove_from_Folders();
+// }
 
-Message& Message::operator=(const Message &rhs)
-{
-    //通过先删除指针再插入他们来处理自赋值情况
-    remove_from_Folders();//更新已有folder
-    contents=rhs.contents;
-    folders=rhs.folders;
-    add_to_Folders(rhs);
-    return *this;
-}
+// Message& Message::operator=(const Message &rhs)
+// {
+//     //通过先删除指针再插入他们来处理自赋值情况
+//     remove_from_Folders();//更新已有folder
+//     contents=rhs.contents;
+//     folders=rhs.folders;
+//     add_to_Folders(rhs);
+//     return *this;
+// }
+
+// void swap(Message &lhs,Message &rhs)
+// {
+//     using std::swap;//在本例中严格来说不需要，但这是一个好习惯
+//     //将每个消息的指针从它（原来）所在的Folder中删除
+//     for(auto f:lhs.folders)
+//     f->remMsg(&lhs);
+//     for(auto f:rhs.folders)
+//     f->remMsg(&rhs);
+//     //交换contens和folder指针set
+//     swap(lhs.folders,rhs.folders);//使用swap(set&,set&)
+//     swap(lhs.contents,rhs.contens);//swap(string&,string&)
+//     //将每个Message的指针添加到它的（新）Folder中
+//     for(auto f:lhs.folders)
+//     f->addMsg(&lhs);
+//     for(auto f:rhs.folders)
+//     f->addMsg(&rhs);
+// }
