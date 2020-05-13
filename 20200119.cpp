@@ -4515,7 +4515,6 @@ int main()
 
 // public:
 
-
 //     //folders 被银式初始化为空集合
 //     explicit Message(const std::string &str = "") : contents(str) {}
 //     //拷贝控制成员，用来管理指向本Message的指针
@@ -4599,7 +4598,6 @@ int main()
 //     f->addMsg(&rhs);
 // }
 
-
 // //p 77 2020.05.12
 // #include<string>
 // #include<iostream>
@@ -4612,10 +4610,9 @@ int main()
 //     std::cout<<s<<std::endl;
 //     return 0;
 
-
 // }
 
-// //p86 
+// //p86
 // // 3.26
 // #include<string>
 // #include<iostream>
@@ -4630,15 +4627,113 @@ int main()
 //     return 0;
 
 // }
+// //p99 3.22
+// #include <string>
+// #include <vector>
+// #include <iostream>
+// using std::string;
+// using std::vector;
+// int main()
+// {
+//     vector<string> vstr;
+//     vstr.push_back("asdfdasf今天是2020年05月13号，天气晴朗，需要继续努力呀，越努力越幸运！");
+//     vstr.push_back("");
+//     vstr.push_back("日期号和周几是一样的");
+//     //注意：迭代器和下标的不同
+//     for (vector<string>::iterator it = vstr.begin(); it != vstr.end() && !it->empty(); ++it)
+//         for (string::iterator it1 = (*it).begin(); it1 != (*it).end(); ++it1)
+//          //for (string::iterator it1 = 0; it1 != (*it).end(); ++it1) //不能写成这种形式
+//        // for(auto & it1:*it)
+//             *it1 = toupper(*it1);
+//     string::size_type it2 = 0;
+//     std::cout << vstr[it2] << std::endl;
+//     return 0;
+// }
 
-#include<string>
-#include<vector>
-#include<iostream>
-using std:: vector;
+// //p99 3.23 2020.05.13
+// #include<vector>
+// #include<iostream>
+// using std::vector;
+// using std::cout;
+// using std::endl;
+// int main()
+// {
+//     vector<int>ivec(10,2);
+//     cout<<"方法1:范围for"<<endl;
+//     for(auto & i:ivec)
+//     {
+//         i*=i;
+//         cout<<i<<"\n";
+//     }
+//     cout<<"方法2:下标"<<endl;
+//     for(vector<int>::size_type it=0;it!=ivec.size();++it)
+//     {
+//         ivec[it]*=ivec[it];
+//         cout<<ivec[it]<<"\n";
+//     }
+//     cout<<"方法3：iterator"<<endl;
+//     for(vector<int>::iterator it=ivec.begin();it!=ivec.end();++it)
+//     {
+//         *it*=*it;
+//         cout<<*it<<"\n";
+//     }
+//      return 0;
+// }
+
+//p 100 二分搜索
+//text 必须是有序的
+// //beg 和end表示我们搜索的范围
+// #include <vector>
+// using std::vector;
+// int main()
+// {
+//     int sought = 3;
+//     vector<int> text = {1, 2, 3, 4, 5, 6, 7, 8};
+//     auto beg = text.begin(), end = text.end();
+//     auto mid = text.begin() + (end - beg) / 2; //初始状态中间点
+//     //当元素尚未检查并且我们还没有找到sought时执行循环
+//     while (mid != end && *mid != sought)
+//     {
+//         if (sought < *mid)
+//             end = mid;
+//         else
+//             beg = mid + 1;
+//         mid = beg + (end - beg) / 2;
+//     }
+// }
+
+//p 233 7.5
+#include <string>
+#include <iostream>
+using std::string;
+class Person
+{
+public:
+    string name;
+    string address;
+    string re_name() const { return name; }
+    string re_add() const { return address; }
+    Person() = default; //默认构造
+    Person(const string &n, const string &add) : name(n), address(add) {}
+    person(istream &);
+    //friend ostream & print(ostream &os,const  Person& p);
+};
+//读取形式的构造
+Person::Person(istream &is)
+{
+    is >> name >> address;
+}
+istream &read(istream &ia, Person &p)
+{
+    ia >> p.name >> p.address;
+    return is;
+}
+ostream &print(ostream &os, const Person &p)
+{
+    os << p.name << p.address;
+    return os;
+}
 int main()
 {
-    std::cout<<"ok"<<std::endl;
-    return 0;
-
-     
+    Person p;
 }
