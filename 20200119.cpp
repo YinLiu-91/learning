@@ -4598,3 +4598,47 @@ int main()
 //     for(auto f:rhs.folders)
 //     f->addMsg(&rhs);
 // }
+
+
+// //p 77 2020.05.12
+// #include<string>
+// #include<iostream>
+// using namespace std;
+// int main()
+// {
+//     string s("hello world");
+//     for(auto & i:s)
+//     i=toupper(i);
+//     std::cout<<s<<std::endl;
+//     return 0;
+
+
+// }
+
+// //p86 
+// // 3.26
+// #include<string>
+// #include<iostream>
+// using std:: string;
+// int main()
+// {
+//     int a=234;
+//     string s="YYYY";
+//     for(auto &i:s)
+//     i='X';
+//     std::cout<<s<<std::endl;
+//     return 0;
+
+// }
+
+#include<string>
+#include<vector>
+#include<iostream>
+using std:: vector;
+int main()
+{
+    std::cout<<"ok"<<std::endl;
+    return 0;
+
+     
+}
