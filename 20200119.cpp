@@ -5178,16 +5178,85 @@ int main()
 //     return 0;
 // }
 
-//p322 9.41
-#include <vector>
-#include <string>
-using namespace std;
-int main()
-{
-    vector<char> cvec(10, 'c');
-    string s;
-    for (auto it = cvec.begin(); it != cvec.end(); ++it)
-        s.push_back(*it);
-        string s1(cvec,10);
-    return 0;
-}
+// //p322 9.41
+// #include <vector>
+// #include <string>
+// using namespace std;
+// int main()
+// {
+//     vector<char> cvec(10, 'c');
+//     string s;
+//     for (auto it = cvec.begin(); it != cvec.end(); ++it)
+//         s.push_back(*it);
+//         string s1(cvec,10);
+//     return 0;
+// }
+
+// //2020.05.16 晚上 泛型算法
+// #include<algorithm>
+// #include<vector>
+// #include<iostream>
+// #include<numeric>
+// using namespace std;
+// int main(){
+//     vector<int>ivec={10,2,3,43,42,42,5,6};
+//     int val=42;
+//     auto result=find(ivec.cbegin(),ivec.cend(),val);
+//     auto count_i=count(ivec.cbegin(),ivec.cend(),val);
+//     cout<<"the value"<<val<<(result==ivec.cend()?"is not present":"is present")<<endl;
+//     int sum=accumulate(ivec.cbegin(),ivec.cend(),0);
+//    // fill_n(ivec.begin,ivec.size(),0);
+//     return 0;
+// }
+
+// //p343重排容器元素
+// #include<vector>
+// #include<string>
+// #include<algorithm>
+// using namespace std;
+// //定制操作p344
+// bool isShorter(const string &s1,const string s2)
+// {
+//     return s1.size()<s2.size();
+// }
+// void elimDumps(vector<string> &words)
+// {
+//     //按字典排序words，以便查找重复单词
+//     sort(words.begin(),words.end());
+//     //unique重排输入范围，使得每个单词只出现一次
+//     //排列在范围的前部，返回指向不重复区域之后一个位置的迭代器
+//     auto end_unique=unique(words.begin(),words.end());
+//     //使用向量操作erase删除重复单词
+//     words.erase(end_unique,words.end());
+// }
+
+// int main(){
+//     vector<string>svec={"the","quick","red","fox","jumps","over","the","slow","red","turtle"};
+//     elimDumps(svec);
+//     //stable_sort(words.begin(),words.end(),isShorter);
+    
+//     return 0;
+// }
+
+
+// //p345 10.13
+// #include<string>
+// #include<algorithm>
+// #include<vector>
+// #include<iterator>
+// #include<iostream>
+// using namespace std;
+// bool slen(const string & s)
+// {
+//     if(s.size()>5)
+//     return true;
+//     else
+//     return false;
+// }
+// int main(){
+//     vector<string> svec={"sfafasfa","sd","ssssss","ewt"};
+//     auto sit=partition(svec.begin(),svec.end(),slen);
+//     for(auto it=svec.begin();it!=sit;++it)
+//     cout<<*it<<" ";
+//     return 0;
+// }
