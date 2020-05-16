@@ -5234,10 +5234,9 @@ int main()
 //     vector<string>svec={"the","quick","red","fox","jumps","over","the","slow","red","turtle"};
 //     elimDumps(svec);
 //     //stable_sort(words.begin(),words.end(),isShorter);
-    
+
 //     return 0;
 // }
-
 
 // //p345 10.13
 // #include<string>
@@ -5260,3 +5259,36 @@ int main()
 //     cout<<*it<<" ";
 //     return 0;
 // }
+
+// //p349 完整的biggies
+// #include <vector>
+// #include <string>
+// #include <algorithm>
+// using namespace std;
+// void elimDumps(vector<string> &words)
+// {
+//     //按字典排序words，以便查找重复单词
+//     sort(words.begin(), words.end());
+//     //unique重排输入范围，使得每个单词只出现一次
+//     //排列在范围的前部，返回指向不重复区域之后一个位置的迭代器
+//     auto end_unique = unique(words.begin(), words.end());
+//     //使用向量操作erase删除重复单词
+//     words.erase(end_unique, words.end());
+// }
+// void biggies(vector<string> &words, vector<string>::size_tpe sz)
+// {
+//     elimDumps(words); //将words按字典循序排序，删除重复单词
+//     stable_sort(words.begin(), words.end(), [](const string &a, const string &b) { return a.size() < b.size(); });
+//     //获取一个迭代器，指向第一个满足size()>=sz的元素
+//     auto wc = find_if(words.begin(), words.end(), [sz](const string &a) { return a.size() >= sz; });
+//     //计算满足size>=sz的元素的数目
+//     auto count = words.end() - wc;
+//     cout << count << " " << make_plural(count, "word", "s")
+//          << " of length" << sz << " or longer" << endl;
+//     //打印长度大于给定值的单词，每个单词后面接一个空格
+//     for_each(wc, words.end(), [](const string &s) { cout << s << " "; });
+//     cout << endl;
+// }
+
+//p349 110.14
+[](const int &i1,const int &i2){return i1+i2;}
