@@ -4702,41 +4702,492 @@ int main()
 //     }
 // }
 
-//p 233 7.5
-#include <string>
-#include <iostream>
-using std::string;
-class Person
-{
-public:
-    string name;
-    string address;
-    string re_name() const { return name; }
-    string re_add() const { return address; }
-    Person() = default; //默认构造
-    Person(const string &n, const string &add) : name(n), address(add) {}
-    person(istream &);
-    //friend ostream & print(ostream &os,const  Person& p);
-};
-//读取形式的构造
-Person::Person(istream &is)
-{
-    is >> name >> address;
-}
-istream &read(istream &ia, Person &p)
-{
-    ia >> p.name >> p.address;
-    return is;
-}
-ostream &print(ostream &os, const Person &p)
-{
-    os << p.name << p.address;
-    return os;
-}
-int main()
-{
-    Person p;
-}
+// //p 233 7.5
+// #include <string>
+// #include <iostream>
+// using std::string;
+// class Person
+// {
+//     friend istream &read(istream &ia, Person &p);
+//     friend ostream &print(ostream &os, const Person &p);
+// public:
+//     string re_name() const { return name; }
+//     string re_add() const { return address; }
+//     Person() = default; //默认构造
+//     Person(const string &n, const string &add) : name(n), address(add) {}
+//     person(istream &);
 
+//     //friend ostream & print(ostream &os,const  Person& p);
+// private:
+//     string name;
+//     string address;
+// };
+// //读取形式的构造
+// Person::Person(istream &is)
+// {
+//     is >> name >> address;
+// }
+// istream &read(istream &ia, Person &p)
+// {
+//     ia >> p.name >> p.address;
+//     return is;
+// }
+// ostream &print(ostream &os, const Person &p)
+// {
+//     os << p.name << p.address;
+//     return os;
+
+// }
+// int main()
+// {
+//     Person p;
+// }
 
 // 2020.05.13结束
+
+//2020.05.14
+
+// //p281 8.1
+// #include <iostream>
+// #include <istream>
+// #include <stdexcept>
+// using std::cout;
+// using std::endl;
+// using namespace std;
+// istream &f(istream &in)
+// {
+//     int v;
+//     while (in >> v, !in.eof())
+//     { //直到遇到文件结束符才停止读取
+//         if (in.bad())
+//             throw runtime_error("io流错误");
+//         if (in.fail())
+//         {
+//             cerr << "数据错误，请重试" << endl;
+//             in.clear();
+//             in.ignore(100, '\n');
+//             continue;
+//         }
+//         cout << v << endl;
+//     }
+//     in.clear(); //返回前复位
+//     return in;
+// }
+// int main()
+// {
+//     cout << "请输入一些整数，按Ctrl+Z结束" << endl;
+//     f(cin);
+//     return 0;
+// }
+
+// #include <iostream>
+// #include <fstream>
+// #include <vector>
+// #include <string>
+// using namespace std;
+// int main()
+// {
+//     ifstream in;
+//     in.open("input.txt",ifstream::in);
+//     vector<string> sv1;
+//     vector<string> sv2;
+//     string s1, s2;
+//     //while(!in.eof()!=0)
+//     while (in >> s1, !in.eof())
+//     {
+//         sv1.push_back(s1);
+//         //s1=in.getline();
+//     }
+//     in.close();
+//     in.open("input.txt");
+//     while (!in.eof())
+//     {
+//         getline(in, s2);
+//         sv2.push_back(s2);
+//     }
+//     in.close();
+//     ofstream of;
+//     of.open("input.txt",ofstream::out|ofstream::app);
+//     of<<"今天风很大";
+//     of.close();
+//     return 0;
+// }
+
+// //p288
+// #include <iostream>
+// #include <sstream>
+// #include <string>
+// #include <vector>
+// #include <fstream>
+// using namespace std;
+// struct PersonInfo
+// {
+//     string name;
+//     vector<string> phones;
+// };
+// int main()
+// {
+//     ifstream if1;
+//     if1.open("inp1.txt");
+//     string line, word; //分别保存来自输入的一行和单词
+//     vector<PersonInfo> people;
+//     vector<string> svec;
+//     istringstream record;
+//     // 8.11
+//     while (getline(if1, line))
+//     {
+//         svec.push_back(line);
+//         PersonInfo info;            //创建一个保存此记录的对象
+//          record.str(line); //将记录绑定到刚刚读入的行;
+//         record >> info.name;
+//         while (record >> word)
+//             info.phones.push_back(word); //保持他们
+//         people.push_back(info);          //将此记录追加到people末尾
+//     }
+//     if1.close();
+//     //p289 8.10
+//     vector<string> s_num;
+//     for (auto i : svec)
+//     {
+//         istringstream a(i); //相当于打开文件
+//         string s_1;
+//         while (a >> s_1)
+//             s_num.push_back(s_1);
+//     }
+//     return 0;
+// }
+// // 2020.05.14结束
+
+// // 2020.05.15
+// #include<list>
+// #include<deque>
+// #include<iostream>
+// using namespace std;
+// int main()
+// {
+//     list<deque<int>> l;
+//     deque<int> d;
+//     d.push_back(1);
+//     l.push_back(d);
+//     cout<<l[0]<<endl;
+//     return 0;
+// }
+
+// //2020.05.16
+// //p297 9.4 9.5
+// #include <vector>
+// #include <iostream>
+// using std::cout;
+// using std::endl;
+// using std::vector;
+// bool sear(vector<int>::const_iterator it1, vector<int>::const_iterator it2, const int &a)
+// {
+//     if (it1 != it2)
+//     {
+//         for (vector<int>::const_iterator it = it1; it != it2; ++it)
+//         {
+//             if (*it == a)
+//             {
+//                 return true;
+//                 break;
+//             }
+//         }
+//         return false;
+//     }
+//     else
+//     {
+//         cout << "请输入正确的迭代器范围" << endl;
+//         return false;
+//     }
+// }
+
+// vector<int>::const_iterator  sear1(vector<int>::const_iterator it1, vector<int>::const_iterator it2, const int &a)
+// {
+//     if (it1 != it2)
+//     {
+//         for (vector<int>::const_iterator it = it1; it != it2; ++it)
+//         {
+//             if (*it == a)
+//             {
+//                 return it;
+//                 break;
+//             }
+//         }
+//         return it2;
+//     }
+//     else
+//     {
+//         cout << "请输入正确的迭代器范围" << endl;
+//         return it2;
+//     }
+// }
+
+// int main()
+// {
+//     vector<int> ivec = {1, 2, 3, 4, 5, 6, 7, 8};
+//     bool a = sear(ivec.cbegin(), ivec.cend(), 6);
+//     vector<int>::const_iterator ita=sear1(ivec.cbegin(), ivec.cend(), 9);
+//     return 0;
+// }
+
+// //p302 9.13
+// #include <list>
+// #include <vector>
+// using namespace std;
+// int main()
+// {
+//     list<int> ilist(10, 5);
+//     vector<double> idou(ilist.begin(), ilist.end());
+//     vector<int> ivec(10, 6);
+//     //idou=ivec;//虽然容器相同，但是类型不同，无法直接拷贝，使用迭代器拷贝
+//     idou = vector<double>(idou.begin(), idou.end());//右边属于临时对象
+//     return 0;
+// }
+
+// //p304 9.2.5
+// #include <list>
+// #include <vector>
+// #include <string>
+// using namespace std;
+// int main()
+// {
+//     list<char *> clist(10, "dfa");
+//     vector<string> svec(clist.begin(), clist.end());
+//     vector<string> svec1 = vector<string>(clist.begin(), clist.end());
+//     if (svec == svec)
+//         int a = 1;
+//     return 0;
+// }
+
+// //p309 9.20
+// #include <list>
+// #include <vector>
+// #include <deque>
+// using namespace std;
+// int main()
+// {
+//     list<int> ilist = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     deque<int> ide1;
+//     deque<int> ide2;
+//     for(list<int>::const_iterator it=ilist.begin();it!=ilist.end();++it)
+//     {
+//         if(*it%2==0)
+//         ide1.push_back(*it);
+//         else
+//         ide2.push_back(*it);
+//     }
+//     return 0;
+// }
+
+// //p311 9.24
+// #include <vector>
+// using namespace std;
+// int main()
+// {
+//     vector<int> ivec;
+//     auto i1 = ivec.at(0);
+//     //auto i2 = ivec.front();//编译不通过
+//     //auto i2 = ivec.begin();//编译不通过
+//     return 0;
+// }
+
+// //p312 9.26
+// #include <vector>
+// #include <list>
+// using namespace std;
+// int main()
+// {
+//     vector<int> ivec;
+//     list<int> ilis;
+//     int ia[] = {0, 1, 1, 2, 3, 5, 8, 13, 21, 55, 89};
+//     for (int i = 0; i < 11; ++i)
+//     {
+//         ivec.push_back(ia[i]);
+//         ilis.push_front(ia[i]);
+//     }
+//     vector<int>::iterator itv=ivec.begin();
+//     list<int>::iterator itl=ilis.begin();
+//     while(itv!=ivec.end())
+//     if(!(*itv%2))
+//     itv=ivec.erase(itv);
+//     else
+//     ++itv;
+//     while(itl!=ilis.end())
+//     if(*itl%2)
+//     itl=ilis.erase(itl);
+//     else
+//     {
+//         ++itl;
+//     }
+//     return 0;
+// }
+
+// //p314 9.28
+// #include<forward_list>
+// #include<string>
+// using namespace std;
+// void lis(forward_list<string> & fl,const string &s1,const string &s2)
+// {
+//     auto curr=fl.begin();
+//     auto prev=fl.before_begin();
+//     if(curr!=fl.end()){
+//         if(*curr==s1)
+//         {
+//         fl.insert_after(curr,s2);
+//         ++curr;
+//         }
+//         else
+//         ++curr;
+//     }else
+// }
+// int main(){
+
+// }
+
+// //p314
+// #include <iostream>
+// #include <forward_list>
+// using namespace std;
+// void test_and_insert(forward_list<string> &sflst, const string &s1, cosnt string &s2)
+// {
+//     auto prev = sflst.before_begin();
+//     auto curr = sflst.begin();
+//     bool inserted = false;
+
+//     while (curr != sflst.end())
+//     {
+//         if (*curr == s1)
+//         {
+//             curr = sflst.insert_after(curr, s2);
+//             inserted = true;
+//         }
+//         prev = curr; //前驱迭代器向前推进；
+//         curr++;
+//     }
+//     if(!inserted)
+//     sflst.insert_after(prev,s2);//插入尾后
+
+// }
+
+// //p315 9.29
+// #include<vector>
+// using namespace std;
+// int main(){
+// vector<int> ivec(25,3);
+// ivec.resize(100);//会在后面添加75个0；
+// ivec.resize(10);//只剩下前面的3;
+// return 0;
+// }
+
+// //p316 傻瓜循环，删除偶数元素，复制每个奇数元素
+// #include <vector>
+// using namespace std;
+// int main()
+// {
+
+//     vector<int> vi = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     auto iter = vi.begin(); //调用begin非cbegin
+//     wile(iter != vi.end())
+//     {
+//         if (*iter % 2)
+//         {
+//             iter = vi.insert(iter, *iter); //复制当前元素
+//             iter += 2;                     //向前移动迭代器，跳过当前元素以及插入到它之前的元素
+//         }
+//         else
+//         {
+//             iter = vi.erase(iter); //删除偶数元素
+//             //不应当向前移动迭代器，iter指向我们删除的元素之后的元素
+//         }
+//     }
+// }
+
+////p316 傻瓜循环，删除偶数元素，复制每个奇数元素
+// #include <list>
+// using namespace std;
+// int main()
+// {
+
+//     list<int> vi = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     auto iter = vi.begin(); //调用begin非cbegin
+//     while (iter != vi.end())
+//     {
+//         if (*iter % 2)
+//         {
+//             iter = vi.insert(iter, *iter); //复制当前元素
+//             ++iter ;
+//             ++iter ; //list迭代器支持++入到它之前的元素
+//         }
+//         else
+//         {
+//             iter = vi.erase(iter); //删除偶数元素
+//             //不应当向前移动迭代器，iter指向我们删除的元素之后的元素
+//         }
+//     }
+//     return 0;
+// }
+
+// #include <iostream>
+// #include <forward_list>
+
+// using namespace std;
+
+// int main()
+// {
+//     forward_list<int> iflst = {0, 2, 3, 4, 5, 6, 7, 8, 9};
+//     auto prev = iflst.before_begin(); //前驱节点是为了删除元素的作用设置的，
+//     auto curr = iflst.begin();        //首节点
+//     while (curr != iflst.end())
+//     {
+//         if (*curr & 1)
+//         {
+//             curr = iflst.insert_after(curr, *curr);
+//             prev = curr;
+//             curr++;
+//         }
+//         else
+//         {
+//             curr = iflst.erase_after(prev);
+//         }
+//     }
+//     return 0;
+// }
+
+// #include<vector>
+// using namespace std;
+// int main(){
+//     vector<int >ivec={1,2,34,5};
+//     vector<int>::iterator begin=ivec.begin();
+//     while(begin!=ivec.end()){
+//         ++begin;//向前移动begin，因为我们在此元素之后插入元素；
+//         begin=ivec.insert(begin,42);//插入新值
+//         ++begin;//向前移动begin,跳过我们刚刚加入的元素
+//     }
+//     return 0;
+// }
+
+// //p321
+// #include <string>
+// using namespace std;
+// int main()
+// {
+//     const char *cp = "Hello World !";//
+//     char noNull[]={'H','i','\0'};
+//     string s1(cp);// 用const char *构造string时，cp需要以空字符结尾
+//     string s2(noNull);
+//     return 0;
+// }
+
+//p322 9.41
+#include <vector>
+#include <string>
+using namespace std;
+int main()
+{
+    vector<char> cvec(10, 'c');
+    string s;
+    for (auto it = cvec.begin(); it != cvec.end(); ++it)
+        s.push_back(*it);
+        string s1(cvec,10);
+    return 0;
+}
