@@ -2845,27 +2845,29 @@
 //
 //}
 
-////p381 11.12
-//#include<utility>
-//#include<vector>
-//#include<iostream>
-//#include<string>
-//using namespace std;
-//int main()
-//{
-//	vector<pair<string, int>> pvec;
-//	for (int i = 0; i < 5; ++i)
-//	{
-//		string first;
-//		int second;
-//		cin >> first;
-//		cin >> second;
-//		pair<string, int> p(first, second);
-//		pvec.push_back(p);
-//	}
-//	while (1);
-//	return 0;
-//}
+// //p381 11.12 11.13
+// #include<utility>
+// #include<vector>
+// #include<iostream>
+// #include<string>
+// using namespace std;
+// int main()
+// {
+// 	vector<pair<string, int>> pvec;
+// 	for (int i = 0; i < 5; ++i)
+// 	{
+// 		string first;
+// 		int second;
+// 		cin >> first;
+// 		cin >> second;
+// 		pair<string, int> p(first, second);
+//         // pair<string, int> p={first, second};
+//         // pair<string, int> p=make_pair(first, second);
+// 		pvec.push_back(p);
+// 	}
+// 	while (1);
+// 	return 0;
+// }
 
 ////p382set的关键字是const的
 //#include<set>
@@ -5290,5 +5292,257 @@ int main()
 //     cout << endl;
 // }
 
-//p349 110.14
-[](const int &i1,const int &i2){return i1+i2;}
+// //p349 110.14
+// [](const int &i1,const int &i2){return i1+i2;}
+
+// //10.15
+// [i1](const int &i2){return i1+i2;}
+
+//p354 2020.05.17
+
+// //p354
+// //10.20
+// #include<vector>
+// #include<string>
+// #include<algorithm>
+// using namespace std;
+// int mthan(const vector<string> &s)
+// {
+//     int i_count=count_if(s.begin(),s.end(),
+//     [](const string s){return (s.length()>6?true:false); });
+//     return i_count;
+// }
+// int mthan1(const vector<string> &s)//带尾置返回参数
+// {
+//     int i_count=count_if(s.begin(),s.end(),
+//     [](const string s)->int {
+//         if(s.length()>6)
+//         return true;
+//         else
+//         return false;
+//         });
+//     return i_count;
+// }
+// int main(){
+//     vector<string> svec={"2ewrwwww","eee","erewewrwerw"};
+//     int i_count=mthan1(svec);
+//     return 0;
+
+// }
+
+// //p354 10.21
+// #include <iostream>
+// #include <algorithm>
+// using namespace std;
+// void mutable_lambda(void)
+// {
+//     int v1=3;
+//     auto f=[&v1]() mutable -> bool {//这里v1前加&和不加都可以
+//         if (v1 == 0)
+//             return true;
+//         else
+//         {
+//             v1--;
+//             return false;
+//         }
+//     };
+//     for(int i=0;i<4;++i)
+//     cout<<f()<<" ";
+// }
+// int main()
+// {
+//     mutable_lambda();
+//     return 0;
+// }
+
+// //统计每个单词在输入中出现的次数
+// #include <map>
+// #include <string>
+// #include <iostream>
+// using namespace std;
+// int main()
+// {
+//     map<string, size_t> word_count; //string 到size_t的空map
+//     string word;
+//     while (cin >> word)
+//         ++word_count[word];          //提取word的计数器并将其加1
+//     for (const auto &w : word_count) //对map中的每个元素
+//         //打印结果
+//         cout << w.first << "occurs" << w.second
+//              << ((w.second > 1) ? "times" : "time") << endl;
+//     return 0;
+// }
+
+// //p376 11.3
+// #include <map>
+// #include <vector>
+// #include <string>
+// using namespace std;
+// //读取以组vector统计其中的单词的数量
+// void word_count(const vector<string> &svec,map<string,size_t> &word_count)
+// {
+//     //map<string, size_t> word_count;
+//     for (auto &i : svec)
+//         ++word_count[i];
+// }
+
+// //11.4 比对答案抄写
+// #include <iostream>
+// #include <fstream>
+// #include <map>
+// #include <string>
+// #include <algorithm>
+// #include <vector>
+// using namespace std;
+
+// //给定string的vector，将大写转小写，并且将标点符号（不止在末尾）去掉
+// void change(vector<string> &svec)
+// {
+//     for (auto &i : svec)
+//     {
+//         for (decltype(i.size()) p = 0; p < i.size(); ++p)
+//         {
+//             if (i[p] >= 'A' && i[p] <= 'Z')
+//                 i[p] -= ('A' - 'a');
+//             else if (i[p] == ',' || i[p] == '.')
+//                 i.erase(p, 1);
+//         }
+//     }
+// }
+// void word_count(const vector<string> &svec, map<string, size_t> &word_count)
+// {
+//     //map<string, size_t> word_count;
+//     for (auto &i : svec)
+//         ++word_count[i];
+// }
+// int main()
+// {
+//     vector<string> svec={"Name","name.","name","na.me"};
+//     map<string,size_t> smap;
+//     //首先去除符号与大小写
+//     change(svec);
+//     //其次完成计数等工作
+//     word_count(svec,smap);
+//     return 0;
+
+// }
+
+// //p378 11.7   p381 11.14
+// #include <map>
+// #include <vector>
+// #include <string>
+// #include<utility>
+// using namespace std;
+// void add_name(map<string, vector<pair<string,string>>> &m, const string &first_name, const pair<string,string> &info)
+// {
+//     m[first_name].push_back(info);
+// }
+
+// int main()
+// {
+//     map<string, vector<pair<string,string>>> name;
+//     string s1 = "liu";
+//     string s2 = "yin";
+//     string s3="1991.01.01";
+//     pair<string,string> pa={s2,s3};
+//     add_name(name, s1, pa);
+//     return 0;
+// }
+
+// //p378 11.8 抄写的答案
+// //vector版本
+// #include <iostream>
+// #include <fstream>
+// #include <vector>
+// #include <string>
+// #include <algorithm>
+
+// using namespace std;
+
+// string &trans(string &s)
+// {
+//     for (int p = 0; p < s.size(); ++p)
+//     {
+//         if (s[p] >= 'A' && s[p] <= 'Z')
+//             s[p] -= ('A' - 'a');
+//         else if (s[p] == ',' || s[p] == '.')
+//             s.erase(p, 1);
+//     }
+//     return s;
+// }
+
+// int main(int argc, char **argv)
+// {
+//     ifstream in(argv[1]);
+//     if (!in)
+//     {
+//         cout << "输入文件失败" << endl;
+//         exit(1);
+//     }
+//     vector<string> unique_word; //不重复单词
+//     string word;
+//     while (in >> word)
+//     {
+//         trans(word);
+//         if (find(unique_word.begin(), unique_word.end(), word))
+//             unique_word.push_back(word); //添加不重复单词
+//     }
+//     for (const auto &w : unique_word) //打印不重复单词
+//         //打印结果
+//         cout << w << " ";
+//     cout << endl;
+//     return 0;
+// }
+
+// //set版本
+// #include <iostream>
+// #include <fstream>
+// #include <set>
+// #include <string>
+// #include <algorithm>
+
+// using namespace std;
+
+// string &trans(string &s)
+// {
+//     for (int p = 0; p < s.size(); p++)
+//     {
+//         if (s[p] >= 'A' && s[p] <= 'Z')
+//             s[p] -= ('A' - 'a');
+//         else if (s[p] == ',' || s[p] == '.')
+//             s.erase(p, 1);
+//     }
+//     return s;
+// }
+// int main()
+// {
+//     ifstream in(argv[1]);
+//     if (!in)
+//     {
+//         cout << "错误输入文件" << endl;
+//         exit(1);
+//     }
+//     set<string> unique_word;
+//     string word;
+//     while (in >> word)
+//     {
+//         trans(word);
+//         unique_word.insert(word); //添加不重复单词
+//     }
+//     for (const auto &w : unique_word) //打印不重复单词
+//         //打印结果
+//         cout << w << " ";
+//     return 0;
+// }
+
+
+// //p383 11.16 
+// #include<map>
+// #include<iostream>
+// using namespace std;
+// int main(){
+//     map<int ,int> imap;
+//     for(int i=0;i<3;++i)
+//     imap[i]=i;
+//     return 0;
+// }
