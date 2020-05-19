@@ -5379,10 +5379,11 @@ int main()
 // #include <string>
 // using namespace std;
 // //读取以组vector统计其中的单词的数量
-// void word_count(const vector<string> &svec,map<string,size_t> &word_count)
+// void word_count(const vector<string> &svec, map<string, size_t> &word_count)
 // {
 //     //map<string, size_t> word_count;
 //     for (auto &i : svec)
+//         //++word_count.first->second;
 //         ++word_count[i];
 // }
 
@@ -5535,8 +5536,7 @@ int main()
 //     return 0;
 // }
 
-
-// //p383 11.16 
+// //p383 11.16
 // #include<map>
 // #include<iostream>
 // using namespace std;
@@ -5546,3 +5546,102 @@ int main()
 //     imap[i]=i;
 //     return 0;
 // }
+
+//2020.05.18
+
+// //p385
+// #include <map>
+// #include <string
+// #include <iostream>
+
+// using namespace std;
+// //统计每个单词在输入中出现次数的一种更繁琐的方法
+// map<string, size_t> word_count; //从string到size_t的空map
+// string word;
+// while (cin >> word)
+// {
+//     //插入一个元素，关键字等于word，值为1
+//     // 若word已在word_count,insert什么也不做
+//     auto ret = word_count.insert({word, 1});
+//     if (!ret.second)         //word已在word_count中
+//         ++ret.first->second; //递增计数器
+// }
+
+// //p391 11.31
+// #include<map>
+// #include<string>
+// #include<iostream>
+// using namespace std;
+// int main()
+// {
+//     multimap<string,string> book;
+//     book.insert({"jiapingwa","qq"});
+//     book.insert({"jiapingwa","yi"});
+//     book.insert({"moyan","tanxxing"});
+//     multimap<string,string>::iterator it=book.find("moyan1");
+//     if(it!=book.end())
+//     book.erase(it);
+//     else
+//     {
+//         cout<<"不在此multimap中";
+//     }
+
+//     return 0;
+// }
+
+//单词转换的map p391
+#include <map>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+using namespace std;
+//读入给定文件，建立转换映射
+map<string, string> buildMap(ifstream &map_file)
+{
+    map<string, string> trans_map; //保存转换规则
+    string key;
+    string value;
+    //读取第一个单词存入key中，行中剩余内容存入value
+    while (map_file >> key && getline(map_file, value))
+        if (value.size() > 1)                 //检查是否有转换规则
+            trans_map[key] = value.substr(1); //跳过前导空格
+        else
+        {
+            throw runtime_error("nor rule for " + key);
+        }
+    return trans_map;
+}
+
+void word_transform(ifstream &map_file, ifstream &input)
+{
+    auto trans_map = buildMap(map_file); //保存转换规则
+    string test;                         //保存输入中的每一行
+    while (getline(input, text))
+    {
+        istringstream stream(text);
+        string word;
+        bool firstword = true; //控制是否打印空格
+        while (stream >> word)
+        {
+            if (firstword)
+                firstword = false;
+            else
+                cout << " "; //在单词间打印一个空格
+            //transform返回它的第一个参数或其转换后的形式
+            cout << transform(word, trans_map); //打印输出
+        }
+        cout << endl; //完成一行的转换
+    }
+}
+//2020.05.19
+const string &transform(const string &s, const map<string, string> &m)
+{
+    //实际的转换工作；此部分是程序的核心
+    auto map_it = m.find(s);
+    //如果单词在转换规则map中，
+    if (map_it != m.cend())
+        return map_it->second; //使用替换短语
+    else
+        return s; //否则返回原string
+}
