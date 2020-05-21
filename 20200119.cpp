@@ -5589,59 +5589,351 @@ int main()
 //     return 0;
 // }
 
-//单词转换的map p391
-#include <map>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-using namespace std;
-//读入给定文件，建立转换映射
-map<string, string> buildMap(ifstream &map_file)
-{
-    map<string, string> trans_map; //保存转换规则
-    string key;
-    string value;
-    //读取第一个单词存入key中，行中剩余内容存入value
-    while (map_file >> key && getline(map_file, value))
-        if (value.size() > 1)                 //检查是否有转换规则
-            trans_map[key] = value.substr(1); //跳过前导空格
-        else
-        {
-            throw runtime_error("nor rule for " + key);
-        }
-    return trans_map;
-}
+// //单词转换的map p391
+// #include <map>
+// #include <string>
+// #include <fstream>
+// #include <sstream>
+// #include <iostream>
+// using namespace std;
+// //读入给定文件，建立转换映射
+// map<string, string> buildMap(ifstream &map_file)
+// {
+//     map<string, string> trans_map; //保存转换规则
+//     string key;
+//     string value;
+//     //读取第一个单词存入key中，行中剩余内容存入value
+//     while (map_file >> key && getline(map_file, value))
+//         if (value.size() > 1)                 //检查是否有转换规则
+//             trans_map[key] = value.substr(1); //跳过前导空格
+//         else
+//         {
+//             throw runtime_error("nor rule for " + key);
+//         }
+//     return trans_map;
+// }
 
-void word_transform(ifstream &map_file, ifstream &input)
-{
-    auto trans_map = buildMap(map_file); //保存转换规则
-    string test;                         //保存输入中的每一行
-    while (getline(input, text))
-    {
-        istringstream stream(text);
-        string word;
-        bool firstword = true; //控制是否打印空格
-        while (stream >> word)
-        {
-            if (firstword)
-                firstword = false;
-            else
-                cout << " "; //在单词间打印一个空格
-            //transform返回它的第一个参数或其转换后的形式
-            cout << transform(word, trans_map); //打印输出
-        }
-        cout << endl; //完成一行的转换
-    }
-}
-//2020.05.19
-const string &transform(const string &s, const map<string, string> &m)
-{
-    //实际的转换工作；此部分是程序的核心
-    auto map_it = m.find(s);
-    //如果单词在转换规则map中，
-    if (map_it != m.cend())
-        return map_it->second; //使用替换短语
-    else
-        return s; //否则返回原string
-}
+// void word_transform(ifstream &map_file, ifstream &input)
+// {
+//     auto trans_map = buildMap(map_file); //保存转换规则
+//     string test;                         //保存输入中的每一行
+//     while (getline(input, text))
+//     {
+//         istringstream stream(text);
+//         string word;
+//         bool firstword = true; //控制是否打印空格
+//         while (stream >> word)
+//         {
+//             if (firstword)
+//                 firstword = false;
+//             else
+//                 cout << " "; //在单词间打印一个空格
+//             //transform返回它的第一个参数或其转换后的形式
+//             cout << transform(word, trans_map); //打印输出
+//         }
+//         cout << endl; //完成一行的转换
+//     }
+// }
+// //2020.05.19
+// const string &transform(const string &s, const map<string, string> &m)
+// {
+//     //实际的转换工作；此部分是程序的核心
+//     auto map_it = m.find(s);
+//     //如果单词在转换规则map中，
+//     if (map_it != m.cend())
+//         return map_it->second; //使用替换短语
+//     else
+//         return s; //否则返回原string
+// }
+
+// //开始12章动态内存的学习
+// #include <memory>
+// #include <string>
+// #include <vector>
+// using namespace std;
+// class StrBlob
+// {
+// public:
+//     typedef std::vector<string>::size_type size_type;
+//     StrBlob();
+//     StrBlob(std::initializer_list<std::string> i1);
+//     bool empty() const { return data->empty(); }
+//     //添加和删除元素
+//     void push_back(const std::string &t) { data->push_back(t); }
+//     void pop_back();
+//     //元素访问
+//     std::string &front();
+//     std::string &back();
+
+// private:
+//     std::shared_ptr<std::vector<std::string>> data;
+//     //如果data[i]不合法，抛出一个异常
+//     void check（size_type i,const std::string &msg) const;
+// };
+
+// StrBlob::StrBlob():data(make_shared<vector<string>>()){}
+// StrBlob::StrBlob(initializer_list<string>i1):data(make_shared<vector<string>>(i1)){}
+// void StrBlob::check(size_type i,const string &msg)const{
+//     if(i>=data->size())
+//     throw out_of_range(msg);
+// }
+// string& StrBlob::front(){
+//     //若果vector为空，check会抛出一个异常
+//     check(0,"ront on empty strblob");
+//     return data->front();
+// }
+// string &StrBlob::back()
+// {
+//     check(0,"back on empty strblob");
+//     return data->back();
+// }
+// void StrBlob::pop_back(){
+//     check(0,"pop_back on empty strblob");
+//     data->pop_back();
+// }
+
+// //p421
+// //对于访问一个不存在元素的尝试，StrBlob抛出一个异常
+// #include <memory>
+// #include <vector>
+
+// using namespace std;
+// class StrBlobPtr
+// {
+// public:
+//     StrBlobPtr() : curr(0){}
+//     StrBlobPtr(StrBlob&a,size_t sz=0):
+//     wptr(a.data),curr(sz){}
+//     std::string& deref()const;
+//     StrBlobPtr & incr();//前缀递增
+
+// private:
+//     //若检查成功，check返回一个指向vector的shared_ptr
+//     std::shared_ptr<std::vector<std::string>>
+//     check(std::size_t, const std::string &) const;
+//     //保存一个weak_ptr，意味着底层vecttor可能被销毁
+//     std::weak_ptr<std::vector<std::string>> wptr;
+//     std::size_t curr; //在数组中的当前位置
+// };
+
+// int main()
+// {
+//     StrBlob s1;
+//     s1.push_back("huhua");
+// }
+
+// // 2020.05.20 开始今天学习
+// #ifndef MY_STRBLOB_H
+// #define MY_STRBOB_H
+// #include <vector>
+// #include <string>
+// #include <initializer_list>
+// #include <memory>
+// #include <stdexcept>
+
+// using namespace std;
+
+// class StrBlob
+// {
+// public:
+//     typedef vector<string>::size_type size_type;
+//     StrBlob();
+//     StrBlob(initializer_list<string> i1);
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加和删除元素
+//     void push_back(const string &s) { data->push_back(s); }
+//     void pop_back();
+//     //元素访问
+//     string &front();
+//     const string &front() const;
+//     string &back();
+//     const string &back() const;
+
+// private:
+//     shared_ptr<vector<string>> data;
+//     //如果data[i]不合法，抛出一个异常
+//     void check(size_type i, const std::string &msg) const;
+// };
+// StrBlob::StrBlob() : data(make_shared<vector<string>>()) {}
+// StrBlob::StrBlob(initializer_list<string> i1) : data(make_shared<vector<string>>(i1)){}
+// void StrBlob::check(size_type i,const string &msg)const
+// {
+//     if (i >= data->size())
+//         throw out_of_range(msg);
+// }
+// string &StrBlob::front()
+// {
+//     //如果vector为空，check会抛出一个异常
+//     check(0, "front on empty strblob");
+//     return data->front();
+// }
+// //const版本的front
+// const string &StrBlob::front() const
+// {
+//     check(0, "front on empty strblob");
+//     return data->front();
+// }
+// string &StrBlob::back()
+// {
+//     check(0, "back on empty strblob");
+//     return data->back();
+// }
+// const string &StrBlob::back() const
+// {
+//     check(0, "back on empty strblob");
+//     return data->back();
+// }
+// void StrBlob::pop_back()
+// {
+//     check(0, "empty on strblob");
+//     data->pop_back();
+// }
+// #endif
+
+// //测试类的正确性
+// #include <iostream>
+// using namespace std;
+
+// int main(int argc, char *argv[])
+// {
+//     StrBlob b1;
+//     {
+//         StrBlob b2 = {"a", "an", "the"};
+//         b1=b2;
+//         b2.push_back("about");
+//         cout<<b2.size()<<endl;
+//     }
+//     cout<<b1.size()<<endl;
+//     cout<<b1.front()<<" "<<b1.back()<<endl;
+//     const StrBlob b3=b1;
+//     cout<<b3.front()<<" "<<b3.back()<<endl;
+//     return 0;
+// }
+
+// //p411 12.6
+// #include<vector>
+// #include<memory>
+// using namespace std;
+// vector<int>* vec(){return new vector<int>();}
+// shared_ptr<vector<int>> vec1(){return make_shared<vector<int>>();}
+// int main(){
+//     auto p=vec();
+//     p->push_back(3);
+//     auto p1=vec1();
+//     p1->push_back(4);
+//     delete p;
+//     return 0;
+// }
+
+// #include<memory>
+// #include<string>
+// //#include<allocators>
+// using namespace std;
+// int main(){
+//     allocator<string> alloc;
+//     int n=3;
+//     auto const p=alloc.allocate(n);//分配了n个未初始化的对象；
+//     return 0;
+// }
+
+// //2020.05.21
+// #include<iostream>
+// using namespace std;
+// int main(){
+//     int val;
+
+//     cin>>val;
+//     return 0;
+// }
+
+// //p281 8.1
+// #include <iostream>
+// #include <stdexcept>
+// using namespace std;
+// istream &f(istream &in)
+// {
+//     int v;
+//     while (in >> v, !in.eof())
+//     {
+//         //直到遇到文件结束时停止
+//         if (in.bad())
+
+//             throw runtime_error("IO流错误");
+//         if (in.fail())
+//         {
+//             cerr << "数据错误，请重试" << endl;
+//             in.clear();
+//             in.ignore(100, '\n');
+//             continue;
+//         }
+//          cout << v << endl;
+//     }
+//    in.clear();
+//    return in;
+// }
+// int main()
+// {
+//     cout<<"请输入一个数"<<endl;
+//     f(cin);
+//     return  0 ;
+// }
+
+// // p285 8.4
+// #include <iostream>
+// #include <string>
+// #include <fstream>
+// #include <vector>
+// using namespace std;
+// void inputfile(ifstream &file, vector<string> &svec, vector<string> &svec1) //file前为什么非要加引用
+// {
+//     string s;
+//     while (file >> s)
+//     {
+//         svec.push_back(s);
+//     }
+//     file.clear(); //需要将流重置
+//     file.seekg(0, ios::beg);
+//     while (getline(file, s))
+//         svec1.push_back(s);
+// }
+// int main()
+// {
+//     std::ifstream ifile("数据字符串.txt");
+//     //ifile("数据字符串.txt");
+//     vector<string> svec;
+//     vector<string> svec1;
+//     inputfile(ifile, svec, svec1);
+//     return 0;
+// }
+
+////p289 8.13
+// #include <iostream>
+// #include <fstream>
+// #include <string>
+// #include <vector>
+// #include<sstream>
+// using namespace std;
+// struct PersonInfo
+// {
+//     string name;
+//     vector<string> phones;
+// };
+// int main(){
+//     string line ,word;
+//     vector<PersonInfo> people;
+//     ifstream ifile;
+//     ifile.open("phonelist.txt",ifstream::in);
+//     while(getline(ifile,line))
+//     {
+//         PersonInfo info;
+//         istringstream record;
+//         record.str(line);
+//         record>>info.name;
+//         while(record>>word)
+//         info.phones.push_back(word);
+//         people.push_back(info);
+//     }
+//     return 0;
+// }
+// //p289 ostringstream 未添加
