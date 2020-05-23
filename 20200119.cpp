@@ -5589,61 +5589,61 @@ int main()
 //     return 0;
 // }
 
-//单词转换的map p391
-#include <map>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-using namespace std;
-//读入给定文件，建立转换映射
-map<string, string> buildMap(ifstream &map_file)
-{
-    map<string, string> trans_map; //保存转换规则
-    string key;
-    string value;
-    //读取第一个单词存入key中，行中剩余内容存入value
-    while (map_file >> key && getline(map_file, value))
-        if (value.size() > 1)                 //检查是否有转换规则
-            trans_map[key] = value.substr(1); //跳过前导空格
-        else
-        {
-            throw runtime_error("nor rule for " + key);
-        }
-    return trans_map;
-}
+// //单词转换的map p391
+// #include <map>
+// #include <string>
+// #include <fstream>
+// #include <sstream>
+// #include <iostream>
+// using namespace std;
+// //读入给定文件，建立转换映射
+// map<string, string> buildMap(ifstream &map_file)
+// {
+//     map<string, string> trans_map; //保存转换规则
+//     string key;
+//     string value;
+//     //读取第一个单词存入key中，行中剩余内容存入value
+//     while (map_file >> key && getline(map_file, value))
+//         if (value.size() > 1)                 //检查是否有转换规则
+//             trans_map[key] = value.substr(1); //跳过前导空格
+//         else
+//         {
+//             throw runtime_error("nor rule for " + key);
+//         }
+//     return trans_map;
+// }
 
-const string &transform(const string &s,const map<string,string>&m)
-{
-    //实际的转换工作，此部分是程序的核心
-    auto map_it=m.find(s);
-    //如果单词在转换规则中
-    if(map_it!=m.cend())
-    return map_it->second;
-    else 
-    return s;
-}
-void word_transform(ifstream &map_file, ifstream &input)
-{
-    auto trans_map = buildMap(map_file); //保存转换规则
-    string text;                         //保存输入中的每一行
-    while (getline(input, text))
-    {
-        istringstream stream(text);
-        string word;
-        bool firstword = true; //控制是否打印空格
-        while (stream >> word)
-        {
-            if (firstword)
-                firstword = false;
-            else
-                cout << " "; //在单词间打印一个空格
-            //transform返回它的第一个参数或其转换后的形式
-            cout << transform(word, trans_map); //打印输出
-        }
-        cout << endl; //完成一行的转换
-    }
-}
+// const string &transform(const string &s, const map<string, string> &m)
+// {
+//     //实际的转换工作，此部分是程序的核心
+//     auto map_it = m.find(s);
+//     //如果单词在转换规则中
+//     if (map_it != m.cend())
+//         return map_it->second;
+//     else
+//         return s;
+// }
+// void word_transform(ifstream &map_file, ifstream &input)
+// {
+//     auto trans_map = buildMap(map_file); //保存转换规则
+//     string text;                         //保存输入中的每一行
+//     while (getline(input, text))
+//     {
+//         istringstream stream(text);
+//         string word;
+//         bool firstword = true; //控制是否打印空格
+//         while (stream >> word)
+//         {
+//             if (firstword)
+//                 firstword = false;
+//             else
+//                 cout << " "; //在单词间打印一个空格
+//             //transform返回它的第一个参数或其转换后的形式
+//             cout << transform(word, trans_map); //打印输出
+//         }
+//         cout << endl; //完成一行的转换
+//     }
+// }
 // //2020.05.19
 // const string &transform(const string &s, const map<string, string> &m)
 // {
@@ -6208,7 +6208,7 @@ void word_transform(ifstream &map_file, ifstream &input)
 // int main()
 // {
 //     string s;
-    
+
 //     map<string,size_t> word_count;
 //     while(cin>>s)
 //     {
@@ -6219,3 +6219,75 @@ void word_transform(ifstream &map_file, ifstream &input)
 //     return 0;
 // }
 
+// ////namespace t13_13{
+// //p447 13.13
+// #include <iostream>
+// #include <vector>
+// using namespace std;
+// struct X
+// {
+//     X() { cout << "构造函数X()"; }
+//     X(const X &) { cout << "拷贝构造函数X(const X&)" << endl; }
+//     X &operator=(const X &rhs)
+//     {
+//         cout << "拷贝赋值运算符" << endl;
+//         return *this;
+//     }
+//     ~X() { cout << "析构函数" << endl; }
+// };
+// void f1(X x) {}
+// void f2(X &x) {}
+// int main()
+// {
+//     cout << "局部变量" << endl;
+//     X x;
+//     cout << endl;
+
+//     cout << "非引用参数传递:" << endl;
+//     f1(x);
+//     cout << endl;
+
+//     cout << "引用参数传递" << endl;
+//     f2(x);
+//     cout << endl;
+
+//     cout << "动态分配" << endl;
+//     X *px = new X;
+//     cout << endl;
+
+//     cout << "添加到容器中" << endl;
+//     vector<X> vx;
+//     vx.push_back(x);
+//     cout << endl;
+
+//     cout << "释放动态分配对象" << endl;
+//     delete px;
+//     cout << endl;
+
+//     cout << "间接初始化和赋值" << endl;
+//     X y = x;
+//     y = x;
+//     cout << endl;
+
+//     cout << "程序结束：" << endl;
+//     return 0;
+// }
+
+// //}
+
+// //p343 13.5
+// #include <string>
+// using namespace std;
+// class HasPtr
+// {
+// public:
+//     HasPtr(const string &s = string()) : ps(new string(s)), i() {}
+//     HasPtr(const HasPtr &h) : ps(new string(*(h.ps))), i(h.i) {}
+//     ~HasPtr() { delete ps; }
+
+// private:
+//     string *ps;
+//     int i;
+// };
+
+//  
