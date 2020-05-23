@@ -5937,3 +5937,121 @@ int main()
 //     return 0;
 // }
 // //p289 ostringstream 未添加
+
+// //2020.05.22
+// #include<forward_list>
+// #include<iterator>
+// using namespace std;
+// int main()
+// {
+//      forward_list<int> il;
+//      auto it=front_inserter(il);//也有back_inserter
+
+//      *it=43;
+//      return 0;
+
+// }
+
+// //p344 10.9
+// #include<vector>
+// #include<algorithm>
+// using namespace std;
+// void dlimDumps(vector<int> &ivec)
+// {
+//     sort(ivec.begin(),ivec.end());
+//     auto ivec_end=unique(ivec.begin(),ivec.end());
+//     ivec.erase(ivec_end,ivec.end());
+// }
+// int main()
+// {
+//     vector<int>ivec={1,4,3,4,2};
+//     dlimDumps(ivec);
+//     return 0;
+
+// }
+
+// //p345 10.13
+// #include<algorithm>
+// #include<string>
+// #include<vector>
+// #include<iostream>
+// using namespace std;
+// bool m5(string &s)
+// {
+//     if(s.size()>5)
+//     return true;
+//     else
+//     return false;
+// }
+// void m_than_5(vector<string> &svec)
+// {
+//     auto s_end=partition(svec.begin(),svec.end(),m5);
+// for(auto it=svec.begin();it!=s_end;++it)
+// cout<<*it<<endl;
+
+// }
+// int main()
+// {
+//      vector<string>svec={"sfsd","sdfsfsfssd","sf","sssssss"};
+//      m_than_5(svec);
+//      return 0;
+// }
+
+// // p349 10.18
+// #include<algorithm>
+// #include<vector>
+// #include<string>
+// #include<iostream>
+// //#include"make_plural.h"
+// using namespace std;
+// void elimDumps(vector<string> &ivec)
+// {
+//     sort(ivec.begin(),ivec.end());
+//     auto ivec_end=unique(ivec.begin(),ivec.end());
+//     ivec.erase(ivec_end,ivec.end());
+// }
+// void biggies(vector<string> &words,vector<string>::size_type sz)
+// {
+// elimDumps(words);
+// //按长度排序，长度相同的单词维持顺序
+// stable_sort(words.begin(),words.end(),[](const string &a,const string &b){return a.size()<b.size();});
+// //获取一个迭代器，指向第一个满足size()>=sz的元素
+// vector<string>::iterator it_end=partition(words.begin(),words.end(),[sz](const string &a){return a.size()>=sz;});
+// //
+// auto count=words.end()-it_end;
+// cout<<count<<" "<<make_plural(count,"word","s")<<"of length"<<sz<<"or longer"<<endl;
+
+// }
+
+// int main(){
+
+// }
+
+// //p357 10.22
+// #include <vector>
+// #include <string>
+// #include <algorithm>
+// #include <functional>
+// using namespace std;
+// using namespace std::placeholders;
+// bool mthx(string &s, string::size_type sz)
+// {
+//     if (s.size() >= sz)
+//         return true;
+//     else
+//         return false;
+// }
+
+// void scount(vector<string> &svec, string::size_type sz, vector<string>::size_type &count1)
+// {
+//     sort(svec.begin(), svec.end(), [](const string &s1, const string &s2) { return s1.size() < s2.size(); });
+//     auto count_end = find_if(svec.begin(), svec.end(), bind(mthx, _1, sz));
+//     count1 = svec.end() - count_end;
+// }
+// int main()
+// {
+//     vector<string> svec = {"sfsfsfs", "sf", "sfsss3dddc"};
+//     vector<string>::size_type count;
+//     scount(svec, 6, count);
+//     return 0;
+// }
