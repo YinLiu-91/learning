@@ -5589,51 +5589,61 @@ int main()
 //     return 0;
 // }
 
-// //单词转换的map p391
-// #include <map>
-// #include <string>
-// #include <fstream>
-// #include <sstream>
-// #include <iostream>
-// using namespace std;
-// //读入给定文件，建立转换映射
-// map<string, string> buildMap(ifstream &map_file)
-// {
-//     map<string, string> trans_map; //保存转换规则
-//     string key;
-//     string value;
-//     //读取第一个单词存入key中，行中剩余内容存入value
-//     while (map_file >> key && getline(map_file, value))
-//         if (value.size() > 1)                 //检查是否有转换规则
-//             trans_map[key] = value.substr(1); //跳过前导空格
-//         else
-//         {
-//             throw runtime_error("nor rule for " + key);
-//         }
-//     return trans_map;
-// }
+//单词转换的map p391
+#include <map>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+using namespace std;
+//读入给定文件，建立转换映射
+map<string, string> buildMap(ifstream &map_file)
+{
+    map<string, string> trans_map; //保存转换规则
+    string key;
+    string value;
+    //读取第一个单词存入key中，行中剩余内容存入value
+    while (map_file >> key && getline(map_file, value))
+        if (value.size() > 1)                 //检查是否有转换规则
+            trans_map[key] = value.substr(1); //跳过前导空格
+        else
+        {
+            throw runtime_error("nor rule for " + key);
+        }
+    return trans_map;
+}
 
-// void word_transform(ifstream &map_file, ifstream &input)
-// {
-//     auto trans_map = buildMap(map_file); //保存转换规则
-//     string test;                         //保存输入中的每一行
-//     while (getline(input, text))
-//     {
-//         istringstream stream(text);
-//         string word;
-//         bool firstword = true; //控制是否打印空格
-//         while (stream >> word)
-//         {
-//             if (firstword)
-//                 firstword = false;
-//             else
-//                 cout << " "; //在单词间打印一个空格
-//             //transform返回它的第一个参数或其转换后的形式
-//             cout << transform(word, trans_map); //打印输出
-//         }
-//         cout << endl; //完成一行的转换
-//     }
-// }
+const string &transform(const string &s,const map<string,string>&m)
+{
+    //实际的转换工作，此部分是程序的核心
+    auto map_it=m.find(s);
+    //如果单词在转换规则中
+    if(map_it!=m.cend())
+    return map_it->second;
+    else 
+    return s;
+}
+void word_transform(ifstream &map_file, ifstream &input)
+{
+    auto trans_map = buildMap(map_file); //保存转换规则
+    string text;                         //保存输入中的每一行
+    while (getline(input, text))
+    {
+        istringstream stream(text);
+        string word;
+        bool firstword = true; //控制是否打印空格
+        while (stream >> word)
+        {
+            if (firstword)
+                firstword = false;
+            else
+                cout << " "; //在单词间打印一个空格
+            //transform返回它的第一个参数或其转换后的形式
+            cout << transform(word, trans_map); //打印输出
+        }
+        cout << endl; //完成一行的转换
+    }
+}
 // //2020.05.19
 // const string &transform(const string &s, const map<string, string> &m)
 // {
@@ -6055,3 +6065,157 @@ int main()
 //     scount(svec, 6, count);
 //     return 0;
 // }
+
+// //2020.05.23
+// #include <algorithm>
+// #include <iostream>
+// #include <vector>
+// #include <iterator>
+// #include <fstream>
+// #include <numeric>
+// using namespace std;
+// int main()
+// {
+//     //p360使用流迭代器 p362 10.29
+//     ifstream in("phonelist.txt");
+//     istream_iterator<string> in_iter(in), eof;
+//     vector<string> vec(in_iter, eof);
+//     string s_sum = accumulate(vec.begin(), vec.end(), string(""));
+//     //p361 使用
+//     ostream_iterator<int> out_iter(cout, " ");
+//     vector<int> vec1 = {1, 2, 3, 4, 5};
+//     for (auto e : vec1)
+//         *out_iter++ = e; //赋值语句实际上将元素写到cout
+//     cout << endl;
+//     return 0;
+// }
+
+// //p363 10.33
+// #include <fstream>
+// #include <vector>
+// #include <iterator>
+// #include <iostream>
+// using namespace std;
+// void ioput(ifstream &f1, ofstream &f2, ofstream &f3)
+// {
+
+//     istream_iterator<int> int_iteri(f1), eof1;
+
+//     ostream_iterator<int> int_itero1(f2, " ");
+//     ostream_iterator<int> int_itero2(f3, " ");
+//     //
+//     vector<int> all, od, sigu;
+//     all=vector<int>(int_iteri, eof1); //读取流数据
+//     for (auto it : all)
+//     {
+//         if (it % 2 == 0)
+//             od.push_back(it);
+//         else
+//         {
+//             sigu.push_back(it);
+//         }
+//     }
+//     for (auto e : od)
+//         *int_itero1++ = e;
+//     for (auto e : sigu)
+//         *int_itero2++ = e;
+
+// }
+// int main()
+// {
+//     ifstream f1("intlist.txt");
+//     ofstream f2("odd.txt"), f3("sigular.txt");
+//     ioput(f1, f2, f3);
+//     return 0;
+// }
+
+// #include <vector>
+// #include <string>
+// #include <iostream>
+// using namespace std;
+// int main()
+// {
+//     vector<int> ivec = {1, 2, 34, 55};
+//     for (auto it = ivec.crbegin(); it != ivec.crend(); ++it)
+//         cout << *it << " "; //这里不会将34打印成43，
+//     vector<string> svec = {"erwr", "123"};
+//     //cout<<string(svec.cbegin(),svec.crend())<<endl;//无法编译？
+//     for (auto it = svec.crbegin(); it != svec.crend() + 1; ++it)
+//         cout << *it << " ";
+//     for (auto it = svec.end(); it != svec.begin();)//分号不能少
+//         cout << *(--it) << " "; //在这里递减迭代器
+//     return 0;
+// }
+
+// #include<map>
+// #include<vector>
+// using namespace std;
+// int main()
+// {
+//     map<string,vector<string>> fam;
+//     fam["liu"].push_back("yin");
+//     fam["liu"].push_back("hui");
+
+//     return 0;
+// }
+
+// //p381 11.13
+// #include <utility>
+// #include <vector>
+// #include <string>
+// #include <iostream>
+// using namespace std;
+// int main()
+// {
+//     string s;
+//     int i;
+//     vector<pair<string, int>> sv;
+//     pair<string, int> p;
+//     while (cin >> s >> i)
+//     {
+//         //1
+//         // sv.push_back(make_pair(s, i));
+//         //2
+//         // p={s,i};
+//         // sv.push_back(p);
+//         //3
+//         pair<string, int> p1(s, i);
+//         sv.push_back(p1);
+//     }
+//     return 0;
+// }
+
+// #include <map>
+// #include <set>
+// #include <string>
+// using namespace std;
+// int main()
+// {
+//     set<string>::value_type s1;
+//     set<string>::key_type s2;
+//     map<string, int>::key_type s3;
+//     map<string, int>::mapped_type in;
+//     map<string, int>::key_type s;
+//     map<string, int>::value_type p; //pair<const string,int>
+//     return 0;
+// }
+
+// //p386 11.20
+// #include<map>
+// #include<string>
+// #include<iostream>
+// using namespace std;
+// int main()
+// {
+//     string s;
+    
+//     map<string,size_t> word_count;
+//     while(cin>>s)
+//     {
+//         auto s_it=word_count.insert({s,1});
+//         if(!s_it.second)
+//         ++s_it.first->second;
+//     }
+//     return 0;
+// }
+
