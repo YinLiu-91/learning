@@ -6290,4 +6290,437 @@ int main()
 //     int i;
 // };
 
-//  
+//  2020.05.24
+// #include<string>
+// using namespace std;
+// class Employee{
+//     public:
+//     Employee()=default;
+//     Employee(const string &n):name(n){id=id++;}
+//     ~Employee();
+//     string name;
+//     static size_t id;
+// };
+// size_t id =0;
+// int main()
+// {
+//     Employee liu("liu");
+
+//     return 0;
+// }
+
+// //p452 13.18
+// #include <iostream>
+// #include <string>
+// using namespace std;
+// class Employee
+// {
+// private:
+//     static int sn;
+
+// public:
+//     Employee() { mysn = sn++; }
+//     Employee(const string &s)
+//     {
+//         name = s;
+//         mysn = sn++;
+//     }
+//     // //为13.19定义拷贝构造和拷贝赋值
+//      Employee(Employee &s)
+//     {
+//         name = s.name;
+//         mysn = sn++;
+//     }
+//     Employee &operator=(Employee &rhs)
+//     {
+//         name = rhs.name;
+//         return *this;
+//     }
+//     const string &get_name() { return name; }
+//     int get_mysn(){return mysn;}
+
+// private:
+//     string name;
+//     int mysn;
+// };
+// int Employee::sn=0;
+// void f(Employee &s)
+// {
+//     cout<<s.get_name()<<":"<<s.get_mysn()<<endl;
+
+// }
+// int main()
+// {
+//     Employee a("zhao"),b=a,c;
+//     c=b;
+//     f(a),f(b),f(c);
+//     return 0;
+// }
+
+// //p453 行为像值的类
+// #include <string>
+// using namespace std;
+// class HasPtr
+// {
+// public:
+//     HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+//     //对ps指向的string，每个hasptr对象都有自己的拷贝
+//     HasPtr(const HasPtr &h):ps(new string(*(h.ps)),i(h.i){}
+//     HasPtr& operator=(const HasPtr &rhs);
+//     ~HasPtr(){
+//         delete ps;}
+//     private:
+//     string *ps;
+//     int i;
+// };
+// HasPtr &operator=(const HasPtr &rhs)
+// {
+//     auto newp = new string(*rhs.ps); //拷贝底层string
+//     delete ps;                       //释放旧内存
+//     ps = newp;
+//     i = rhs.i;
+//     return *this;
+// }
+
+// //p455 13.26
+// #include <vector>
+// #include <string>
+// #include <initializer_list>
+// #include <memory>
+// #include <
+// #include <stdexcept>
+// using namespace std;
+
+// class StrBlobPtr;
+// class StrBlob
+// {
+//     friend class StrBlobPtr;
+
+// public:
+//     typedef vector<string>::size_type size_type;
+//     StrBlob();
+//     StrBlob(initializer_list<string> i1);
+//     StrBlob(vector<string> *p);
+//     StrBlob(StrBlob &s);
+//     StrBlob &operator=(StrBlob &rhs);
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加和删除元素
+//     void push_back(const string &s) { data->push_back(s); }
+//     void pop_back();
+//     //元素访问
+//     string &front();
+//     const string &front() const;
+//     string &back();
+//     const string &back() const;
+
+//     //提供给strblobptr的接口
+//     StrBlobPtr begin() const; //定义strblobptr后才能定义这两个函数
+//     StrBlobPtr end() const;
+//     //const 版本
+//     StrBlobPtr begin() const;
+//     StrBlobPtr end() const;
+
+// private:
+//     shared_ptr<vector<string>> data;
+//     //如果data[i]不合法，抛出异常
+//     void check(size_type i, const std::string &msg) const;
+// };
+// inline StrBlob::StrBlob() : data(make_shared<vector<string>>()) {}
+// inline StrBlob::StrBlob(initializer_list<string>(i1):
+// data(make_shared<vector<string>>(i1)){}
+// inline StrBlob::StrBlob(vector<string>> *p):data(p){}
+// inline StrBlob::StrBlob(StrBlob &s):data(make_shared<vector<string>>(*s.data)){}
+
+// inline StrBlob& StrBlob::operator=(StrBlob&rhs)
+// {
+//     data = make_shared<vector<string>>(*rhs.data);
+//     return *this;
+// }
+
+// inline void StrBlob::check(size_type i,const string &msg)const{
+//     if(i>=data->size())
+//     throw out_of_range(msg);
+// }
+// inline string &StrBlob ::front(){
+//     //如果vector为空，check会抛出一个异常
+//     check(0,"front on empty strblob");
+//     return data->front();
+// }
+// inline string &StrBlob ::back()
+// {
+//     check(0,"back on empty strblob");
+//     return data->back();
+// }
+// //const版本check
+// inline const string &StrBlob::back()const
+// {
+//     check(0,"back on empty strblob");
+//     return data->back();
+// }
+
+// inline void StrBlob::pop_back()
+// {
+//     check(0,"pop_back on empty strblob");
+//     data->pop_back();
+// }
+
+// //当试图访问一个不存在的元素时，strblobptr抛出一个异常
+// class StrBlobPtr{
+// friend bool eq(const StrBlobPtr& ,const StrBlobPtr &);
+// public:
+// StrBlobPtr():curr(0){}
+// StrBlobPtr(StrBlob &a,size_t sz=0):wptr(a.data),curr(sz){}
+
+// string &deref()const;
+// string &deref(int off)const ;
+// StrBlobPtr &incr();//前缀递增
+// StrBlobPtr &decr();//后缀递减
+
+// private:
+// //若检查成功，check放回一个指向vecotr的shared_ptr
+// shared_ptr<vector<string>>check(size_t,const string &)const ;
+// //保存一个weak_ptr，意味着底层vector可能会被销毁
+// weak_ptr<vector<string>> wptr;
+// size_t curr;//数组中的当前位置
+// };//待续
+
+// //p456
+// #include <string>
+// using namespace std;
+// class HasPtr
+// {
+// public:
+//     //构造函数分配新的string和新的计数器，将计数器置为1
+//     HasPtr(const string &s = string()) : ps(new string(s)), i(0), use(new size_t(1)) {}
+//     //拷贝构造函数拷贝所有三个数据成员，并递增计数器
+//     HasPtr(const HasPtr &p) : ps(p.ps), i(p.i), use(p.use) { ++*use; }
+//     HasPtr &operator=(const HasPtr &);
+//     ~HasPtr();
+
+// private:
+//     string *ps;
+//     int i;
+//     size_t *use; //用来记录有多少个对象共享*ps成员
+// };
+// HasPtr::~HasPtr()
+// {
+//     if(--*use==0)
+//     {
+//         delete ps;//释放string内存
+//         delete use ;//释放计数器内存
+//     }
+
+// }
+// HasPtr& HasPtr::operator=(const HasPtr &rhs)
+// {
+//     ++*rhs.use;//递增右侧运算对象的引用计数
+//     if(--*use==0){
+//         delete ps;
+//         delete use;
+//     }
+//     ps=rhs.;
+//     i=rhs.i;
+//     use=rhs.use;
+//     return *this;//返回对象
+// }
+
+// //p457 13.28
+// #include <string>
+// using namespace std;
+// class TreeNode
+// {
+// public:
+//     TreeNode();
+//     TreeNode(const TreeNode &t);
+
+// private:
+//     string value;
+//     int count;
+//     TreeNode *left;
+//     TreeNode *right;
+// };
+// TreeNode::TreeNode()
+// {
+//     *(left->left);
+//     *(left->right);
+//     *(right->left);
+//     *(right->right);
+// }
+// TreeNode::TreeNode(const TreeNode &t) : value(t.value), count(t.count),
+//                                         left(new TreeNode(*left)), right(new TreeNode(*right)) {}
+
+// //p457 13.28
+// #include <string>
+// using namespace std;
+// class TreeNode
+// {
+// public:
+//     TreeNode();
+//     TreeNode(const TreeNode &);
+//     void CopyTree(void);
+//     int ReleaseTree(void);
+
+// private:
+//     std::string value;
+//     int count;
+//     TreeNode *left;
+//     TreeNode *right;
+// };
+// class BinStrTree
+// {
+// public:
+//     BinStrTree(const BinStrTree &);
+
+// private:
+//     TreeNode *root;
+// };
+// //尅被构造函数
+// BinStrTree::BinStrTree(const BinStrTree &bst) : root(bst.root)
+// {
+//     //拷贝整棵树
+//     root->CopyTree(); //应当拷贝整棵树，而不是根节点
+// }
+// void TreeNode::CopyTree(void)
+// {
+//     if (left)
+//         left->CopyTree();
+//     if (right)
+//         right->CopyTree();
+//     count++;
+// }
+// //从某个节点开始拷贝子树
+// TreeNode::TreeNode(const TreeNode &tn) : value(tn->value), count(1), left(tn->left), right(tn->right)
+// {
+//     if (left)
+//         left->CopyTree();
+//     if (right)
+//         right->CopyTree();
+// }
+
+// //析构函数
+// int TreeNode::ReleaseTree(void)
+// {
+//     if (left)
+//     {
+//         if (!left->CopyTree())
+//             delete left;
+//     }
+//     if (right)
+//     {
+//         if (!right->CoptyTree())
+//             delete right;
+//     }
+//     count--;
+//     return count;
+// }
+
+// BinStrTree::~BinStrTree() //释放整棵树
+// {
+//     if (!root->ReleaseTree())
+//     delete root;
+//     delete root;
+// }
+// TreeNode::~TreeNode()
+// {
+//     //count 为0表示资源已经被释放，是delete触发的析构函数，设么也不做
+//     if(count)
+//     ReleaseTree();
+// }
+
+// //p12 modern
+// #include <iostream>
+// #include <type_traits>
+
+// void foo(char *);
+// void foo(int);
+
+// int main()
+// {
+//     if (std::is_same<decltype(NULL), decltype(0)>::value)
+//         std::cout << "NULL==0" << std::endl;
+//     if (std::is_same<decltype(NULL), decltype((void *)0)>::value)
+//         std::cout << "NULL==(void*)0" << std::endl;
+//     if (std::is_same<decltype(NULL), std::nullptr_t>::value)
+//         std::cout << "NULL==NULLPTR" << std::endl;
+//     foo(0);
+//     foo(nullptr);
+//     return 0;
+// }
+
+// void foo(char *)
+// {
+//     std::cout << "foo(char*) is called" << std::endl;
+// }
+// void foo(int i)
+// {
+//     std::cout<<"foo(int) is called"<<std::endl;
+// }
+
+// //p15 modern
+// #include <iostream>
+// #include <vector>
+// #include <algorithm>
+// int main()
+// {
+//     std::vector<int> vec = {1, 2, 3, 4};
+
+//     //在c++17之前
+//     const std::vector<int>::iterator itr = std::find(vec.begin(), vec.end(), 2);//itr是const的，所以下面如果再定义会重复定义
+//     if (itr != vec.end())
+//     {
+//         *itr = 3;
+//     }
+
+//     // //需要重新定义一个新的变量
+//     // const std::vector<int>::iterator itr1 = std::find(vec.begin(), vec.end(), 3);//
+//     // if (itr1 != vec.end())
+//     // {
+//     //     *itr1 = 4;
+//     // }
+
+//     //c++17可以
+//     if(const std::vector<int>::iterator itr=std::find(vec.begin(),vec.end(),3);itr != vec.end())
+//     {
+//         *itr=4;
+//     }
+//     //将输出1，4,3,4(因为find返回第一个值等于查找值的迭代器)
+//     for (std::vector<int>::iterator element = vec.begin(); element != vec.end(); ++element)
+//         std::cout << *element << std::endl;
+   
+//     return 0;
+// }
+
+// //p17 modern
+// #include<iostream>
+// #include<tuple>
+// std::tuple<int ,double,std::string>f(){
+//     return std::make_tuple(1,2.3,"456");
+// }
+// int main()
+// {
+//     auto [x,y,z]=f();
+//     std::cout<<x<<", "<<y<<", "<<z<<std::endl;
+//     return 0;
+// }
+
+// //p24 modern
+// template<typename T,typename U>
+// class MagicType{
+//     public:
+//     T dark;
+//     U magic;
+// };
+// //不合法
+// // template<typename T>
+// // typedef MagicType<std::vector<T>,std::string> FakeDarkMagic;
+// typedef int (*process)(void *);
+// using NewProcess=int(*)(void *);
+// template<typename T>
+// using TrueDarkMagic=MagicType<std::vector<T>,std::string>;
+
+// int main()
+// {
+//     TrueDarkMagic<bool> you;
+// }
+
