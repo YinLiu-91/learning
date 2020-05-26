@@ -3845,7 +3845,7 @@ int main()
 
 // //p 453类值版本的HasPtr，行为像值的类
 // #include <string>
-// #include<iostream>
+// #include <iostream>
 // using namespace std;
 // class HasPtr
 // {
@@ -3855,6 +3855,7 @@ int main()
 //     HasPtr(const HasPtr &p) : ps(new std::string(*p.ps)), i(p.i) {}
 //     HasPtr &operator=(const HasPtr &);
 //     ~HasPtr() { delete ps; }
+//     friend void swap(HasPtr &lhs, HasPtr &rhs);
 
 // private:
 //     std::string *ps;
@@ -3867,6 +3868,12 @@ int main()
 //     ps = newp;                       // 从右侧运算对象拷贝数据到本对象
 //     i = rhs.i;
 //     return *this; //返回本对象
+// }
+// inline void swap(HasPtr &lhs, HasPtr &rhs)
+// {
+//     using std::swap;
+//     swap(lhs.ps, rhs.ps);
+//     swap(lhs.i, rhs.i);
 // }
 
 // //p455 行为像指针的类
@@ -3937,11 +3944,15 @@ int main()
 //     StrVec &operator=(const StrVec &);   //拷贝赋值运算符
 //     ~StrVec();                           //析构函数
 //     void push_back(const std::string &); //拷贝元素
-//     void push_back(std::string &&);//移动元素
+//     void push_back(std::string &&);      //移动元素
 //     size_t size() const { return first_free - elements; }
+//     void reserve(size_t &);
 //     size_t capacity() const { return cap - elements; }
 //     std::string *begin() const { return elements; }
 //     std::string *end() const { return first_free; }
+//     size_t capacity() const { return cap - elements; }
+//     void resize(size_t &newsize);
+//     void reserve(size_t &n);
 //     //下标运算符p501
 //     std::string &operator[](size_t n)
 //     {
@@ -3971,13 +3982,13 @@ int main()
 // {
 //     chk_n_alloc(); //确保有空间容纳元素
 //     //在first_free指向的元素中构造s的副本
-//     alloc.construct(f irst_free++, s);
+//     alloc.construct(first_free++, s);
 // }
 
 // void StrVec::push_back(string &&s)
 // {
-//     chk_n_alloc();//如果需要的话为StrVec重新分配内存
-//     alloc.construct(first_free++,std::move(s));
+//     chk_n_alloc(); //如果需要的话为StrVec重新分配内存
+//     alloc.construct(first_free++, std::move(s));
 // }
 // pair<string *, string *>
 // StrVec::alloc_n_copy(const string *b, const string *e)
@@ -4073,6 +4084,53 @@ int main()
 //         rhs.elements = rhs.first_free = rhs.cap = nullptr;
 //     }
 //     return *this;
+// }
+// void StrVec::reallocate()
+// {
+//     //我们将分配前代销两倍的的内存空间
+//     auto newcapacity = size() ? 2 * size() : 1;
+//     //分配新内存
+//     auto newdata = alloc.allocate(newcapacity);
+//     //将数据从旧内存移动到新内存
+//     auto dest = newdata;  //指向新数组中下一个空闲位置
+//     auto elem = elements; //指向旧数组中下一个元素
+//     for (size_t i = 0; i != size(); ++i)
+//         alloc.construct(dest++, std::move(*elem++));
+//     free(); //一旦我们移动完元素就释放旧内存空间
+//     //更新数据结构，执行新元素
+//     elements = newdata;
+//     first_free = dest;
+//     cap = elements + newcapacity;
+// }
+// void StrVec::reserve(size_t &size)
+// {
+//     //不赞同答案写的那样
+//     if (size > capacity())
+//         alloc.allocate(size);
+// }
+// void StrVec::resize(size_t &newsize)
+// {
+//     if (capacity() > newsize)
+//     {
+//         //首先类似于reallocate
+//         auto newcap = alloc.allocate(newsize);
+//         //将数据从旧的迁移到新的
+//         auto dest = newcap;
+//         auto elem = elements;
+//         for (size_t i = 0; i != size(); ++i)
+//             alloc.construct(dest++, std::move(*elem++));
+//         free(); //释放旧内存
+//         //构造剩余的
+//         auto p = first_free;
+//         for (size_t i = size(); i != capacity(); ++i)
+//             alloc.construct(p++, string(""));
+//         elements = newcap;
+//         first_free = dest;
+//         cap = elements + newsize;
+//     }
+//     else
+//     {
+//     }
 // }
 
 // //p 494 输出运算符
@@ -4498,17 +4556,45 @@ int main()
 // class Folder
 // {
 //     friend class Message;
+//     set<Message *> msgs;
+
 // public:
 //     void addMsg(Message &);
 //     void remMsg(Message &);
+//     void insert(Message *);
+//     void remove_from_Msgs();
+
+//     void add_to_Messages(const Folder &f);
+//     Folder& operator=(const Folder&f);
+//     Folder(const Folder &f) : msgs(f.msgs)
+//     {
+//         add_to_Messages(f);//将folder添加到它所有message的folders中去
+//     }
+//     ~Folder(){remove_from_Msgs();}
 // };
-// void Message::addMsg(Message & m)
+// void Folder::add_to_Messages(const Folder &f)
 // {
-
+//     for (auto msg : f.msgs)
+//         msg->addFldr(this);
 // }
-// void Message::remMsg(Message & m)
+// void Folder::remMsg(Message &m)
 // {
-
+//     msgs.erase(m);
+// }
+// // void Folder::insert(Message *m)
+// // {
+// //     me.insert(m);
+// // }
+// void Folder::remove_from_Msgs()
+// {
+//     while (!msgs.empty())
+//         (*msgs.begin())->remove(*this); //将这个folder从它所有message中删除
+// }
+// Folder& Folder::operator=(const Folder &f){
+//     remove_from_Msgs();//从每个message中删除此folder
+//     msgs=f.msgs;//从右侧运算对象拷贝message集合
+//     add_to_Messages(f);//将此folder添加到每个新message中去
+//     return *this;
 // }
 
 // class Message
@@ -4516,7 +4602,6 @@ int main()
 //     friend class Folder;
 
 // public:
-
 //     //folders 被银式初始化为空集合
 //     explicit Message(const std::string &str = "") : contents(str) {}
 //     //拷贝控制成员，用来管理指向本Message的指针
@@ -4526,10 +4611,11 @@ int main()
 //     //从给定folder中添加删除文本
 //     void save(Folder &);
 //     void remove(Folder &);
+//     void addFldr(Folder *f) { folders.insert(f); }
 
 // private:
-//     std::string contents;       //实际消息文本
-//     std::set<Folder *> folders; //包含本Message的Folder
+//     string contents;       //实际消息文本
+//     set<Folder *> folders; //包含本Message的Folder
 //     //拷贝构造函数、拷贝赋值运算符和析构函数所使用的的工具函数
 //     //将本Message添加到指向参数的Folder中去
 //     void add_to_Folders(const Message &);
@@ -4561,10 +4647,10 @@ int main()
 // }
 // //message 的析构函数
 // //从对应的Folder中删除本Message
-// void Message:: remove_from_Folders()
+// void Message::remove_from_Folders()
 // {
-//     for(auto f:folders)//针对folders中每个指针
-//     f->remMsg(this);//从该Folder中删除本Message
+//     for (auto f : folders) //针对folders中每个指针
+//         f->remMsg(this);   //从该Folder中删除本Message
 // }
 // //析构函数
 // Message::~Message()
@@ -4572,32 +4658,32 @@ int main()
 //     remove_from_Folders();
 // }
 
-// Message& Message::operator=(const Message &rhs)
+// Message &Message::operator=(const Message &rhs)
 // {
 //     //通过先删除指针再插入他们来处理自赋值情况
-//     remove_from_Folders();//更新已有folder
-//     contents=rhs.contents;
-//     folders=rhs.folders;
+//     remove_from_Folders(); //更新已有folder
+//     contents = rhs.contents;
+//     folders = rhs.folders;
 //     add_to_Folders(rhs);
 //     return *this;
 // }
 
-// void swap(Message &lhs,Message &rhs)
+// void swap(Message &lhs, Message &rhs)
 // {
-//     using std::swap;//在本例中严格来说不需要，但这是一个好习惯
+//     using std::swap; //在本例中严格来说不需要，但这是一个好习惯
 //     //将每个消息的指针从它（原来）所在的Folder中删除
-//     for(auto f:lhs.folders)
-//     f->remMsg(&lhs);
-//     for(auto f:rhs.folders)
-//     f->remMsg(&rhs);
+//     for (auto f : lhs.folders)
+//         f->remMsg(&lhs);
+//     for (auto f : rhs.folders)
+//         f->remMsg(&rhs);
 //     //交换contens和folder指针set
-//     swap(lhs.folders,rhs.folders);//使用swap(set&,set&)
-//     swap(lhs.contents,rhs.contens);//swap(string&,string&)
+//     swap(lhs.folders, rhs.folders);  //使用swap(set&,set&)
+//     swap(lhs.contents, rhs.contens); //swap(string&,string&)
 //     //将每个Message的指针添加到它的（新）Folder中
-//     for(auto f:lhs.folders)
-//     f->addMsg(&lhs);
-//     for(auto f:rhs.folders)
-//     f->addMsg(&rhs);
+//     for (auto f : lhs.folders)
+//         f->addMsg(&lhs);
+//     for (auto f : rhs.folders)
+//         f->addMsg(&rhs);
 // }
 
 // //p 77 2020.05.12
@@ -6687,7 +6773,7 @@ int main()
 //     //将输出1，4,3,4(因为find返回第一个值等于查找值的迭代器)
 //     for (std::vector<int>::iterator element = vec.begin(); element != vec.end(); ++element)
 //         std::cout << *element << std::endl;
-   
+
 //     return 0;
 // }
 
@@ -6724,3 +6810,80 @@ int main()
 //     TrueDarkMagic<bool> you;
 // }
 
+// //p2020.05.25 开始今日学习
+// //p460 13.31
+// #include <iostream>
+// #include <string>
+// #include <vector>
+// #include <algorithm>
+// using std::cout;
+// using std::endl;
+// using std::string;
+// using std::to_string;
+// using std::vector;
+
+// class HasPtr
+// {
+//     friend void swap(HasPtr &lhs, HasPtr &rhs);
+
+// public:
+//     HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+//     HasPtr(const HasPtr &p) : ps(new string(*p.ps)), i(p.i) {}
+//     HasPtr &operator=(const HasPtr &);
+//     HasPtr &operator=(const string &);
+//     string &operator*();
+//     bool operator<(const HasPtr &) const;
+//     ~HasPtr();
+
+// private:
+//     string *ps;
+//     int i;
+// };
+// HasPtr::~HasPtr()
+// {
+//     delete ps;
+// }
+// inline HasPtr &HasPtr::operator=(const HasPtr &rhs)
+// {
+//     auto newps = new string(*rhs.ps);
+//     delete ps;
+//     ps = newps;
+//     i = rhs.i;
+//     return *this;
+// }
+// HasPtr &HasPtr::operator=(const string &rhs)
+// {
+//     *ps = rhs;
+//     return *this;
+// }
+// string &HasPtr::operator*()
+// {
+//     return *ps;
+// }
+// inline void swap(HasPtr &lhs, HasPtr &rhs)
+// {
+//     using std::swap;
+//     cout << "交换" << *lhs.ps << "和" << *rhs.ps << endl;
+//     swap(lhs.ps, rhs.ps);
+//     swap(lhs.i, rhs.i);
+// }
+// bool HasPtr::operator<(const HasPtr &rhs) const
+// {
+//     return *ps < *rhs.ps;
+// }
+// int main()
+// {
+//     vector<HasPtr> vh;
+//     int n = atoi(argv[1]);
+
+//     for (int i = 0; i < n; ++i)
+//         vh.push_back(to_string(n - i));
+//     for (auto p : vh)
+//         cout << *p << " ";
+//     cout << endl;
+//     sor(vh.begin(), vh.end());
+//     for (auto p : vh)
+//         cout << *p << " ";
+//     cout << endl;
+//     return 0;
+// }
