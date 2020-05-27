@@ -2950,51 +2950,72 @@
 //}
 
 // //p405
-// #include<vector>
-// #include<string>
-// #include<memory>
+// #include <vector>
+// #include <string>
+// #include <memory>
 // using namespace std;
 // class StrBlob
 // {
+//     friend bool operator==(const StrBlob &lhs, const StrBlob &rhs);
+//     friend bool operator!=(const StrBlob &lhs, const StrBlob &rhs);
+//     //需要比较指针所指的v'e'co't'r的大小即可
+//     friend bool operator<(const StrBlob &lhs, const StrBlob &rhs);
+//     friend bool operator<=(const StrBlob &lhs, const StrBlob &rhs);
+//     friend bool operator>(const StrBlob &lhs, const StrBlob &rhs);
+//     friend bool operator>=(const StrBlob &lhs, const StrBlob &rhs);
+
 // public:
-// 	typedef std::vector<std::string > ::size_type size_type;
-// 	StrBlob();
-// 	StrBlob(std::initializer_list < std::string> il);
-// 	size_type size()const { return data->size(); }
-// 	bool empty() const { return data->empty(); }
-// 	//添加删除元素
-// 	void push_back(const std::string &t) { data->push_back(t); }
-// 	void pop_back();
-// 	//元素访问
-// 	std::string& front();
-// 	std::string& back();
+//     typedef std::vector<std::string>::size_type size_type;
+//     StrBlob();
+//     StrBlob(std::initializer_list<std::string> il);
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加删除元素
+//     void push_back(const std::string &t) { data->push_back(t); }
+//     void pop_back();
+
+//     //元素访问
+//     std::string &front();
+//     std::string &back();
+
 // private:
-// 	std::shared_ptr<std::vector<std::string>>data;
-// 	void check(size_type i, const std::string &msg)const;
-
+//     std::shared_ptr<std::vector<std::string>> data;
+//     void check(size_type i, const std::string &msg) const;
 // };
-// StrBlob::StrBlob() :data(make_shared<vector<string>>) {}
+// StrBlob::StrBlob() : data(make_shared<vector<string>>) {}
 // StrBlob::StrBlob(initializer_list<string> il) : data(make_shared<vector<string>>(il)) {}
-// void StrBlob::check(size_type i, const string &msg)const
+// void StrBlob::check(size_type i, const string &msg) const
 // {
-// 	if (i >= data->size())
-// 		throw out_of_range(msg);
+//     if (i >= data->size())
+//         throw out_of_range(msg);
 // }
-// string& StrBlob:: front()
+// string &StrBlob::front()
 // {
-// 	//如果vector为空，check会抛出一个异常
-// 	check(0, "front on empty StrBlob");
-
+//     //如果vector为空，check会抛出一个异常
+//     check(0, "front on empty StrBlob");
 // }
-// string& StrBlob::back()
+// string &StrBlob::back()
 // {
-// 	check(0, "back on empty StrBlob");
-// 	return data->back();
+//     check(0, "back on empty StrBlob");
+//     return data->back();
 // }
 // void StrBlob::pop_back()
 // {
-// 	check(0, "pop_back on empty StrBlob");
-// 	data->pop_back();
+//     check(0, "pop_back on empty StrBlob");
+//     data->pop_back();
+// }
+// bool operator==(const StrBlob &lhs, const StrBlob &rhs)
+// {
+//     return lhs.data == rhs.data; //不应当加*
+// }
+// bool operator!=(const StrBlob &lhs, const StrBlob &rhs)
+// {
+//     return !(lhs == rhs);
+// }
+// bool operator<(const StrBlob &lhs, const StrBlob &rhs)
+// {
+//     //比较每一个指针所指向的值的大小？？还是本身不适合有小于？
+//     return *lhs.data<*rhs.data;
 // }
 
 // //对于访问一个不存在元素的尝试，StrBlobPtr会抛出一个异常
@@ -3002,6 +3023,9 @@
 // using namespace std;
 // class StrBlobPtr
 // {
+//     friend bool operator==(const StrBlobPtr &lhs, const StrBlobPtr &rhs);
+//     friend bool operator!=(const StrBlobPtr &lhs, const StrBlobPtr &rhs);
+
 // public:
 //     StrBlobPtr(StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
 //     std::string &deref() const;
@@ -3018,11 +3042,11 @@
 //         auto p = check(curr, "dereference past end");
 //         return (*p)[curr]; //(*p)是对象所指的vector
 //     }
-//     string* operator->()const
-//     {//将实际工作委托给解引用运算符号
-//     return & this->operator*();
-
+//     string *operator->() const
+//     { //将实际工作委托给解引用运算符号
+//         return &this->operator*();
 //     }
+    
 
 // private:
 //     //若检查成功，check返回一个纸箱vector的shared_ptr
@@ -3065,7 +3089,16 @@
 //     --*this;
 //     return ret;
 // }
-//多为数组的建立与释放
+// bool operator==(const StrBlobPtr &lhs, const StrBlobPtr &rhs)
+// {
+//     auto l = lhs.wptr.lock(), r = rhs.wptr.lock();
+//     //两个指针都为空，或指向相同的vector且curr指向相同元素时，相等，否则，不等
+//     if (l == r)
+//         return (!r || lhs.curr == rhs.curr);
+//     else
+//         return false;
+// }
+// //多为数组的建立与释放
 
 //#ifdef VCZH_CHECK_MEMORY_LEAKS
 //#define _CRTDBG_MAP_ALLOC
@@ -3534,7 +3567,7 @@ int main()
 //         item = Sales_data(); //输入失败，对象被赋予默认的状态
 //     return is;
 // }
-// Sales_data operator+
+// Sales_data operator+(const Sales_data &lhs,const Sales_data &rhs)
 // { // 用友元的是 必须的，因为返回的值与左边对象无关，是一个新值
 //     Sales_data sum = lhs;
 //     sum += rhs;
@@ -3550,7 +3583,7 @@ int main()
 // //定义不等 p497
 // bool operator!=(const Sales_data &lhs, const Sales_data &rhs)
 // {
-//     return !(lhs = rhs);
+//     return !(lhs == rhs);
 // }
 // //+=
 // Sales_data &Sales_data::operator+=(const Sales_data &rhs)
@@ -3934,6 +3967,9 @@ int main()
 // using namespace std;
 // class StrVec
 // {
+//     friend bool operator==(const StrVec &lhs, const StrVec &rhs);
+//     friend bool operator!=(const StrVec &lhs, const StrVec &rhs);
+
 // public:
 //     StrVec() : //allocator 成员进行默认初始化
 //                elements(nullptr), first_free(nullptr), cap(nullptr)
@@ -4131,6 +4167,21 @@ int main()
 //     else
 //     {
 //     }
+// }
+// bool operator==(const StrVec &lhs, const StrVec &rhs)
+// {
+//     if (lhs.size() != rhs.size())
+//         return false;
+//     for (auto itr1 = lhs.begin(), itr2 = rhs.begin(); itr1 != lhs.end() && itr2 != rhs.end; it1++, it2++)
+//     {
+//         if (*it1 != *itr2)
+//             return false;
+//     }
+//     return true;
+// }
+// bool operator!=(const StrVec &lhs, const StrVec &rhs)
+// {
+//     return !(lhs == rhs);
 // }
 
 // //p 494 输出运算符
@@ -6888,5 +6939,36 @@ int main()
 //     return 0;
 // }
 
-//2020.05.26 
+// //2020.05.26 2020.05.27
+// //p495 14.7
+// #include <iostream>
+// #include <string>
+//     using namespace std;
+// class String
+// {
+//     friend bool operator==(const String &lhs, const String &rhs);
+//     friend bool operator!=(const String &lhs, const String &rhs);
 
+// public:
+//     String();
+//     String(const char *str);
+//     friend ostream &operator<<(ostream &os, const char *str);
+
+// private:
+//     char *str;
+// };
+// ostream &operator<<(ostream &os, const char *str)
+// {
+//     cout << str;
+//     return os;
+// }
+// bool operator==(const String &lhs, const String &rhs)
+// {
+//     return lhs.str == rhs.str;
+// }
+// bool operator!=(const String &lhs, const String &lhs)
+// {
+//     return !(lhs == rhs);
+// }
+
+//14.9
