@@ -3046,7 +3046,6 @@
 //     { //将实际工作委托给解引用运算符号
 //         return &this->operator*();
 //     }
-    
 
 // private:
 //     //若检查成功，check返回一个纸箱vector的shared_ptr
@@ -5811,31 +5810,36 @@ int main()
 //     //元素访问
 //     std::string &front();
 //     std::string &back();
-
-// private:
-//     std::shared_ptr<std::vector<std::string>> data;
+//     string &operator[](size_t n)
+//     {
+//         return data[n];
+//     }
+//     private : std::shared_ptr<std::vector<std::string>> data;
 //     //如果data[i]不合法，抛出一个异常
 //     void check（size_type i,const std::string &msg) const;
 // };
 
-// StrBlob::StrBlob():data(make_shared<vector<string>>()){}
-// StrBlob::StrBlob(initializer_list<string>i1):data(make_shared<vector<string>>(i1)){}
-// void StrBlob::check(size_type i,const string &msg)const{
-//     if(i>=data->size())
-//     throw out_of_range(msg);
+// StrBlob::StrBlob() : data(make_shared<vector<string>>()) {}
+// StrBlob::StrBlob(initializer_list<string> i1) : data(make_shared<vector<string>>(i1)) {}
+// void StrBlob::check(size_type i, const string &msg) const
+// {
+//     if (i >= data->size())
+//         throw out_of_range(msg);
 // }
-// string& StrBlob::front(){
+// string &StrBlob::front()
+// {
 //     //若果vector为空，check会抛出一个异常
-//     check(0,"ront on empty strblob");
+//     check(0, "ront on empty strblob");
 //     return data->front();
 // }
 // string &StrBlob::back()
 // {
-//     check(0,"back on empty strblob");
+//     check(0, "back on empty strblob");
 //     return data->back();
 // }
-// void StrBlob::pop_back(){
-//     check(0,"pop_back on empty strblob");
+// void StrBlob::pop_back()
+// {
+//     check(0, "pop_back on empty strblob");
 //     data->pop_back();
 // }
 
@@ -5848,11 +5852,10 @@ int main()
 // class StrBlobPtr
 // {
 // public:
-//     StrBlobPtr() : curr(0){}
-//     StrBlobPtr(StrBlob&a,size_t sz=0):
-//     wptr(a.data),curr(sz){}
-//     std::string& deref()const;
-//     StrBlobPtr & incr();//前缀递增
+//     StrBlobPtr() : curr(0) {}
+//     StrBlobPtr(StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
+//     std::string &deref() const;
+//     StrBlobPtr &incr(); //前缀递增
 
 // private:
 //     //若检查成功，check返回一个指向vector的shared_ptr
@@ -6603,25 +6606,68 @@ int main()
 // }
 
 // //当试图访问一个不存在的元素时，strblobptr抛出一个异常
-// class StrBlobPtr{
-// friend bool eq(const StrBlobPtr& ,const StrBlobPtr &);
-// public:
-// StrBlobPtr():curr(0){}
-// StrBlobPtr(StrBlob &a,size_t sz=0):wptr(a.data),curr(sz){}
+// class StrBlobPtr
+// {
+//     friend bool eq(const StrBlobPtr &, const StrBlobPtr &);
 
-// string &deref()const;
-// string &deref(int off)const ;
-// StrBlobPtr &incr();//前缀递增
-// StrBlobPtr &decr();//后缀递减
+// public:
+//     StrBlobPtr() : curr(0) {}
+//     StrBlobPtr(StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
+//     StrBlobPtr &operator++();
+//     StrBlobPtr &operator--();
+//     StrBlobPtr &operator++(int);
+//     StrBlobPtr &operator--(int);
+//     string &deref() const;
+//     string &deref(int off) const;
+//     StrBlobPtr &incr(); //前缀递增
+//     StrBlobPtr &decr(); //后缀递减
+//     StrBlobPtr &operator*() const;
+//     {
+//         auto p = check(curr, "dereference of past end");
+//         return (*p)[curr];
+//     }
+//     StrBlobPtr *operator->() const
+//     {
+//         //将实际工作委托给解引用运算符
+//         return &this->operator*();
+//     }
 
 // private:
-// //若检查成功，check放回一个指向vecotr的shared_ptr
-// shared_ptr<vector<string>>check(size_t,const string &)const ;
-// //保存一个weak_ptr，意味着底层vector可能会被销毁
-// weak_ptr<vector<string>> wptr;
-// size_t curr;//数组中的当前位置
-// };//待续
-
+//     //若检查成功，check放回一个指向vecotr的shared_ptr
+//     shared_ptr<vector<string>> check(size_t, const string &) const;
+//     //保存一个weak_ptr，意味着底层vector可能会被销毁
+//     weak_ptr<vector<string>> wptr;
+//     size_t curr; //数组中的当前位置
+// };               //待续
+// StrBlobPtr &StrBlobPtr::operator++()
+// {
+//     //如果curr已经指向了容器的尾后位置，则无法递增它
+//     check(curr, "increment past end of strblobptr");
+//     //
+//     ++curr;
+//     return *this;
+// }
+// StrBlobPtr &StrBlobPtr::operator--()
+// {
+//     //如果curr是0,则继续减它将产生一个无效下标
+//     //先递减后检查；
+//     --curr;
+//     check(curr, "decrement past begin of sr");
+//     return *this;
+// }
+// StrBlobPtr &StrBlobPtr::operator++(int)
+// {
+//     StrBlobPtr ret = *this; //记录当前值
+//     ++*this;                //向前移动一个元素，前置++需要检查递增的有效性
+//     return ret;
+// }
+// StrBlobPtr &StrBlobPtr::operator--(int)
+// {
+//     //无需检查有效性，调用前置递减运算时，才需要检查
+//     StrBlobPtr ret = *this;
+//     --*this;    //先后移动一个元素，前置--需要检查递减的有效性
+//     return ret; //返回之前记录的状态
+// }
 // //p456
 // #include <string>
 // using namespace std;
