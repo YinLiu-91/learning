@@ -7017,4 +7017,103 @@ int main()
 //     return !(lhs == rhs);
 // }
 
-//14.9
+// //14.9
+// //2020.05.28 p506
+// struct absInt
+// {
+//     int operator()(int val) const
+//     {
+//         return nval < 0 ? -val : val;
+//     }
+// };
+// int main(){
+//     int i=42;
+//     absInt abso;
+//     int ui=absObj(i);
+// }
+
+// #include <string>
+// #include <iostream>
+// using namespace std;
+// class PrintString
+// {
+// public:
+//     PrintString(ostream &o = cout, char c = ' ') : os(o), sep(c) {}
+//     void operator()(const string &s) const
+//     {
+//         os << s << sep;
+//     }
+
+// private:
+//     ostream &os;
+//     char sep;
+// };
+
+// struct ite
+// {
+//     ite(int i11=0,int i22=0,int i33=0 ):i1(i11),i2(i22),i3(i33){};
+//     int operator()(const int i1, const int i2, const int i3)
+//     {
+//         if (i1 > 0)
+//             return i2;
+//         else
+//             return i3;
+//     }
+//     int i1,i2,i3;
+// };
+// int manin()
+// {
+//     ite i1;
+//     auto i_val = i1(1, 2, 3);
+//     return 0;
+// }
+
+// class IfElseThen
+// {
+// public:
+//     IfElseThen() {}
+//     IfElseThen(int i1, int i2, int i3) : iVal1(i1), iVal2(i2), iVal3(i3) {}
+//     int operator()(int i1, int i2, int i3)
+//     {
+//         return i1 ? i2 : i3;
+//     }
+
+// private:
+//     int iVal1, iVal2, iVal3;
+// };
+// int main(){
+//     IfElseThen I1;
+//     auto i_v=I1(1,2,3);
+//     return 0;
+// }
+
+//p509
+//14.38
+#include <string>
+#include <iostream>
+#include <map>
+using namespace std;
+class strlen
+{
+public:
+   strlen() {}
+    strlen(const string &s, size_t n) : len(n), str(s) {}
+    bool operator()(const string &s, size_t n) { return s.size() == n; }
+
+private:
+    size_t len;
+    string str;
+};
+int main()
+{
+    strlen sl;
+    string str;
+    map<int, int> count;
+    while (cin >> str)
+    {
+        for (int i = 1; i <= 10; ++i)
+            if (sl(str, i) != 0)
+                ++count[i];
+    }
+    return 0;
+}
