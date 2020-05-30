@@ -7087,33 +7087,57 @@ int main()
 //     return 0;
 // }
 
-//p509
-//14.38
-#include <string>
-#include <iostream>
-#include <map>
-using namespace std;
-class strlen
-{
-public:
-   strlen() {}
-    strlen(const string &s, size_t n) : len(n), str(s) {}
-    bool operator()(const string &s, size_t n) { return s.size() == n; }
+// //p509
+// //14.38
+// #include <string>
+// #include <iostream>
+// #include <map>
+// using namespace std;
+// class strlen
+// {
+// public:
+//    strlen() {}
+//     strlen(const string &s, size_t n) : len(n), str(s) {}
+//     bool operator()(const string &s, size_t n) { return s.size() == n; }
 
-private:
-    size_t len;
-    string str;
-};
-int main()
-{
-    strlen sl;
-    string str;
-    map<int, int> count;
-    while (cin >> str)
-    {
-        for (int i = 1; i <= 10; ++i)
-            if (sl(str, i) != 0)
-                ++count[i];
-    }
+// private:
+//     size_t len;
+//     string str;
+// };
+// int main()
+// {
+//     strlen sl;
+//     string str;
+//     map<int, int> count;
+//     while (cin >> str)
+//     {
+//         for (int i = 1; i <= 10; ++i)
+//             if (sl(str, i) != 0)
+//                 ++count[i];
+//     }
+//     return 0;
+// }
+
+// //2020.05.29
+// #include<string>
+// class Quote{
+// public:
+// std::string isbn() const;
+// virtual double net_price(std::size_t n)const;
+// };
+// class Bulk_quote:public Quote{
+
+// };
+
+template<typename T>
+int compare(const T &t1,const T&t2){
+    if(t1<t2)
+    return -1;
+    if(t2<t1)
+    return 1;
+    return 0;
+}
+int main(){
+    auto a=compare(1,2);
     return 0;
 }
