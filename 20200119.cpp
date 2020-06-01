@@ -7129,15 +7129,375 @@ int main()
 
 // };
 
-template<typename T>
-int compare(const T &t1,const T&t2){
-    if(t1<t2)
-    return -1;
-    if(t2<t1)
-    return 1;
-    return 0;
+// //2020.05.30
+// template<typename T>
+// int compare(const T &t1,const T&t2){
+//     if(t1<t2)
+//     return -1;
+//     if(t2<t1)
+//     return 1;
+//     return 0;
+// }
+// int main(){
+//     auto a=compare(1,2);
+//     return 0;
+// }
+
+// template <typename T1, typename T2>
+// T1 find(T1 it, const T2 &to_find)
+// {
+//     if(*it==to_find);
+//     return ++it;
+//     else
+//     return
+
+// }
+
+// //p16.4
+// #include <string>
+// #include <vector>
+// #include <list>
+// #include <iostream>
+// using namespace std;
+// template<typename I, typename T>
+// I find(I b, I e, const T &v)
+// {
+//     while (b != e && *b != v)
+//     {
+//         b++;
+//     }
+//     return b;
+// }
+// int main()
+// {
+//     vector<int> ivec{1, 2, 3, 45};
+//     auto i_it = find(ivec.begin(), ivec.end(), 3);
+//     return 0;
+// }
+
+// //p16.5
+// #include<iostream>
+// #include<vector>
+// template<typename T>
+// void print(const T &t1)
+// {
+//     for(auto i:t1)
+//     std::cout<<i<<" ";
+// }
+// int main()
+// {
+//  std::vector<int>ivec{1,2,3,4,5};
+//  print(ivec);
+//  return 0;
+// }// 不能使用此类型的东西假如不是这样的呢
+
+// //16.5  ***
+// #include<iostream>
+// #include<string>
+// using namespace std;
+
+// template<typename T,size_t N>
+// void print(const T(&a)[N])
+// {
+//     //begin,end将普通函数转为迭代器
+//     for(auto iter=begin(a);iter!=end(a);iter++)
+//     cout<<*iter<<" ";
+//     cout<<endl;
+// }
+// int main(){
+//     int a[3]={1,2,3};
+//     print(a);
+//     return 0;
+// }
+
+// //584
+// #include <vector>
+// #include <memory>
+// template <typename T>
+// class Blob
+// {
+// public:
+//     typedef T value_type;
+//     typedef typename std::vector<T> size_type size_type;
+//     //构造函数
+//     Blob();
+//     Blob(std::initializer_list<T> i1);
+//     //blob中的元素数目
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加和删除元素
+//     void push_back(const T &t) { data->push_back(t); }
+//     //移动版本
+//     void push_back(const T &&t) { data->push_back(std::move(t)); }
+//     void pop_back();
+
+//     //元素访问
+//     T &back();
+//     T &operator[](size_type i); //在14.5节
+
+// private:
+//     std::shared_ptr<std::vector<T>> data;
+//     //若data[i]无效，则抛出msg
+//     void check(size_type i, const std::string &msg) const;
+// };
+// template <typename T>
+// void Blob<T>::check(size_type i, const std::string &msg) const
+// {
+//     if (i >= data->size())
+//         throw std::out_of_range(msg);
+// }
+// template<typename T>
+// T& Blob<T>::back()
+// {
+// check(0,"back ont empty blob");
+// return data->back();
+// }
+// template<typename T>
+// T& Blob<T>::operator[](size_type i)
+// {
+//     //如果i太大，check会抛出异常，阻止访问一个 不存在的元素
+//     check(i,"subcript out of range");
+//     return (*data)[i];
+// }
+
+// template<typename T>
+// void Blob<T>::pop_back()
+// {
+//     check(0,"pop_back on empty blob");
+//     data->pop_back();
+// }
+
+// template<typename T>
+// Blob<T>::Blob():data(std::make_shared<std::vector<T>>()){}
+// template<typename T>
+// Blob<T>::Blob(std::initializer_list<T> i1):data(std::make_shared<std::vector<T>>(i1)){}
+
+// #include <string>
+// #include <iostream>
+// template <int H, int W>
+// class Screen
+// {
+// public:
+//     Screen() : contents(H * W, ' ') {}
+//     Screen(char c) : contents(H * W, c){}
+//     friend class Window_mgr;
+//     char get() const { return contents[cursor]; }
+//     inline char get(int, int) const;
+//     Screen &clear(char = bkground);
+
+// private:
+//     static const char bkground = ' ';
+
+// public:
+//     Screen &move(int r, int c);
+//     Screen &set(char);
+//     Screen &set(int, int, char);
+//     //重载display ：普通版本和const版本
+//     Screen &display(std::ostream &os)
+//     {
+//         do_display(os);
+//         return *this;
+//     }
+//     const Screen &display(std::ostream &os) const
+//     {
+//         do_display(os);
+//         return *this;
+//     }
+
+// private:
+//     //实际完成显示的函数
+//     void do_display(std::ostream &os) const { os << contents; }
+//     int cursor = 0;
+//     std::string contents;
+// };
+// template<int H,int W>
+// Screen<H,W>&Screen<H,W>::clear(char c)
+// {
+//     contents = std::string(H * W, c);
+//     return *this;
+// }
+
+// template <int H, int W>
+// inline Screen<H, W> &Screen<H, W>::move(int r, int c)
+// {
+//     int row = r * W;  //计算行位置
+//     cursor = row + c; //将光标移动到此行指定列
+//     return *this;      //返回当前对象（左值)
+// }
+// template<int H,int W>
+// char Screen<H,W>::get(int r,int c)const{
+//     int row=r*W;
+//     return contents[row+c];//将光标移动到此行指定lie
+// }
+// template<int H,int W>
+// inline Screen<H,W>&Screen<H,W>::set(char c)
+// {
+//     contents[cursor]=c;
+//     return *this;
+// }
+// template<int H,int W>
+// inline Screen<H,W> &Screen<H,W>::set(int r,int col,char ch)
+// {
+//     contents[r*W+col]=ch;
+//     return *this;
+// }
+
+// #include<iostream>
+// using std::cout;
+// using std::endl;
+// #include<string>
+// using std::string;
+// //#include"tScreen.h"
+// int main(){
+//     Screen<5,3> myScreen;
+//     myScreen.display(cout);
+//     //将光标移动到特定位置，并设置其内容
+//     myScreen.move(4,0).set('#');
+
+//     Screen<5,5>nextScreen('X');
+//     nextScreen.move(4,0).set('#').display(cout);
+//     cout<<"\n";
+//     nextScreen.display(cout);
+//     cout<<endl;
+
+//     const Screen<5,3>blank;
+//     myScreen.set('#').display(cout);
+//     cout<<endl;
+//     blank.display(cout);
+//     cout<<endl;
+
+//     myScreen.clear('2').display(cout);cout<<endl;
+//     myScreen.move(4,0);
+//     myScreen.set('#');
+//     myScreen.display(cout);cout<<endl;
+//     myScreen.clear('Z').display(cout);cout<<endl;
+
+//     //由于temp是sceen<5,3>而非screen<5,3>
+//     Screen<5,3>temp=myScreen.move(4,0);
+//     temp.set('#');
+//     myScreen.display(cout);
+//     cout<<endl;
+//     return 0;
+// }
+
+// //p16.19
+// #include<vector>
+// #include<iostream>
+// using namespace std;
+// template<typename T>
+// void print(T &t)
+// {
+//     // for(auto i:t)
+//     // std::cout<<i<<" ";
+//     typedef typename  T::size_type size_type;
+//     for(size_type i=0;i!=t.size();++i)
+//     std::cout<<t[i]<<" ";
+//     for(auto it=t.begin();it!=t.end();++it)
+//     std::cout<<*it<<" ";
+// }
+// int main(){
+//     vector<int> ivec={1,2,34};
+//     print(ivec);
+//     return 0;
+// }
+
+// //p613
+// template<typename F,typename T1,typename T2>
+// vpod flip2(F f,T1 && t1,T2 && t2)
+// {
+//     f(t2,t1);
+// }
+
+// //p614  16.47
+// #include <utility>
+// #include <iostream>
+// using std::cout;
+// using std::endl;
+// //模板接受一个可调用对象和两个参数，将两个参数翻转后用来调用给定的可调用对象
+// template <typename F, typename T1, typename T2>
+// void flip(F f, T1 &&t1, T2 &&t2)
+// {
+//     f(std::forward<T2>(t2), std::forward<T1>(t1));
+// }
+
+// void f(int v1, int &v2) //注意，v2是一个引用
+// {
+//     cout << v1 << ++v2 << endl;
+// }
+// void g(int &&i, int &j)
+// {
+//     cout << i << " " << j << endl;
+// }
+// //flip1实现不完整：顶层const和引用都丢掉了
+// template <typename F, typename T1, typename T2>
+// void flip1(F f, T1 t1, T2 t2)
+// {
+//     f(t2, t1);
+// }
+// template <typename F, typename T1, typename T2>
+// void flip2(F f, T1 &&t1, T2 &&t2)
+// {
+//     f(t2, t1);
+// }
+// int main()
+// {
+//     int i = 0, j = 0, k = 0, l = 0;
+//     cout << i << " " << j << " " << k << " " << l << endl;
+//     f(42,i);
+//     flip1(f,j,42);
+//     flip2(f,k,42);
+//     g(1,i);
+//     flip(g,i,42);
+//     cout<<i<<" "<<j<<" "<<k<<" "<<l <<endl;
+//     return 0;
+// }
+
+// //p151 **e
+// #include <utility>
+// using namespace std;
+// template <typename T>
+// typename remove_reference<T>::type &&
+// move(T &&param)
+// {
+//     using ReturnType = typename remove_reference<T>::type &&;
+//     return static_cast<ReturnType>(param);
+//  }
+
+// #include<iterator>
+// using namespace std;
+// int main(){
+//     int a[3][3];
+//     auto as1= sizeof(a);
+//     auto as2=sizeof(*a[0]);
+//     fill(begin(a[2]),end(a[2]),1);
+//     //sizeof(a)/sizeof(*a);
+//     return 0;
+// }
+
+#include <functional>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <utility>
+using namespace std::placeholders;
+using namespace std;
+ostream &print(ostream &os, const int &s, char c)
+{
+    return os << s << c;
 }
-int main(){
-    auto a=compare(1,2);
-    return 0;
+ostream &print1(const int &i) { return cout << i << ' '; }
+//[&os,c](const int &i)->ostream&{return os<<i<<c;}
+int main()
+{
+    vector<int> ivec{1, 2, 3, 4, 5, 6, 7};
+    //os=cout;
+    char c = ' ';
+    // 三种定制操作的形式
+    // 形式1 bind形式，最灵活
+    for_each(ivec.begin(), ivec.end(), bind(print, ref(cout), _1, ' '));
+   // 形式2 lambda形式
+    for_each(ivec.begin(), ivec.end(), [c](const int &i) -> ostream & { return cout << i << c; });
+    // 形式3，最笨拙
+    for_each(ivec.begin(), ivec.end(),print1);
+     return 0;
 }
