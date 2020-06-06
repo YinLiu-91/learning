@@ -40,6 +40,9 @@ default_target: all
 .SUFFIXES: .hpux_make_needs_suffix_list
 
 
+# Command-line flag to silence nested $(MAKE).
+$(VERBOSE)MAKESILENT = -s
+
 # Suppress display of executed commands.
 $(VERBOSE).SILENT:
 
@@ -55,19 +58,19 @@ cmake_force:
 SHELL = cmd.exe
 
 # The CMake executable.
-CMAKE_COMMAND = D:\cmake-3.17.0-rc3-win64-x64\bin\cmake.exe
+CMAKE_COMMAND = "H:\Program Files\cmake-3.17.1-win64-x64\bin\cmake.exe"
 
 # The command to remove a file.
-RM = D:\cmake-3.17.0-rc3-win64-x64\bin\cmake.exe -E rm -f
+RM = "H:\Program Files\cmake-3.17.1-win64-x64\bin\cmake.exe" -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = G:\course\c-plus\20200119-1
+CMAKE_SOURCE_DIR = F:\personal\course\c-plus\20200119-1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = G:\course\c-plus\20200119-1\build
+CMAKE_BINARY_DIR = F:\personal\course\c-plus\20200119-1\build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -75,7 +78,7 @@ CMAKE_BINARY_DIR = G:\course\c-plus\20200119-1\build
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	D:\cmake-3.17.0-rc3-win64-x64\bin\cmake-gui.exe -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	"H:\Program Files\cmake-3.17.1-win64-x64\bin\cmake-gui.exe" -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -86,7 +89,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	D:\cmake-3.17.0-rc3-win64-x64\bin\cmake.exe --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	"H:\Program Files\cmake-3.17.1-win64-x64\bin\cmake.exe" --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -96,14 +99,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start G:\course\c-plus\20200119-1\build\CMakeFiles G:\course\c-plus\20200119-1\build\CMakeFiles\progress.marks
-	$(MAKE) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start G:\course\c-plus\20200119-1\build\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start F:\personal\course\c-plus\20200119-1\build\CMakeFiles F:\personal\course\c-plus\20200119-1\build\CMakeFiles\progress.marks
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start F:\personal\course\c-plus\20200119-1\build\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) -f CMakeFiles\Makefile2 clean
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 clean
 .PHONY : clean
 
 # The main clean target
@@ -113,12 +116,12 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) -f CMakeFiles\Makefile2 preinstall
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) -f CMakeFiles\Makefile2 preinstall
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 preinstall
 .PHONY : preinstall/fast
 
 # clear depends
@@ -131,12 +134,12 @@ depend:
 
 # Build rule for target.
 20200119: cmake_check_build_system
-	$(MAKE) -f CMakeFiles\Makefile2 20200119
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 20200119
 .PHONY : 20200119
 
 # fast build rule for target.
 20200119/fast:
-	$(MAKE) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/build
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/build
 .PHONY : 20200119/fast
 
 20200119.obj: 20200119.cpp.obj
@@ -145,7 +148,7 @@ depend:
 
 # target to build an object file
 20200119.cpp.obj:
-	$(MAKE) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/20200119.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/20200119.cpp.obj
 .PHONY : 20200119.cpp.obj
 
 20200119.i: 20200119.cpp.i
@@ -154,7 +157,7 @@ depend:
 
 # target to preprocess a source file
 20200119.cpp.i:
-	$(MAKE) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/20200119.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/20200119.cpp.i
 .PHONY : 20200119.cpp.i
 
 20200119.s: 20200119.cpp.s
@@ -163,7 +166,7 @@ depend:
 
 # target to generate assembly for a file
 20200119.cpp.s:
-	$(MAKE) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/20200119.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/20200119.cpp.s
 .PHONY : 20200119.cpp.s
 
 # Help Target

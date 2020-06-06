@@ -36,6 +36,9 @@ default_target: all
 .SUFFIXES: .hpux_make_needs_suffix_list
 
 
+# Command-line flag to silence nested $(MAKE).
+$(VERBOSE)MAKESILENT = -s
+
 # Suppress display of executed commands.
 $(VERBOSE).SILENT:
 
@@ -51,19 +54,19 @@ cmake_force:
 SHELL = cmd.exe
 
 # The CMake executable.
-CMAKE_COMMAND = D:\cmake-3.17.0-rc3-win64-x64\bin\cmake.exe
+CMAKE_COMMAND = "H:\Program Files\cmake-3.17.1-win64-x64\bin\cmake.exe"
 
 # The command to remove a file.
-RM = D:\cmake-3.17.0-rc3-win64-x64\bin\cmake.exe -E rm -f
+RM = "H:\Program Files\cmake-3.17.1-win64-x64\bin\cmake.exe" -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = G:\course\c-plus\20200119-1
+CMAKE_SOURCE_DIR = F:\personal\course\c-plus\20200119-1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = G:\course\c-plus\20200119-1\build
+CMAKE_BINARY_DIR = F:\personal\course\c-plus\20200119-1\build
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -88,16 +91,16 @@ clean: CMakeFiles/20200119.dir/clean
 
 # All Build rule for target.
 CMakeFiles/20200119.dir/all:
-	$(MAKE) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/depend
-	$(MAKE) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=G:\course\c-plus\20200119-1\build\CMakeFiles --progress-num=1,2 "Built target 20200119"
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=F:\personal\course\c-plus\20200119-1\build\CMakeFiles --progress-num=1,2 "Built target 20200119"
 .PHONY : CMakeFiles/20200119.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/20200119.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start G:\course\c-plus\20200119-1\build\CMakeFiles 2
-	$(MAKE) -f CMakeFiles\Makefile2 CMakeFiles/20200119.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start G:\course\c-plus\20200119-1\build\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start F:\personal\course\c-plus\20200119-1\build\CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/20200119.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start F:\personal\course\c-plus\20200119-1\build\CMakeFiles 0
 .PHONY : CMakeFiles/20200119.dir/rule
 
 # Convenience name for target.
@@ -107,7 +110,7 @@ CMakeFiles/20200119.dir/rule: cmake_check_build_system
 
 # clean rule for target.
 CMakeFiles/20200119.dir/clean:
-	$(MAKE) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/clean
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\20200119.dir\build.make CMakeFiles/20200119.dir/clean
 .PHONY : CMakeFiles/20200119.dir/clean
 
 #=============================================================================

@@ -7474,30 +7474,79 @@ int main()
 //     return 0;
 // }
 
-#include <functional>
-#include <vector>
+// #include <functional>
+// #include <vector>
+// #include <iostream>
+// #include <algorithm>
+// #include <utility>
+// using namespace std::placeholders;
+// using namespace std;
+// ostream &print(ostream &os, const int &s, char c)
+// {
+//     return os << s << c;
+// }
+// ostream &print1(const int &i) { return cout << i << ' '; }
+// //[&os,c](const int &i)->ostream&{return os<<i<<c;}
+// int main()
+// {
+//     vector<int> ivec{1, 2, 3, 4, 5, 6, 7};
+//     //os=cout;
+//     char c = ' ';
+//     // 三种定制操作的形式
+//     // 形式1 bind形式，最灵活
+//     for_each(ivec.begin(), ivec.end(), bind(print, ref(cout), _1, ' '));
+//    // 形式2 lambda形式
+//     for_each(ivec.begin(), ivec.end(), [c](const int &i) -> ostream & { return cout << i << c; });
+//     // 形式3，最笨拙
+//     for_each(ivec.begin(), ivec.end(),print1);
+//      return 0;
+// }
+
+// //p619
+// //16.51
+// #include <string>
+// using std ::string;
+// #include<iostream>
+// using std::cout;
+// using std::endl;
+// template <typename T, typename... Args>
+// void foo(const T &t, const Args &... rest){cout<<sizeof...(Args)<<endl;};
+// int main()
+// {
+//     int i = 0;
+//     double d = 3.14;
+//     string s = "how now brown cow";
+//     foo(i, s, 42, d); //包中有三个参数
+
+//     foo(s, 42, "hi"); //包中有两个参数
+//     foo(d, s);        //一个参数
+//     foo("hi");        //0个参数
+
+//     return 0;
+// }
+
 #include <iostream>
-#include <algorithm>
-#include <utility>
-using namespace std::placeholders;
+#include<string>
 using namespace std;
-ostream &print(ostream &os, const int &s, char c)
+
+template <typename T>
+ostream &print(ostream &os, const T &t)
 {
-    return os << s << c;
+    return os << t; //包中最后一个元素之后不打印分隔符
+
 }
-ostream &print1(const int &i) { return cout << i << ' '; }
-//[&os,c](const int &i)->ostream&{return os<<i<<c;}
-int main()
+//包中处理最后一个元素之外的其他元素都会调用这个版本的print
+template<typename T ,typename... Args>
+ostream  &print(ostream &os,const T&t,const Args&...rest)
 {
-    vector<int> ivec{1, 2, 3, 4, 5, 6, 7};
-    //os=cout;
-    char c = ' ';
-    // 三种定制操作的形式
-    // 形式1 bind形式，最灵活
-    for_each(ivec.begin(), ivec.end(), bind(print, ref(cout), _1, ' '));
-   // 形式2 lambda形式
-    for_each(ivec.begin(), ivec.end(), [c](const int &i) -> ostream & { return cout << i << c; });
-    // 形式3，最笨拙
-    for_each(ivec.begin(), ivec.end(),print1);
-     return 0;
+    os << t << ", ";           //打印第一个实参
+    return print(os, rest...); //...在后面，递归调用，打印其他实参
 }
+int main(){
+    int i=4;
+    string s="ss";
+    print(cout,i,s,42);
+    return 0;
+}
+
+//2020.06.06
