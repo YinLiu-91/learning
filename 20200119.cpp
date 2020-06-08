@@ -7525,28 +7525,121 @@ int main()
 //     return 0;
 // }
 
-#include <iostream>
-#include<string>
-using namespace std;
+// #include <iostream>
+// #include<string>
+// using namespace std;
 
-template <typename T>
-ostream &print(ostream &os, const T &t)
-{
-    return os << t; //包中最后一个元素之后不打印分隔符
+// template <typename T>
+// ostream &print(ostream &os, const T &t)
+// {
+//     return os << t; //包中最后一个元素之后不打印分隔符
 
-}
-//包中处理最后一个元素之外的其他元素都会调用这个版本的print
-template<typename T ,typename... Args>
-ostream  &print(ostream &os,const T&t,const Args&...rest)
-{
-    os << t << ", ";           //打印第一个实参
-    return print(os, rest...); //...在后面，递归调用，打印其他实参
-}
-int main(){
-    int i=4;
-    string s="ss";
-    print(cout,i,s,42);
-    return 0;
-}
+// }
+// //包中处理最后一个元素之外的其他元素都会调用这个版本的print
+// template<typename T ,typename... Args>
+// ostream  &print(ostream &os,const T&t,const Args&...rest)
+// {
+//     os << t << ", ";           //打印第一个实参
+//     return print(os, rest...); //...在后面，递归调用，打印其他实参
+// }
+// int main(){
+//     int i=4;
+//     string s="ss";
+//     print(cout,i,s,42);
+//     return 0;
+// }
 
 //2020.06.06
+//stl标准库中数值算法的学习
+#include <iostream>
+#include <algorithm>
+#include <numeric>
+#include <functional>
+#include <vector>
+#include <iostream>
+#include <utility>
+#include <deque>
+bool b4(const int &i)
+{
+    return i > 4;
+}
+bool bn(const int n, const int &i)
+{
+    return i > n;
+}
+
+bool checkEven(const int &elem, bool even)
+{
+    if (even)
+        return elem % 2 == 0;
+    else
+    {
+        return elem % 2 == 1;
+    }
+}
+int main()
+{
+
+    // std::vector<int> coll{1, 1, 1, 1, 1};
+    // std::vector<int> coll1{2, 3, 4, 4, 5, 6};
+    // //accumulate函数
+    // //计算和
+    // std::cout
+    //     << "sum:" << std::accumulate(coll.begin(), coll.end(), 0) << std::endl;
+    // //计算乘积
+    // std::cout << "product" << std::accumulate(coll.begin(), coll.end(), 2, std::multiplies<int>());
+    // //计算和
+    // std::cout << "product" << std::accumulate(coll.begin(), coll.end(), 0, std::plus<int>());
+
+    // //innerproduct，内积
+    // //返回对应的乘积的和 0+a1*b1+a2*b2...
+    // auto sum1 = std::inner_product(coll.begin(), coll.end(), coll1.begin(), 0);
+    // //返回对应的和的乘积 1*(a1+b1)*(a2*b2)....
+    // auto sum2 = std::inner_product(coll.begin(), coll.end(), coll1.begin(), 1, std::multiplies<int>(), std::plus<int>());
+
+    // //partial_sum相对数列和绝对数列之间的转换
+    // std::vector<int> ivec{2, 2, 3}, ivec1{2, 3, 4};
+    // //a1,a1+a2,a1+a2,a1+a2+a3
+    // auto it1 = std::partial_sum(ivec.begin(), ivec.end(), ivec.begin());
+
+    // //将绝对值改成相对值
+    // auto it3 = std::adjacent_difference(ivec.begin(), ivec.end(), ivec.begin());
+
+    // //a1,a1*a2,a1*a2,a1*a2*a3
+    // auto it2 = std::partial_sum(ivec.begin(), ivec.end(), ivec.begin(), std::multiplies<int>());
+    // //partial_sum和adjacent_difference互补
+    // auto it4 = std::adjacent_difference(ivec.begin(), ivec.end(), ivec.begin(), std::divides<int>());
+    // std::for_each(ivec.begin(), ivec.end(), [](int &i)  {  i *= i; });
+    // std::for_each(ivec.begin(),ivec.end(),[=](int &i){i*=*ivec.begin();});
+
+    // std::vector<int> ivec{1, 2, 3, 4, 5}; //p525
+    // auto num = std::count_if(ivec.begin(), ivec.end(), b4);
+    // auto unm1 = std::count_if(ivec.begin(), ivec.end(), [](const int &i) { return i > 4; });
+    // auto num2 = std::count_if(ivec.begin(), ivec.end(), std::bind(bn, 4, std::placeholders::_1));
+
+    // //search_n 查找前n个--连续--匹配值
+    // std::deque<int> coll = {1, 2, 7, 7, 6, 3, 9, 5, 7, 7, 7, 3, 6};
+    // std::deque<int>::iterator pos;
+    // pos = std::search_n(coll.begin(), coll.end(), 3, 7);
+
+    // //search
+    // std::vector<int> ivec = {1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7};
+    // std::deque<int> ide = {3, 4, 5, 6};
+    // std::vector<int>::iterator iit;
+    // iit = std::search(ivec.begin(), ivec.end(), ide.begin(), ide.end());
+
+    // bool checkEvenArgs[3] = {true, false, true};
+    // std::vector<int>::iterator pos;
+    // pos =std::search(ivec.begin(),ivec.end(),checkEvenArgs,checkEvenArgs+3,checkEven);
+    // //进行循环
+    // while(pos!=ivec.end())
+    // {
+    //     std::cout<<std::distance(ivec.begin(),pos)+1;
+    //     pos=std::search(++pos,ivec.end(),checkEvenArgs,checkEvenArgs+3,checkEven);
+    // }
+
+
+    
+
+    return 0;
+}
