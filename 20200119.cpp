@@ -7549,97 +7549,193 @@ int main()
 //     return 0;
 // }
 
-//2020.06.06
-//stl标准库中数值算法的学习
-#include <iostream>
-#include <algorithm>
-#include <numeric>
-#include <functional>
-#include <vector>
-#include <iostream>
-#include <utility>
-#include <deque>
-bool b4(const int &i)
-{
-    return i > 4;
-}
-bool bn(const int n, const int &i)
-{
-    return i > n;
-}
+// //2020.06.06
+// //stl标准库中数值算法的学习
+// #include <iostream>
+// #include <algorithm>
+// #include <numeric>
+// #include <functional>
+// #include <vector>
+// #include <iostream>
+// #include <utility>
+// #include <deque>
+// bool b4(const int &i)
+// {
+//     return i > 4;
+// }
+// bool bn(const int n, const int &i)
+// {
+//     return i > n;
+// }
 
-bool checkEven(const int &elem, bool even)
-{
-    if (even)
-        return elem % 2 == 0;
-    else
-    {
-        return elem % 2 == 1;
-    }
-}
+// bool checkEven(const int &elem, bool even)
+// {
+//     if (even)
+//         return elem % 2 == 0;
+//     else
+//     {
+//         return elem % 2 == 1;
+//     }
+// }
+// int main()
+// {
+
+//     // std::vector<int> coll{1, 1, 1, 1, 1};
+//     // std::vector<int> coll1{2, 3, 4, 4, 5, 6};
+//     // //accumulate函数
+//     // //计算和
+//     // std::cout
+//     //     << "sum:" << std::accumulate(coll.begin(), coll.end(), 0) << std::endl;
+//     // //计算乘积
+//     // std::cout << "product" << std::accumulate(coll.begin(), coll.end(), 2, std::multiplies<int>());
+//     // //计算和
+//     // std::cout << "product" << std::accumulate(coll.begin(), coll.end(), 0, std::plus<int>());
+
+//     // //innerproduct，内积
+//     // //返回对应的乘积的和 0+a1*b1+a2*b2...
+//     // auto sum1 = std::inner_product(coll.begin(), coll.end(), coll1.begin(), 0);
+//     // //返回对应的和的乘积 1*(a1+b1)*(a2*b2)....
+//     // auto sum2 = std::inner_product(coll.begin(), coll.end(), coll1.begin(), 1, std::multiplies<int>(), std::plus<int>());
+
+//     // //partial_sum相对数列和绝对数列之间的转换
+//     // std::vector<int> ivec{2, 2, 3}, ivec1{2, 3, 4};
+//     // //a1,a1+a2,a1+a2,a1+a2+a3
+//     // auto it1 = std::partial_sum(ivec.begin(), ivec.end(), ivec.begin());
+
+//     // //将绝对值改成相对值
+//     // auto it3 = std::adjacent_difference(ivec.begin(), ivec.end(), ivec.begin());
+
+//     // //a1,a1*a2,a1*a2,a1*a2*a3
+//     // auto it2 = std::partial_sum(ivec.begin(), ivec.end(), ivec.begin(), std::multiplies<int>());
+//     // //partial_sum和adjacent_difference互补
+//     // auto it4 = std::adjacent_difference(ivec.begin(), ivec.end(), ivec.begin(), std::divides<int>());
+//     // std::for_each(ivec.begin(), ivec.end(), [](int &i)  {  i *= i; });
+//     // std::for_each(ivec.begin(),ivec.end(),[=](int &i){i*=*ivec.begin();});
+
+//     // std::vector<int> ivec{1, 2, 3, 4, 5}; //p525
+//     // auto num = std::count_if(ivec.begin(), ivec.end(), b4);
+//     // auto unm1 = std::count_if(ivec.begin(), ivec.end(), [](const int &i) { return i > 4; });
+//     // auto num2 = std::count_if(ivec.begin(), ivec.end(), std::bind(bn, 4, std::placeholders::_1));
+
+//     // //search_n 查找前n个--连续--匹配值
+//     // std::deque<int> coll = {1, 2, 7, 7, 6, 3, 9, 5, 7, 7, 7, 3, 6};
+//     // std::deque<int>::iterator pos;
+//     // pos = std::search_n(coll.begin(), coll.end(), 3, 7);
+
+//     // //search
+//     // std::vector<int> ivec = {1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7};
+//     // std::deque<int> ide = {3, 4, 5, 6};
+//     // std::vector<int>::iterator iit;
+//     // iit = std::search(ivec.begin(), ivec.end(), ide.begin(), ide.end());
+
+//     // bool checkEvenArgs[3] = {true, false, true};
+//     // std::vector<int>::iterator pos;
+//     // pos =std::search(ivec.begin(),ivec.end(),checkEvenArgs,checkEvenArgs+3,checkEven);
+//     // //进行循环
+//     // while(pos!=ivec.end())
+//     // {
+//     //     std::cout<<std::distance(ivec.begin(),pos)+1;
+//     //     pos=std::search(++pos,ivec.end(),checkEvenArgs,checkEvenArgs+3,checkEven);
+//     // }
+
+//     return 0;
+// }
+
+// // 2020.06.08
+// #include <iostream>
+// #include <string>
+// #include <ostream>
+// using namespace std;
+// class Quote
+// {
+// public:
+//     Quote() = default;
+//     Quote(const std::string &book = "", double sales_price = 0.0) : bookNo(book), price(sales_price)
+//     {
+//         cout << "Quote constructor is running" << endl;
+//     }
+//     std::string isbn() const { return bookNo; }
+//     //返回给定数量的书籍的销售总额，派生类改写并使用不同的折扣计算方法
+//     virtual double net_price(std::size_t n) const
+//     {
+//         return n * price;
+//     }
+//     virtual void debug()
+//     {
+//         cout << "bookNo=" << bookNo << "price=" << price << endl;
+//     }
+//     virtual ~Quote()
+//     {
+//         cout << "Qote destructor is running" << endl;
+//     }
+//     friend ostream &operator<<(ostream &, Quote &);
+
+// private:
+//     std::string bookNo;
+
+// protected:
+//     double price = 0.0;
+// };
+// ostream &operator<<(ostream &os, Quote &e)
+// {
+//     os << "\tusing operator(ostream & ,Quote &)" << endl;
+//     return os;
+// }
+// class Bulk_quote : public Quote
+// {
+//     friend ostream &operator<<(ostream &, Bulk_quote &);
+
+// public:
+//     Bulk_quote(const string &book = "", double sales_price = 0.0, size_t qty = 0, double disc = 0.0) : Quote(book, sales_price), min_qty(qty), discount(disc)
+//     {
+//         cout << "Bul_quote_constructor is running" << endl;
+//     }
+//     double net_price(size_t cnt) const
+//     {
+//         if (cnt > min_qty)
+//             return cnt * (1 - discount) * price;
+//         else
+//         {
+//             return cnt * price;
+//         }
+//     }
+//     ~Bulk_quote()
+//     {
+//         cout << "Bulk_quote destructor is ruuning" << endl;
+//     }
+
+// private:
+//     size_t min_qty;
+//     double discount;
+// };
+// ostream &operator<<(ostream &os, Bulk_quote &bq)
+// {
+//     os << "\tUsing operator<<(ostream &,Bulk_quote &" << endl;
+//     return os;
+// }
+// #include<vector>
+// #include<memory>
+// int main()
+// {
+//     Quote base("C++ primer ",128.0);
+//     Bulk_quote bulk("Core Python Programming",89,5,0.19);
+//     std:vector<std::shared_ptr<Quote>>q_vec;
+//     shared_ptr<Quote> qp=make_shared<Quote>(base);
+//     shared_ptr<Quote>bp=make_shared<Bulk_quote>(bulk);
+//     q_vec.push_back(qp);
+//     q_vec.push_back(bp);
+//     cout<<base<<endl;
+//     cout<<bulk<<endl;
+//     q_vec[1]->net_price(5);
+//     return 0;
+// }
+
+#include <vector>
+#include <numeric>
 int main()
 {
-
-    // std::vector<int> coll{1, 1, 1, 1, 1};
-    // std::vector<int> coll1{2, 3, 4, 4, 5, 6};
-    // //accumulate函数
-    // //计算和
-    // std::cout
-    //     << "sum:" << std::accumulate(coll.begin(), coll.end(), 0) << std::endl;
-    // //计算乘积
-    // std::cout << "product" << std::accumulate(coll.begin(), coll.end(), 2, std::multiplies<int>());
-    // //计算和
-    // std::cout << "product" << std::accumulate(coll.begin(), coll.end(), 0, std::plus<int>());
-
-    // //innerproduct，内积
-    // //返回对应的乘积的和 0+a1*b1+a2*b2...
-    // auto sum1 = std::inner_product(coll.begin(), coll.end(), coll1.begin(), 0);
-    // //返回对应的和的乘积 1*(a1+b1)*(a2*b2)....
-    // auto sum2 = std::inner_product(coll.begin(), coll.end(), coll1.begin(), 1, std::multiplies<int>(), std::plus<int>());
-
-    // //partial_sum相对数列和绝对数列之间的转换
-    // std::vector<int> ivec{2, 2, 3}, ivec1{2, 3, 4};
-    // //a1,a1+a2,a1+a2,a1+a2+a3
-    // auto it1 = std::partial_sum(ivec.begin(), ivec.end(), ivec.begin());
-
-    // //将绝对值改成相对值
-    // auto it3 = std::adjacent_difference(ivec.begin(), ivec.end(), ivec.begin());
-
-    // //a1,a1*a2,a1*a2,a1*a2*a3
-    // auto it2 = std::partial_sum(ivec.begin(), ivec.end(), ivec.begin(), std::multiplies<int>());
-    // //partial_sum和adjacent_difference互补
-    // auto it4 = std::adjacent_difference(ivec.begin(), ivec.end(), ivec.begin(), std::divides<int>());
-    // std::for_each(ivec.begin(), ivec.end(), [](int &i)  {  i *= i; });
-    // std::for_each(ivec.begin(),ivec.end(),[=](int &i){i*=*ivec.begin();});
-
-    // std::vector<int> ivec{1, 2, 3, 4, 5}; //p525
-    // auto num = std::count_if(ivec.begin(), ivec.end(), b4);
-    // auto unm1 = std::count_if(ivec.begin(), ivec.end(), [](const int &i) { return i > 4; });
-    // auto num2 = std::count_if(ivec.begin(), ivec.end(), std::bind(bn, 4, std::placeholders::_1));
-
-    // //search_n 查找前n个--连续--匹配值
-    // std::deque<int> coll = {1, 2, 7, 7, 6, 3, 9, 5, 7, 7, 7, 3, 6};
-    // std::deque<int>::iterator pos;
-    // pos = std::search_n(coll.begin(), coll.end(), 3, 7);
-
-    // //search
-    // std::vector<int> ivec = {1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7};
-    // std::deque<int> ide = {3, 4, 5, 6};
-    // std::vector<int>::iterator iit;
-    // iit = std::search(ivec.begin(), ivec.end(), ide.begin(), ide.end());
-
-    // bool checkEvenArgs[3] = {true, false, true};
-    // std::vector<int>::iterator pos;
-    // pos =std::search(ivec.begin(),ivec.end(),checkEvenArgs,checkEvenArgs+3,checkEven);
-    // //进行循环
-    // while(pos!=ivec.end())
-    // {
-    //     std::cout<<std::distance(ivec.begin(),pos)+1;
-    //     pos=std::search(++pos,ivec.end(),checkEvenArgs,checkEvenArgs+3,checkEven);
-    // }
-
-
-    
-
+    std::vector<std::vector<double>> dvec(10, std::vector<double>(10, 2));
+    std::vector<double> dvec1(10, 3);
+    auto sum = std::inner_product((*dvec.begin()).begin(), (*dvec.begin()).end(), dvec1.begin(), 0.0);
     return 0;
 }
