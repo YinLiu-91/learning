@@ -7796,4 +7796,132 @@ int main()
 //     return sum;
 // }
 
-//计划6月剩下来的日子再把c++primer看一遍
+// //计划6月剩下来的日子再把c++primer看一遍
+
+// #include <iostream> //modern c++
+// #include <string>
+// #include <regex>
+// int main()
+// {
+//     std::string fnames[] = {"foo.txt", "bar.txt", "test", "a0.txt", "AAA.txt"};
+//     //在c++中\会被当做转义字符，为使\.作为正则表达式传递进去生效，需要对\进行二次转义，从而有\\.
+//     std::regex txt_regex("[a-z]+\\.txt");
+//     for (const auto &fname : fnames)
+//         std::cout << fname << ": " << std::regex_match(fname, txt_regex) << std::endl;
+
+//     std::regex base_regex("([a-z]+)\\.txt");
+//     std::smatch base_match;
+//     for (const auto &fname : fnames)
+//     {
+//         if (std::regex_match(fname, base_match, base_regex))
+//         {
+//             //std::smatch 的第一个元素匹配整个字符串
+//             //std::smatch 的第二个元素匹配了第一个括号表达式
+//             if (base_match.size() == 2)
+//             {
+//                 std::string base = base_match[1].str();
+//                 std::cout << "sub-match[0]:" << base_match[0].str() << std::endl;
+//                 std::cout << fname << " sub-match[1]: " << base << std::endl;
+//             }
+//         }
+//     }
+//     return 0;
+// }
+
+// //智能指针 modern c++
+// #include <memory>
+// #include <iostream>
+// int main()
+// {
+//     auto pointer = std::make_shared<int>(10);
+//     auto pointer2 = pointer; //引用计数加1
+//     auto pointer3 = pointer; //引用计数+1
+
+//     int *p = pointer.get();                                                 //这样不会增加引用计数
+//     std::cout << "pointer.use_count=" << pointer.use_count() << std::endl;  //3
+//     std::cout << "pointer3.use_count" << pointer3.use_count() << std::endl; //3
+//     pointer2.reset();                                                       //减少了一个引用计数
+//     std::cout << "reset pointer2" << std::endl;
+//     std::cout << "pointer.use_count" << pointer.use_count() << std::endl;   //2
+//     std::cout << "pointer2.use_count" << pointer2.use_count() << std::endl; //0,piter_2已经reset
+//     pointer3.reset();
+//     std::cout << "pointer3.use_count()=" << pointer3.use_count() << std::endl; //0
+// }
+
+// #include <iostream>
+// #include <memory>
+// struct Foo
+// {
+//     /* data */
+//     Foo() { std::cout << "Foo::Foo" << std::endl; }
+//     ~Foo() { std::cout << "Foo::~Foo" << std::endl; }
+//     void foo() { std::cout << "Foo::foo" << std::endl; }
+// };
+// void f(const Foo &)
+// {
+//     std::cout << "f(const Foo&)" << std::endl;
+// }
+// int main()
+// {
+//     std::unique_ptr<Foo> p1(std::make_unique<Foo>());
+//     //p1不空，输出
+//     if (p1)
+//         p1->foo();
+//     {
+//         std::unique_ptr<Foo> p2(std::move(p1));
+//         //p2不空，输出
+//         f(*p2);
+//         //p2不空，输出
+//         if (p2)
+//             p2->foo();
+//         //p1为空，无输出
+//         if (p1)
+//             p1->foo();
+//         p1 = std::move(p2);
+//         //p2为空，无输出
+//         if (p2)
+//             p2->foo();
+//         std::cout << "p2被销毁" << std::endl;
+
+//     }
+//     //p1不空，输出
+//     if(p1)p1->foo();
+//     //Foo的实例会在离开作用域时销毁
+// }
+
+// #include <memory>
+// #include <iostream>
+// struct A;
+// struct B;
+
+// //智能指针失效的例子
+// struct A
+// {
+//     /* data */
+//     std::shared_ptr<B> pointer;
+//     ~A()
+//     {
+//         std::cout << "A被销毁" << std::endl;
+//     }
+// };
+// struct B
+// {
+//     std::shared_ptr<A> pointer;
+//     ~B()
+//     {
+//         std::cout << "B被销毁" << std::endl;
+//     }
+// };
+// int main()
+// {
+//     auto a = std::make_shared<A>();
+//     auto b = std::make_shared<B>();
+//     a->pointer = b;
+//     b->pointer = a;
+//     auto a_count = a.use_count(); //2
+//     auto b_count = b.use_count(); //2
+//     return 0;
+// }
+
+
+//2020.06.09结束
