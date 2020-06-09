@@ -7669,6 +7669,8 @@ int main()
 //         cout << "Qote destructor is running" << endl;
 //     }
 //     friend ostream &operator<<(ostream &, Quote &);
+//     virtual Quote *clone() const & { return new Quote(*this); }
+//     virtual Quote *clone() && { return new Quote(std::move(*this)); }
 
 // private:
 //     std::string bookNo;
@@ -7703,6 +7705,8 @@ int main()
 //     {
 //         cout << "Bulk_quote destructor is ruuning" << endl;
 //     }
+//     Bulk_quote *clone() const & { return new Bulk_quote(*this); }
+//     Bulk_quote *clone() && { return new Bulk_quote(std::move(*this)); }
 
 // private:
 //     size_t min_qty;
@@ -7713,29 +7717,83 @@ int main()
 //     os << "\tUsing operator<<(ostream &,Bulk_quote &" << endl;
 //     return os;
 // }
-// #include<vector>
-// #include<memory>
-// int main()
+// // #include<vector>
+// // #include<memory>
+// // int main()
+// // {
+// //     Quote base("C++ primer ",128.0);
+// //     Bulk_quote bulk("Core Python Programming",89,5,0.19);
+// //     std:vector<std::shared_ptr<Quote>>q_vec;
+// //     shared_ptr<Quote> qp=make_shared<Quote>(base);
+// //     shared_ptr<Quote>bp=make_shared<Bulk_quote>(bulk);
+// //     q_vec.push_back(qp);
+// //     q_vec.push_back(bp);
+// //     cout<<base<<endl;
+// //     cout<<bulk<<endl;
+// //     q_vec[1]->net_price(5);
+// //     return 0;
+// // }
+
+// // #include <vector>
+// // #include <numeric>
+// // int main()
+// // {
+// //     std::vector<std::vector<double>> dvec(10, std::vector<double>(10, 2));
+// //     std::vector<double> dvec1(10, 3);
+// //     auto sum = std::inner_product((*dvec.begin()).begin(), (*dvec.begin()).end(), dvec1.begin(), 0.0);
+// //     return 0;
+// // }
+
+// //2020.06.09
+// #include <memory>
+// #include <set>
+// using namespace std;
+
+// class Basket
 // {
-//     Quote base("C++ primer ",128.0);
-//     Bulk_quote bulk("Core Python Programming",89,5,0.19);
-//     std:vector<std::shared_ptr<Quote>>q_vec;
-//     shared_ptr<Quote> qp=make_shared<Quote>(base);
-//     shared_ptr<Quote>bp=make_shared<Bulk_quote>(bulk);
-//     q_vec.push_back(qp);
-//     q_vec.push_back(bp);
-//     cout<<base<<endl;
-//     cout<<bulk<<endl;
-//     q_vec[1]->net_price(5);
-//     return 0;
+// public:
+//     // Basket 使用默认合成的默认构造函数和拷贝控制成员
+//     void add_item(const std::shared_ptr<Quote> &sale)
+//     {
+//         items.insert(sale);
+//     }
+//     void add_item(const Quote&sale)
+//     {
+//         items.insert(std::shared_ptr<Quote>(sale.clone()));
+//     }
+//     void add_item( Quote&&sale)//移动给定对象
+//     {
+//         items.insert(
+//             std::shared_ptr<Quote>(std::move(sale).clone())
+//         );
+//     }
+//     double total_receipt(std::ostream &) const;
+
+// private:
+//     //该函数用于比较shared_ptr，multiset成员会用到t
+//     static bool compare(const std::shared_ptr<Quote> &lhs, const std::shared_ptr<Quote> &rhs)
+//     {
+//         return lhs->isbn() < rhs->isbn();
+//     }
+//     //multiset 保存多个报价，按照compare成员排序
+//     std::multiset<std::shared_ptr<Quote>, decltype(compare) *> items{compare};
+// };
+
+// double Basket::total_receipt(ostream &os) const
+// {
+//     double sum = 0.0; //保存实时计算出的价格
+//     //iter指向ISBN相同的一批元素中的第一个
+//     //upper_bound返回一个迭代器，该迭代器指向这批元素的尾后位置
+//     for (auto iter = items.cbegin();
+//          iter != items.cend();
+//          iter = items.upper_bound(*iter))
+//     {
+//         //我们知道在当前的basket中至少有一个关键字的元素
+//         //打印该书籍对应的项目
+//         sum += print_total(os, **iter, items.count(*iter));
+//     }
+//     os << "Total Sale" << sum << endl;
+//     return sum;
 // }
 
-#include <vector>
-#include <numeric>
-int main()
-{
-    std::vector<std::vector<double>> dvec(10, std::vector<double>(10, 2));
-    std::vector<double> dvec1(10, 3);
-    auto sum = std::inner_product((*dvec.begin()).begin(), (*dvec.begin()).end(), dvec1.begin(), 0.0);
-    return 0;
-}
+//计划6月剩下来的日子再把c++primer看一遍
