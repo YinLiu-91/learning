@@ -7923,6 +7923,85 @@ int main()
 //     return 0;
 // }
 
-
 // 2020.06.09结束
 // 2020.06.10由于加班回来晚，今日无更新
+
+// //2020.06.11
+// #include<tuple>
+// #include<iostream>
+// auto  get_student(int id)
+// {
+//     //返回类型被推断为std:: tuple<double,char,std::string?
+//     if(id==0)
+//     return std::make_tuple(3.8,'A',"张三");
+//     if(id==1)
+//     return std:: make_tuple(2.9,'C',"李四");
+//     if(id==2)
+//     return std::make_tuple(1.7,'D',"王五");
+//     return std::make_tuple(0.0,'D',"null");
+//     //如果只写0会出现推断错误，编译失败
+// }
+
+// int main(){
+//     auto student=get_student(0);
+//     std::cout<<"ID:0,"
+//     <<"GPA"<<std::get<0>(student)<<", "
+//     <<"成绩"<<std::get<1>(student)<<", "
+//     <<"姓名"<<std::get<2>(student)<<'\n';
+//     double gpa;
+//     char grade;
+//     std::string name;
+
+//     //元组拆包
+//     std::tie(gpa,grade,name)=get_student(1);
+//     std::cout<<"ID:1"
+//     <<"GPA"<<gpa<<", "
+//     <<"姓名"<<name<<'\n';
+//     return 0;
+// }
+
+// #include <iostream>
+// void lambda_value_capture() //值捕获只是在变量lambda时被捕获
+// {
+//     int value = 1;
+//     auto copy_value = [value] {
+//         return value;
+//     };
+//     value = 100;
+//     auto stored_value = copy_value();
+//     std::cout << "stored_value= " << stored_value << std::endl;
+// }
+
+// //引用捕获 moder c++
+// void lambda_reference_capture()
+// {
+//     int value = 1;
+//     auto copy_value = [&value] { return value; };
+
+//     value = 100;
+//     auto stored_value = copy_value();
+//     std::cout << "stored_value: " << stored_value << std::endl;
+//     //这时，stored_value=100,value=100;
+//     //因为copy_value保存的是引用
+// }
+
+// int main()
+// {
+//     lambda_value_capture();
+
+//     lambda_reference_capture();
+//     return 0;
+// }
+
+//捕获右值，c++14以上特性
+#include <iostream>
+#include <utility>
+
+//突破8000行啦，分割线 -_>
+int main()
+{
+    auto important = std::make_unique<int>(1);
+    auto add = [v1 = 1, v2 = std::move(important)](int x, int y) -> int { return x + y + v1 + (*v2); };
+    std::cout << add(3, 4) << std::endl;
+    return 0;
+}
