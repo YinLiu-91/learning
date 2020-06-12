@@ -1,7 +1,7 @@
 [
 {
   "directory": "F:/personal/course/c-plus/20200119-1/build",
-  "command": "\"H:\\Program Files\\mingw64\\bin\\g++.exe\"    -g   -o CMakeFiles\\20200119.dir\\20200119.cpp.obj -c F:\\personal\\course\\c-plus\\20200119-1\\20200119.cpp",
+  "command": "\"H:\\Program Files\\mingw32_gcc10\\bin\\g++.exe\"   @CMakeFiles/20200119.dir/includes_CXX.rsp  -std=c++2a -O0 -g -Wall -Wunused-function -pthread -g   -o CMakeFiles\\20200119.dir\\20200119.cpp.obj -c F:\\personal\\course\\c-plus\\20200119-1\\20200119.cpp",
   "file": "F:/personal/course/c-plus/20200119-1/20200119.cpp"
 }
 ]

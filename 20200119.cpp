@@ -7993,15 +7993,102 @@ int main()
 //     return 0;
 // }
 
-//捕获右值，c++14以上特性
-#include <iostream>
-#include <utility>
+// //捕获右值，c++14以上特性
+// #include <iostream>
+// #include <utility>
 
-//突破8000行啦，分割线 -_>
-int main()
+// //突破8000行啦，分割线 -_>
+// int main()
+// {
+//     auto important = std::make_unique<int>(1);
+//     auto add = [v1 = 1, v2 = std::move(important)](int x, int y) -> int { return x + y + v1 + (*v2); };
+//     std::cout << add(3, 4) << std::endl;
+//     return 0;
+// }
+
+// #include <ranges> // #include <ranges> in c++20
+// #include <iostream>
+// #include <vector>
+// #include <string>
+// #include <string_view>
+// namespace std {
+//     namespace views = ranges::views;
+// }
+// using namespace std;
+// namespace vw = ::ranges::views; // std::views in c++20
+// namespace vw1=::ranges::views::zip;
+
+// string convert(string str, int n)
+// {
+//     vector<string> vec(n);
+//     auto chars = str | vw::all;
+//     auto index = vw::concat(vw::iota(0, n), vw::iota(1, n - 1) | vw::reverse) | vw::cycle;
+//     for (auto &&[i, c] : vw::zip(index, chars))
+//     {
+//         vec[i].push_back(c);
+//     }
+//     return vec | vw::join("") | ranges::to<string>;
+// }
+
+// int main()
+// {
+//     string s = convert(string("LEETCODEISHIRING"), 4);
+//     cout << s << "\n"; // should output LDREOEIIECIHNTSG
+//     return 0;
+// }
+
+// #include <vector>
+// #include <ranges>
+// #include <iostream>
+// #include <cmath>
+// int main()
+// {
+//     std::vector<int> ints{0, 1, 2, 3, 4, 5};
+//     auto even = [](int i) { return 0 == i % 2; }; //lambda 函数
+//     auto square = [](int i) { return i * i; };
+
+//     for (int i : ints | std::views::filter(even) | std::views::transform(square))
+//     {
+//         std::cout << i << ' ';
+//     }
+
+//     return 0;
+//     system("pause");
+// }
+
+#include <format>
+#include <iostream>
+#include <iterator>
+#include <string>
+ 
+auto main() -> int
 {
-    auto important = std::make_unique<int>(1);
-    auto add = [v1 = 1, v2 = std::move(important)](int x, int y) -> int { return x + y + v1 + (*v2); };
-    std::cout << add(3, 4) << std::endl;
-    return 0;
+    std::string buffer;
+ 
+    std::format_to(
+        std::back_inserter(buffer), //< OutputIt
+        "Hello, C++{}!\n",          //< fmt 
+        "20");                      //< arg
+    std::cout << buffer;
+    buffer.clear();
+ 
+    std::format_to(
+        std::back_inserter(buffer), //< OutputIt
+        "Hello, {0}::{1}!{2}",      //< fmt 
+        "std",                      //< arg {0}
+        "format_to()",              //< arg {1}
+        "\n",                       //< arg {2}
+        "extra param(s)...");       //< 不使用
+    std::cout << buffer;
+ 
+    std::wstring wbuffer;
+    std::format_to(
+        std::back_inserter(wbuffer),//< OutputIt 
+        L"Hello, {2}::{1}!{0}",     //< fmt
+        L"\n",                      //< arg {0}
+        L"format_to()",             //< arg {1}
+        L"std",                     //< arg {2}
+        L"...is not..."             //< 不使用
+        L"...an error!");           //< 不使用
+    std::wcout << wbuffer;
 }
