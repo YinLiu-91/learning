@@ -3896,7 +3896,7 @@ int main()
 // HasPtr &HasPtr::operator=(const HasPtr &rhs)
 // {
 //     auto newp = new string(*rhs.ps); //拷贝底层string，这里string括号内表示ps所指的对象
-//     delete ps;                       //释放旧内存
+//     delete ps;                       //释放旧内存，ps是空悬指针
 //     ps = newp;                       // 从右侧运算对象拷贝数据到本对象
 //     i = rhs.i;
 //     return *this; //返回本对象
@@ -3921,7 +3921,7 @@ int main()
 //     HasPtr(const HasPtr &p) : ps(p.ps), i(p.i), use(p.use) { ++*use; }
 //     HasPtr &operator=(const HasPtr &);
 //     // 定义自己的swap函数
-//     friend void swap(HasPtr &,HasPtr&);
+//     friend void swap(HasPtr &, HasPtr &);
 //     ~HasPtr();
 
 // private:
@@ -3951,12 +3951,11 @@ int main()
 //     use = rhs.use;
 //     return *this;
 // }
-// inline
-// void swap(HasPtr &lhs,HasPtr &rhs)
+// inline void swap(HasPtr &lhs, HasPtr &rhs)
 // {
 //     using std::swap;
-// // //     swap(lhs.ps,rhs.ps);
-//     swap(lhs.i,lhs.i);
+//     // //     swap(lhs.ps,rhs.ps);
+//     swap(lhs.i, lhs.i);
 // }
 
 // // p465 strvec
@@ -4135,6 +4134,18 @@ int main()
 //     //更新数据结构，执行新元素
 //     elements = newdata;
 //     first_free = dest;
+//     cap = elements + newcapacity;
+// }
+// void StrVec::reallocate()//方法2
+// {
+//     //分配大小两倍于当前规模的内存空间
+//     auto newcapacity = size() ? 2 * size() : 1;
+//     auto first = alloc.allocate(newcapacity);
+//     //移动元素
+//     auto last = uninitialized_copy(make_move_iterator(begin()), make_move_iterator(end()), first);
+//     free();
+//     elements = first;
+//     fir_free = last;
 //     cap = elements + newcapacity;
 // }
 // void StrVec::reserve(size_t &size)
@@ -6729,6 +6740,7 @@ int main()
 //     *(left->right);
 //     *(right->left);
 //     *(right->right);
+
 // }
 // TreeNode::TreeNode(const TreeNode &t) : value(t.value), count(t.count),
 //                                         left(new TreeNode(*left)), right(new TreeNode(*right)) {}
@@ -6801,14 +6813,14 @@ int main()
 // BinStrTree::~BinStrTree() //释放整棵树
 // {
 //     if (!root->ReleaseTree())
-//     delete root;
+//         delete root;
 //     delete root;
 // }
 // TreeNode::~TreeNode()
 // {
 //     //count 为0表示资源已经被释放，是delete触发的析构函数，设么也不做
-//     if(count)
-//     ReleaseTree();
+//     if (count)
+//         ReleaseTree();
 // }
 
 // //p12 modern
@@ -6971,14 +6983,14 @@ int main()
 // int main()
 // {
 //     vector<HasPtr> vh;
-//     int n = atoi(argv[1]);
+//     int n = 17;
 
 //     for (int i = 0; i < n; ++i)
 //         vh.push_back(to_string(n - i));
 //     for (auto p : vh)
 //         cout << *p << " ";
 //     cout << endl;
-//     sor(vh.begin(), vh.end());
+//     sort(vh.begin(), vh.end());
 //     for (auto p : vh)
 //         cout << *p << " ";
 //     cout << endl;
@@ -8056,39 +8068,394 @@ int main()
 //     system("pause");
 // }
 
-#include <format>
-#include <iostream>
-#include <iterator>
+// #include <format>
+// #include <iostream>
+// #include <iterator>
+// #include <string>
+
+// auto main() -> int
+// {
+//     std::string buffer;
+
+//     std::format_to(
+//         std::back_inserter(buffer), //< OutputIt
+//         "Hello, C++{}!\n",          //< fmt
+//         "20");                      //< arg
+//     std::cout << buffer;
+//     buffer.clear();
+
+//     std::format_to(
+//         std::back_inserter(buffer), //< OutputIt
+//         "Hello, {0}::{1}!{2}",      //< fmt
+//         "std",                      //< arg {0}
+//         "format_to()",              //< arg {1}
+//         "\n",                       //< arg {2}
+//         "extra param(s)...");       //< 不使用
+//     std::cout << buffer;
+
+//     std::wstring wbuffer;
+//     std::format_to(
+//         std::back_inserter(wbuffer),//< OutputIt
+//         L"Hello, {2}::{1}!{0}",     //< fmt
+//         L"\n",                      //< arg {0}
+//         L"format_to()",             //< arg {1}
+//         L"std",                     //< arg {2}
+//         L"...is not..."             //< 不使用
+//         L"...an error!");           //< 不使用
+//     std::wcout << wbuffer;
+// }
+
+// //2020.06.13开始今日
+// //p443 13.5
+// #include <string>
+// class HasPtr
+// {
+// public:
+//     HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0) {}
+//     HasPtr(const HasPtr &h) : ps(new std::string(*(h.ps))), i(h.i) {}
+
+// private:
+//     std::string *ps;
+//     int i;
+// };
+// int main()
+// {
+//     HasPtr has;
+//     return 0;
+// }
+
+// //p443 13.5
+// #include <iostream>
+// #include <string>
+// #include <vector>
+// using namespace std;
+// struct X
+// {
+//     /* data */
+//     X() { std::cout << "构造函数" << std::endl; }
+//     X(const X &x) { std::cout << "拷贝构造函数" << std::endl; }
+//     X &operator=(const X &x)
+//     {
+//         std::cout << "拷贝赋值函数" << std::endl;
+//         return *this;
+//     }
+//     ~X() { cout << "析构函数" << endl; }
+// };
+
+// void f1(X x)
+// {
+// }
+// void f2(X &x)
+// {
+// }
+
+// int main()
+// {
+//     cout << "局部变量" << endl;
+//     X x;
+//     cout << endl;
+
+//     cout << "非引用参数" << endl;
+//     f1(x);
+//     cout << endl;
+
+//     cout << "引用参数" << endl;
+//     f2(x);
+//     cout << endl;
+
+//     cout << "动态分配:" << endl;
+//     X *px = new X;
+//     cout << endl;
+
+//     cout << "添加到容器中" << endl;
+//     vector<X> vx;
+//     vx.push_back(x);
+//     cout<<endl;
+
+//     cout<<"释放动态分配对象"<<endl;
+//     delete px;
+//     cout<<endl;
+
+//     cout<<"间接初始化和赋值"<<endl;
+//     X y=x;
+//     y=x;
+//     cout<<endl;
+
+//     cout<<"程序结束"<<endl;
+//     return 0;
+// }
+
+// #include <string>
+// class Employee
+// {
+// public:
+//     Employee() { id += 1;idnum=id; }
+//     Employee(const Employee &e)
+//     {
+//         name = e.name;
+//         id += 1;
+//         idnum=id;
+//     }
+//     Employee &operator=(const Employee &lhs)
+//     {
+//         name = lhs.name;
+//         // id += 1;
+//         // idnum=id;
+//         return *this;
+//     }
+
+// private:
+//     std::string name;
+//     int idnum;
+//     static int id;
+// };
+
+//  int Employee:: id = 0;
+
+// int main()
+// {
+//     Employee e;
+//     Employee e1=e;
+//     Employee e2;
+//     e2=e1;
+//     return 0;
+// }
+
+// //p453行为像值的类
+// #include <string>
+// class HasPtr
+// {
+// public:
+//     HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0) {}
+//     //对ps指向的string，每个HasPtr对象都有自己的拷贝
+//     HasPtr(const HasPtr &p) : ps(new std::string(*p.ps)), i(p.i) {}
+//     HasPtr &operator=(const HasPtr &lhs);
+//     ~HasPtr();
+
+// private:
+//     std::string *ps;
+//     int i;
+// };
+
+// HasPtr &HasPtr::operator=(const HasPtr &lhs)
+// {
+//     std::string *newp = new std::string(*lhs.ps);
+//     delete ps;
+//     ps = newp;
+//     i = lhs.i;
+//     return *this;
+// }
+// HasPtr::~HasPtr()
+// {
+//     delete ps;
+// }
+
+// //行为像指针的类
+// //只有当指向对象的最后一个指针对象被销毁时，string对象才会被销毁+
+// #include <string>
+
+// class HasPtr
+// {
+// public:
+//     //构造函数分配新的计数器和string，将计数器置为1
+//     HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0), use(new std::size_t(1)) {}
+//     //拷贝构造函数拷贝所有三个数据成员，并递增计数器
+//     HasPtr(const HasPtr &p) : ps(p.ps), i(p.i), use(p.use) { ++*use; }
+//     HasPtr &operator=(const HasPtr &);
+//     ~HasPtr();
+
+// private:
+//     std::string *ps;
+//     int i;
+//     std::size_t *use;
+// };
+
+// HasPtr::~HasPtr()
+// {
+//     if (--*use == 0) //减1同时判断
+//     {
+//         delete ps;
+//         delete use;
+//     }
+// }
+
+// HasPtr &HasPtr::operator=(const HasPtr &rhs)
+// {
+//     ++*rhs.use;
+//     if (--*use == 0)
+//     {
+//         //然后递减本对象的引用计数
+//         delete ps;
+//         delete use;
+//     }
+//     ps = rhs.ps;
+//     i = rhs.i;
+//     use = rhs.use;
+//     return *this;
+// }
+
+// int main()
+// {
+//     HasPtr *hp = new HasPtr("sf");
+//     HasPtr h2 = *hp;
+//     return 0;
+// }
+
+// //p460 13.31
+// #include <iostream>
+// #include <string>
+// #include <vector>
+// #include <algorithm>
+// using std::cout;
+// using std::endl;
+// using std::string;
+// using std::to_string;
+// using std::vector;
+
+// class HasPtr
+// {
+//     friend void swap(HasPtr &, HasPtr &);
+
+// public:
+//     HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+//     HasPtr(const HasPtr &p) : ps(new string(*p.ps)), i(p.i) {}
+//     HasPtr &operator=(const HasPtr &);
+//     HasPtr &operator=(const string &);    //赋予新string
+//     string &operator*();                  //解yinyon
+//     bool operator<(const HasPtr &) const; //比较运算
+//     ~HasPtr();
+
+// private:
+//     string *ps;
+//     int i;
+// };
+// HasPtr::~HasPtr()
+// {
+//     delete ps;
+// }
+// inline HasPtr &HasPtr::operator=(const HasPtr &rhs)
+// {
+//     auto newp = new string(*rhs.ps);
+//     delete ps;
+//     ps = newp;
+//     i = rhs.i;
+//     return *this;
+// }
+
+// // HasPtr &HasPtr::operator=(const string &rhs)
+// // {
+// //     *ps = rhs;
+// //     return *this;
+// // }
+// inline void swap(HasPtr &lhs, HasPtr &rhs) //这里引用不能是const的
+// {
+//     cout << "交换" << *lhs.ps << *rhs.ps << endl;
+//     using std::swap;
+//     swap(lhs.ps, rhs.ps);
+//     swap(lhs.i, rhs.i);
+// }
+
+// bool HasPtr::operator<(const HasPtr &rhs) const
+// {
+//     return *ps < *rhs.ps;
+// }
+
+// string &HasPtr::operator*() //因为下面有解引用的重载
+// {
+//     return *ps;
+// }
+
+// int main()
+// {
+//     vector<HasPtr> vh;
+//     int n = 16;
+//     for (int i = 0; i < n; ++i)
+//         vh.push_back(to_string(n - i));
+//     for (auto &p : vh)
+//         cout << *p << " ";
+//     cout << endl;
+//     sort(vh.begin(), vh.end());
+//     for (auto &p : vh)
+//         cout << *p << " ";
+//     cout << endl;
+//     return 0;
+// }
+
+// struct S
+// {
+//     /* data */
+//     int i:3=0;
+//     int j:5=0;
+// };
+// int main()
+// {
+//     auto a= sizeof(S);
+//     return 0;
+// }
+
 #include <string>
- 
-auto main() -> int
+#include <memory>
+
+using namespace std;
+
+
+class StrVec
 {
-    std::string buffer;
- 
-    std::format_to(
-        std::back_inserter(buffer), //< OutputIt
-        "Hello, C++{}!\n",          //< fmt 
-        "20");                      //< arg
-    std::cout << buffer;
-    buffer.clear();
- 
-    std::format_to(
-        std::back_inserter(buffer), //< OutputIt
-        "Hello, {0}::{1}!{2}",      //< fmt 
-        "std",                      //< arg {0}
-        "format_to()",              //< arg {1}
-        "\n",                       //< arg {2}
-        "extra param(s)...");       //< 不使用
-    std::cout << buffer;
- 
-    std::wstring wbuffer;
-    std::format_to(
-        std::back_inserter(wbuffer),//< OutputIt 
-        L"Hello, {2}::{1}!{0}",     //< fmt
-        L"\n",                      //< arg {0}
-        L"format_to()",             //< arg {1}
-        L"std",                     //< arg {2}
-        L"...is not..."             //< 不使用
-        L"...an error!");           //< 不使用
-    std::wcout << wbuffer;
+public:
+    StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {}
+    StrVec(const StrVec &);
+    StrVec &operator=(const StrVec &);
+    ~StrVec();
+    void push_back(const std::string &);
+    size_t size() const { return first_free - elements; }
+    size_t capacity() const { return cap - elements; }
+    std::string *begin() const { return elements; }
+    std::string *end() const { return first_free; }
+
+private:
+    static std::allocator<std::string> alloc; //分配元素
+    //被添加元素的函数所使用
+    void chk_n_alloc()
+    {
+        if (size() == capacity())
+            reallocate();
+    }
+    //工具函数，被拷贝构造函数，赋值运算符和析构函数所使用
+    std::pair<std::string *, std::string*> alloc_n_copy(const std::string *, const std::string *);
+    void free();             //销毁元素并释放内存
+    void reallocate();       //获得更多内存并拷贝已有元素
+    std::string *elements;   //指向数组首元素的指针
+    std::string *first_free; //指向数组第一个空闲的元素
+    std::string *cap;        //指向数组尾后位置的指针
+};
+
+void StrVec::push_back(const std::string &s)
+{
+    chk_n_alloc(); //確保有足夠的空間容納新元素
+    //在first_free指向的元素中构造s的副本
+    alloc.construct(first_free++, s);
+}
+std::pair<std::string *, std::string *>
+StrVec::alloc_n_copy(const std::string *b, const std::string *e)
+{
+    //分配空间保存给定范围中的元素
+    auto data = alloc.allocate(e - b);
+    //初始化并返回一个pair，太pair由data和uninitialized_copy的返回值构成
+    return {data, uninitialized_copy(b, e, data)};
+}
+void StrVec::free()
+{
+    //不能传递给deallocate一个空指针，如果elements为0，函数什么也不做
+    if (elements)
+    {
+        //逆序销毁旧元素
+        for (auto p = first_free; p != elements; /**/)//因为下面有--和上面的if判断所以不用结束判断
+            alloc.destroy(--p);
+        alloc.deallocate(elements, cap - elements);
+    }
+}
+int main()
+{
+
+    return 0;
 }
