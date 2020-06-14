@@ -8398,64 +8398,232 @@ int main()
 
 using namespace std;
 
+//using std::allocator::construct;
 
-class StrVec
-{
-public:
-    StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {}
-    StrVec(const StrVec &);
-    StrVec &operator=(const StrVec &);
-    ~StrVec();
-    void push_back(const std::string &);
-    size_t size() const { return first_free - elements; }
-    size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+// class StrVec
+// {
+// public:
+//     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {}
+//     StrVec(const StrVec &);
+//     StrVec &operator=(const StrVec &);
+//     ~StrVec();
+//     void push_back(const std::string &);
+//     size_t size() const { return first_free - elements; }
+//     size_t capacity() const { return cap - elements; }
+//     std::string *begin() const { return elements; }
+//     std::string *end() const { return first_free; }
 
-private:
-    static std::allocator<std::string> alloc; //分配元素
-    //被添加元素的函数所使用
-    void chk_n_alloc()
-    {
-        if (size() == capacity())
-            reallocate();
-    }
-    //工具函数，被拷贝构造函数，赋值运算符和析构函数所使用
-    std::pair<std::string *, std::string*> alloc_n_copy(const std::string *, const std::string *);
-    void free();             //销毁元素并释放内存
-    void reallocate();       //获得更多内存并拷贝已有元素
-    std::string *elements;   //指向数组首元素的指针
-    std::string *first_free; //指向数组第一个空闲的元素
-    std::string *cap;        //指向数组尾后位置的指针
-};
+// private:
+//     static std::allocator<std::string> alloc; //分配元素
+//     //被添加元素的函数所使用
+//     // void chk_n_alloc()
+//     // {
+//     //     if (size() == capacity())
+//     //         reallocate();
+//     // }
+//     //工具函数，被拷贝构造函数，赋值运算符和析构函数所使用
+//     //std::pair<std::string *, std::string *> alloc_n_copy(const std::string *, const std::string *);
+//     void free();             //销毁元素并释放内存
+//     void reallocate();       //获得更多内存并拷贝已有元素
+//     string * elements;   //指向数组首元素的指针
+//     string * first_free; //指向数组第一个空闲的元素
+//     string * cap;        //指向数组尾后位置的指针
 
-void StrVec::push_back(const std::string &s)
-{
-    chk_n_alloc(); //確保有足夠的空間容納新元素
-    //在first_free指向的元素中构造s的副本
-    alloc.construct(first_free++, s);
-}
-std::pair<std::string *, std::string *>
-StrVec::alloc_n_copy(const std::string *b, const std::string *e)
-{
-    //分配空间保存给定范围中的元素
-    auto data = alloc.allocate(e - b);
-    //初始化并返回一个pair，太pair由data和uninitialized_copy的返回值构成
-    return {data, uninitialized_copy(b, e, data)};
-}
-void StrVec::free()
-{
-    //不能传递给deallocate一个空指针，如果elements为0，函数什么也不做
-    if (elements)
-    {
-        //逆序销毁旧元素
-        for (auto p = first_free; p != elements; /**/)//因为下面有--和上面的if判断所以不用结束判断
-            alloc.destroy(--p);
-        alloc.deallocate(elements, cap - elements);
-    }
-}
-int main()
-{
+// };
 
-    return 0;
-}
+// void StrVec::push_back(const std::string &s)
+// {
+//     chk_n_alloc(); //確保有足夠的空間容納新元素
+//     //在first_free指向的元素中构造s的副本
+//     alloc.construct(first_free++, s);
+// }
+// std::pair<std::string *, std::string *>
+// StrVec::alloc_n_copy(const std::string *b, const std::string *e)
+// {
+//     //分配空间保存给定范围中的元素
+//     auto data = alloc.allocate(e - b);
+//     //初始化并返回一个pair，太pair由data和uninitialized_copy的返回值构成
+//     return {data, uninitialized_copy(b, e, data)};
+// }
+// void StrVec::free()
+// {
+//     //不能传递给deallocate一个空指针，如果elements为0，函数什么也不做
+//     if (elements)
+//     {
+//         //逆序销毁旧元素
+//         for (auto p = first_free; p != elements; /**/) //因为下面有--和上面的if判断所以不用结束判断
+//             alloc.destroy(--p);
+//         alloc.deallocate(elements, cap - elements);
+//     }
+// }
+// StrVec::StrVec(const StrVec &s)
+// {
+//     //调用alloc_n_copy分配空间以容纳与s中一样多的元素
+//     auto newdata=alloc_n_copy(s.begin(),s.end());
+//     elements=newdata.first;
+//     first_free=cap=newdata.second;
+// }
+
+// #include <memory>
+// #include <string>
+
+// using namespace std;
+
+// int main()
+// {
+//     // int n = 3;
+//     // allocator<string> alloc;
+//     // auto const p = alloc.allocate(n);
+//     // auto q=p;
+//     // alloc.construct(q++,"hi");
+//     return 0;
+// }
+
+
+
+// //p461 拷贝控制实例
+// #include <string>
+// #include <set>
+// class Folder;//先声明，message才可以使用
+// class Message
+// {
+//     friend class Folder;
+//     friend void swap(Message &lhs, Message &rhs);
+
+// public:
+//     //folders被隐式初始化为空集合
+//     explicit Message(const std::string &str = "") : contents(str) {}
+//     //拷贝控制成员，用来管理指向本message的指针
+//     Message(const Message &);
+//     Message &operator=(const Message &);
+//     ~Message();
+//     //从给定folder集合中添加/删除文本
+//     void save(Folder &);
+//     void remove(Folder &);
+
+//     //void addFldr(Folder *f){folders.insert(f);}
+
+// private:
+//     std::string contents;       //实际消息文本
+//     std::set<Folder *> folders; //包含本message的folder
+//     //拷贝构造函数\拷贝赋值运算符和析构函数所使用的工具函数
+//     //将本message添加到指向参数中的Folder中
+//     void add_to_Folders(const Message &);
+//     //从folers中的每个Folder中删除本Message
+//     void remove_from_Folders();
+// };
+
+
+// class Folder
+// {
+//     friend class Message;
+
+// public:
+//     void addMsg(Message *m) { mesgs.insert(m); }
+//     void remMsg(Message *m) { mesgs.erase(m); }
+//     Folder(const Folder &f);
+//     Folder &operator=(const Folder &);
+//     ~Folder();
+
+// private:
+//     void add_to_Messages(const Folder &f);
+//     void remove_from_Msgs();
+
+//     set<Message *> mesgs;
+// };
+// //将foler信息添加到message中去
+// void Folder::add_to_Messages(const Folder &f)
+// {
+//     for (auto &msg : f.mesgs)
+//         msg->save(*this);
+// }
+// void Folder::remove_from_Msgs()
+// {
+//     while (!mesgs.empty())
+//         (*mesgs.begin())->remove(*this);
+// }
+// Folder::Folder(const Folder &f) : mesgs(f.mesgs)
+// {
+//     add_to_Messages(f);
+// }
+// Folder &Folder::operator=(const Folder &f)
+// {
+//     remove_from_Msgs();
+//     mesgs = f.mesgs;
+//     add_to_Messages(f);
+//     return *this;
+// }
+
+// Folder::~Folder()
+// {
+//     remove_from_Msgs();
+// }
+
+
+// //message的具体实现需要放在后面（因为和FOLDER有关系）
+// void Message::save(Folder &f)
+// {
+//     //双向的
+//     folders.insert(&f); //将给定Folder添加到我们的Folder列表中
+//     f.addMsg(this);     //将本Message添加到f的message集合中
+// }
+
+// void Message::remove(Folder &f)
+// {
+//     folders.erase(&f); //将给定Folder从我们的Folder列表中删除
+//     f.addMsg(this);
+// }
+
+// //将本Message添加到指向m的Folder中
+// void Message::add_to_Folders(const Message &m)
+// {
+//     for (auto f : m.folders) //对每个包含m的Folder
+//         f->remMsg(this);     //向该Folder添加一个指向本Message的指针
+// }
+// Message::Message(const Message &m) : contents(m.contents), folders(m.folders)
+// {
+//     add_to_Folders(m); //将本消息添加到指向m的Folder中
+// }
+
+// //定义公共函数从对应的Folder中删除本Message
+// void Message::remove_from_Folders()
+// {
+//     for (auto f : folders)
+//         f->addMsg(this);
+// }
+// Message::~Message()
+// {
+//     remove_from_Folders();
+// }
+// Message &Message::operator=(const Message &rhs)
+// {
+//     //通过删除指针再插入他们来处理自赋值状况
+//     remove_from_Folders();   //更新已有folder
+//     contents = rhs.contents; //从rhs拷贝信息
+//     folders = rhs.folders;   //从rhs拷贝指针
+//     add_to_Folders(rhs);     //将本 message添加到那些folder中
+//     return *this;
+// }
+// void swap(Message &lhs, Message &rhs)
+// {
+//     using std::swap; //在本例中严格来说并不需要，但这是一个好习惯
+//     //将每个消息的指针从它原来所在的folder删除
+//     for (auto f : lhs.folders)
+//         f->remMsg(&lhs);
+//     for (auto f : rhs.folders)
+//         f->remMsg(&lhs);
+//     //交换contonts和folders指针set
+//     swap(lhs.folders, rhs.folders);   //使用swap(set&,set&)
+//     swap(lhs.contents, rhs.contents); //使用swap(string&,string&)
+//     //将message的指针添加到它的(新)Folder中
+//     for (auto f : lhs.folders)
+//         f->addMsg(&lhs);
+//     for (auto f : rhs.folders)
+//         f->addMsg(&rhs);
+// }
+
+// int main()
+// {
+//     Message m;
+//     return 0;
+// }

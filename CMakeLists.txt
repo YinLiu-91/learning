@@ -7,7 +7,7 @@ PROJECT(20200119 )
 # )
 if( MINGW )
     if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -O0 -g -Wall -Wunused-function -pthread")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -g -Wall -Wunused-function -pthread")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -g -pthread")
         message("MINGW - Debug mode")
     elseif( CMAKE_BUILD_TYPE STREQUAL "Release" ) # debug
@@ -25,10 +25,10 @@ if( MINGW )
     set( CMAKE_EXECUTABLE_SUFFIX ".exe" )
 endif() # MINGW
 
-include_directories(
-    20200119 PUBLIC
-   "H:\\Program Files\\mingw32_gcc10\\include\\c++\\10.1.1"
-   "H:\\Program Files\\mingw32_gcc10\\include\\c++\\10.1.1\\backward" 
-   "H:\\Program Files\\mingw32_gcc10\\include"   
-)
+# include_directories(
+#     20200119 PUBLIC
+#    "H:\\Program Files\\mingw32_gcc10\\include\\c++\\10.1.1"
+#    "H:\\Program Files\\mingw32_gcc10\\include\\c++\\10.1.1\\backward" 
+#    "H:\\Program Files\\mingw32_gcc10\\include"   
+# )
 add_executable(20200119 20200119.cpp)
