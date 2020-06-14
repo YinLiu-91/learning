@@ -8479,8 +8479,6 @@ using namespace std;
 //     return 0;
 // }
 
-
-
 // //p461 拷贝控制实例
 // #include <string>
 // #include <set>
@@ -8512,7 +8510,6 @@ using namespace std;
 //     //从folers中的每个Folder中删除本Message
 //     void remove_from_Folders();
 // };
-
 
 // class Folder
 // {
@@ -8558,7 +8555,6 @@ using namespace std;
 // {
 //     remove_from_Msgs();
 // }
-
 
 // //message的具体实现需要放在后面（因为和FOLDER有关系）
 // void Message::save(Folder &f)
@@ -8625,5 +8621,241 @@ using namespace std;
 // int main()
 // {
 //     Message m;
+//     return 0;
+// }
+
+// //书中源码  p470 13.44
+// #ifndef STRING_H
+// #define STRING_H
+// #endif
+// #include <cstring>
+// using std::strlen;
+// #include <algorithm>
+// using std::copy;
+// #include <cstddef>
+// using std::size_t;
+// #include <iostream>
+// using std::ostream;
+
+// #include <utility>
+// using std::swap;
+
+// #ifdef INITIALIZER_LIST
+// #include <initializer_list>
+// #endif
+
+// #include <iostream>
+// #include <memory>
+// using std::uninitialized_copy;
+
+// //define the static allocator member
+
+// class String
+// {
+//     friend String operator+(const String &, const String &);
+//     friend String add(const String &, const String &);
+//     friend std::ostream &operator<<(std::ostream &, const String &);
+//     friend std::ostream &print(std::ostream &, const String &);
+
+// public:
+// #if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+//     String() = default;
+// #else
+//     String() : sz(0), p(nullptr)
+//     {
+//     }
+// #endif
+//     //cp points to a null terminated array;
+//     //allocate new memory & copy the array
+//     String(const char *cp) : sz(std::strlen(cp)), p(a.allocate(sz)) { std::uninitialized_copy(cp, cp + sz, p); }
+
+//     //copy constructor::allocate a new copy of the characters in s
+//     String(const String &s) : sz(s.sz), p(a.allocate(s.sz)) { std::uninitialized_copy(s.p, s.p + sz, p); }
+
+// //move  constructor::allocate a new copy of the characters in s
+// //no memory allocation or deallocation
+// #ifdef NOEXCEPT
+//     String(String &&s) noexcept : sz(s.size()), p(s.p)
+// #else
+//     String(String &&s) throw() : sz(s.size()), p(s.p)
+// #endif
+//     {
+//         s.p = 0;
+//         s.sz = 0;
+//     }
+//     String(size_t n, char c) : sz(n), p(a.allocate(n)) { std::uninitialized_fill_n(p, sz, c); }
+
+//     //allocate a new copy of the data in the right-hand operand;
+//     //delete the memory used by the left-hand operand
+//     String &operator=(const String &);
+// //move pointers front right- to left-hand operand
+// #ifdef NOEXCEPT
+//     String &operator=(String &&) noexcept;
+// #else
+//     String &operator=(String &&) throw();
+// #endif
+
+// //uncontionally delete the memory because each String has its own
+// #ifdef NOEXCEPT
+//     ~String() noexcept
+//     {
+//         if (p)
+//             a.deallocate(p, sz);
+//     }
+// #else
+//     ~String() throw()
+//     {
+//         if (p)
+//             a.deallocate(p, sz);
+//     }
+// #endif
+
+//     //additional assignment operators
+//     String &operator=(const char *); //car="Studebaker"
+//     String &operator=(char);         //model='T'
+// #ifdef INITIALIZER_LIST
+//     String &operator=(std::initializer_list<char>);
+// #endif
+
+//     const char *begin()
+//     {
+//         return p;
+//     }
+//     const char *begin() const
+//     {
+//         return p;
+//     }
+//     const char *end()
+//     {
+//         return p + sz;
+//     }
+//     const char *end() const
+//     {
+//         return p + sz;
+//     }
+
+//     size_t size() const { return sz; }
+//     void swap(String &s)
+//     {
+//         auto tmp = p;
+//         p = s.p;
+//         s.p = tmp;
+//         auto cnt = sz;
+//         sz = s.sz;
+//         s.sz = cnt;
+//     }
+
+// private:
+// #ifdef IN_CLASS_INITS
+//     std::size_t sz = 0;
+//     char *p = nullptr;
+// #else
+//     std::size_t sz;
+//     char *p;
+// #endif
+//     static std::allocator<char> a;
+// };
+
+// std::allocator<char> String::a;
+// //定义
+// String &String ::operator=(const String &rhs)
+// {
+//     auto newp = a.allocate(rhs.sz);
+//     uninitialized_copy(rhs.p, rhs.p + sz, newp);
+
+//     if (p)
+//         a.deallocate(p, sz); //free memory used by the left-hand
+//     p = newp;                //p now points to the newly allocated string
+//     sz = rhs.sz;
+//     return *this;
+// }
+
+// //move assinment operator
+// #ifdef NOEXCEPT
+// String &String ::operator=(String &&rhs) noexcept
+// #else
+// String &String::operator=(String &&rhs) throw()
+// #endif 
+// {
+//     //explicit check for self-assignment
+//     if (this != &rhs)
+// {
+//     if (p)
+//         a.deallocate(p, sz); //
+//     p = rhs.p;
+//     sz = rhs.sz;
+//     rhs.p = 0; //delete rhs.p is safe;
+//     rhs.sz = 0;
+// }
+// return *this;
+// }
+
+// String &String::operator=(const char *cp)
+// {
+//     if (p)
+//         a.deallocate(p, sz);
+//     p = a.allocate(sz = strlen(cp));
+//     uninitialized_copy(cp, cp + sz, p);
+//     return *this;
+// }
+// String &String::operator=(char c)
+// {
+//     if (p)
+//         a.deallocate(p, sz);
+//     p = a.allocate(sz = 1);
+//     *p = c;
+//     return *this;
+// }
+
+// #ifdef INITIALIZER_LIST
+// String &String::operator=(initializer_list<char> il)
+// {
+//     //no need to check for self_assinment
+//     if (p)
+//         a.deallocate(p, sz);
+//     p = a.allocate(sz = il.size());
+//     uninitialized_copy(il.begin(), il.end(), p);
+//     return *this;
+// }
+// #endif
+
+// //named functions for operators
+// ostream &print(ostream &os, const String &s)
+// {
+//     auto p = s.begin();
+//     while(p != s.end())
+//             os
+//         << *p++;
+//     return os;
+// }
+// String add(const String &lhs, const String &rhs)
+// {
+//     String ret;
+//     ret.sz = rhs.size() + lhs.size();   //String的和
+//     ret.p = String::a.allocate(ret.sz); //allocate new space
+//     uninitialized_copy(lhs.begin(), lhs.end(), ret.p);
+//     uninitialized_copy(rhs.begin(), rhs.end(), ret.p + lhs.sz);
+//     return ret;
+// }
+
+// //return plural version of word if ctr isn't 1
+// String make_plural(size_t ctr,const String &word,const String & ending)
+// {
+//     return (ctr!=1)? add(word,ending):word;
+// }
+
+// //
+// ostream&operator<<(ostream&os,const String &s)
+// {
+//     return print(os,s);
+// }
+// String operator+(const String&lhs,const String &rhs)
+// {
+//     return add(lhs,rhs);
+// }
+
+// int main()
+// {
+//     String s;
 //     return 0;
 // }

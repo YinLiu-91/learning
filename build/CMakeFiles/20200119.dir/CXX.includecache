@@ -13,8 +13,20 @@ string
 -
 memory
 -
-string
+cstring
 -
-set
+algorithm
+-
+cstddef
+-
+iostream
+-
+utility
+-
+initializer_list
+-
+iostream
+-
+memory
 -
 
