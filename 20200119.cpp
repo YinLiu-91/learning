@@ -2973,7 +2973,8 @@
 //     //添加删除元素
 //     void push_back(const std::string &t) { data->push_back(t); }
 //     void pop_back();
-
+//     std::string &operator[](std::size_t n) { return data[n]; }
+//     const std::string &operator[](std::size_t n) const { return data[n]; }
 //     //元素访问
 //     std::string &front();
 //     std::string &back();
@@ -3015,7 +3016,7 @@
 // bool operator<(const StrBlob &lhs, const StrBlob &rhs)
 // {
 //     //比较每一个指针所指向的值的大小？？还是本身不适合有小于？
-//     return *lhs.data<*rhs.data;
+//     return *lhs.data < *rhs.data;
 // }
 
 // //对于访问一个不存在元素的尝试，StrBlobPtr会抛出一个异常
@@ -3073,15 +3074,15 @@
 // }
 // //后置自增
 // //后置自增对象之前需要首先记录返回原值
-// StrBlobPtr StrBlobPtr::operator++(int)
+// StrBlobPtr &StrBlobPtr::operator++(int)
 // {
 //     //此处无需检查有效性，调用牵制递增运算时才需要检查
 //     StrBlobPtr ret = *this;
 //     ++*this;    //向前移动一个元素，前置++需要检查递增的有效性
-//     return ret; //返回之前记录的状态
+//     return ret; //返回之前记录的状态kkk
 // }
 // //后置自减
-// StrBlobPtr StrBlobPtr::operator++(int)
+// StrBlobPtr &StrBlobPtr::operator++(int)
 // {
 //     //此处无须检查有效性,调用牵制递减运算时才需要检查
 //     StrBlobPtr ret = *this;
@@ -8393,12 +8394,12 @@ int main()
 //     return 0;
 // }
 
-#include <string>
-#include <memory>
+// #include <string>
+// #include <memory>
 
-using namespace std;
+// using namespace std;
 
-//using std::allocator::construct;
+// using std::allocator::construct;
 
 // class StrVec
 // {
@@ -8412,9 +8413,11 @@ using namespace std;
 //     size_t capacity() const { return cap - elements; }
 //     std::string *begin() const { return elements; }
 //     std::string *end() const { return first_free; }
+//     string &private : static std::allocator<std::string> alloc; //分配元素
+//     string &operator[](size_t n) return { elements[n]; }
+//     const string &operator[](size_t n) const { return elements[n]; }
+//     StrVec &operator=(std::initializer_list<std::string>);
 
-// private:
-//     static std::allocator<std::string> alloc; //分配元素
 //     //被添加元素的函数所使用
 //     // void chk_n_alloc()
 //     // {
@@ -8423,14 +8426,21 @@ using namespace std;
 //     // }
 //     //工具函数，被拷贝构造函数，赋值运算符和析构函数所使用
 //     //std::pair<std::string *, std::string *> alloc_n_copy(const std::string *, const std::string *);
-//     void free();             //销毁元素并释放内存
-//     void reallocate();       //获得更多内存并拷贝已有元素
-//     string * elements;   //指向数组首元素的指针
-//     string * first_free; //指向数组第一个空闲的元素
-//     string * cap;        //指向数组尾后位置的指针
-
+//     void free();        //销毁元素并释放内存
+//     void reallocate();  //获得更多内存并拷贝已有元素
+//     string *elements;   //指向数组首元素的指针
+//     string *first_free; //指向数组第一个空闲的元素
+//     string *cap;        //指向数组尾后位置的指针
 // };
-
+// StrVec & ::StrVec::operator=(std::initializer_list<std::string> i1)
+// {
+//     //alloc_n_copy分配内存空间并从给定范围内拷贝元素
+//     auto data = alloc_n_copy(i1.begin(), i1.end());
+//     free(); //销毁对象中的元素并释放内存空间
+//     elements = data.first;
+//     first_free = cap = data.second;
+//     return *this;
+// } 
 // void StrVec::push_back(const std::string &s)
 // {
 //     chk_n_alloc(); //確保有足夠的空間容納新元素
@@ -8459,9 +8469,9 @@ using namespace std;
 // StrVec::StrVec(const StrVec &s)
 // {
 //     //调用alloc_n_copy分配空间以容纳与s中一样多的元素
-//     auto newdata=alloc_n_copy(s.begin(),s.end());
-//     elements=newdata.first;
-//     first_free=cap=newdata.second;
+//     auto newdata = alloc_n_copy(s.begin(), s.end());
+//     elements = newdata.first;
+//     first_free = cap = newdata.second;
 // }
 
 // #include <memory>
@@ -8744,6 +8754,8 @@ using namespace std;
 //         sz = s.sz;
 //         s.sz = cnt;
 //     }
+//     char &operator[](size_t n) { return (char)p[n]; }
+//     const char &operator[](size_t n) const { return (char)p[n]; }
 
 // private:
 // #ifdef IN_CLASS_INITS
@@ -8779,15 +8791,15 @@ using namespace std;
 // {
 //     //explicit check for self-assignment
 //     if (this != &rhs)
-// {
-//     if (p)
-//         a.deallocate(p, sz); //
-//     p = rhs.p;
-//     sz = rhs.sz;
-//     rhs.p = 0; //delete rhs.p is safe;
-//     rhs.sz = 0;
-// }
-// return *this;
+//     {
+//         if (p)
+//             a.deallocate(p, sz); //
+//         p = rhs.p;
+//         sz = rhs.sz;
+//         rhs.p = 0; //delete rhs.p is safe;
+//         rhs.sz = 0;
+//     }
+//     return *this;
 // }
 
 // String &String::operator=(const char *cp)
@@ -8823,9 +8835,9 @@ using namespace std;
 // ostream &print(ostream &os, const String &s)
 // {
 //     auto p = s.begin();
-//     while(p != s.end())
-//             os
-//         << *p++;
+//     while (p != s.end())
+//         os
+//             << *p++;
 //     return os;
 // }
 // String add(const String &lhs, const String &rhs)
@@ -8839,19 +8851,19 @@ using namespace std;
 // }
 
 // //return plural version of word if ctr isn't 1
-// String make_plural(size_t ctr,const String &word,const String & ending)
+// String make_plural(size_t ctr, const String &word, const String &ending)
 // {
-//     return (ctr!=1)? add(word,ending):word;
+//     return (ctr != 1) ? add(word, ending) : word;
 // }
 
 // //
-// ostream&operator<<(ostream&os,const String &s)
+// ostream &operator<<(ostream &os, const String &s)
 // {
-//     return print(os,s);
+//     return print(os, s);
 // }
-// String operator+(const String&lhs,const String &rhs)
+// String operator+(const String &lhs, const String &rhs)
 // {
-//     return add(lhs,rhs);
+//     return add(lhs, rhs);
 // }
 
 // int main()
@@ -9051,3 +9063,31 @@ using namespace std;
 
 //     return 0;
 // }
+
+// //开始今日
+// #include<iostream>
+// #include<functional>
+// using std::function;
+// int main()
+// {
+
+//      function<int(int,int)> f1=add;//函数指针
+//      function<int(int,int)>f2=divides();//函数对象类的对象
+//      function<int(int,int)>f3=[](int i,int j){return i*j;}
+//      std::cout<<f1(4,2)<<std::endl;
+//      std::cout<<f2(4,2)<<std::endl;
+//      std::cout<<f3(4,2)<<std::endl;
+
+//      return 0;
+
+// }
+
+
+#include<memory>
+#include<string>
+#include<unordered_map>
+int main()
+{
+    using UPtrMapSS=std::unique_ptr<std::unordered_map<std::string,std::string>>;
+    return 0;
+}
