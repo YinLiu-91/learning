@@ -8775,7 +8775,7 @@ using namespace std;
 // String &String ::operator=(String &&rhs) noexcept
 // #else
 // String &String::operator=(String &&rhs) throw()
-// #endif 
+// #endif
 // {
 //     //explicit check for self-assignment
 //     if (this != &rhs)
@@ -8857,5 +8857,197 @@ using namespace std;
 // int main()
 // {
 //     String s;
+//     return 0;
+// }
+
+//p514
+
+// #include<stdexcept>
+// class SmallInt{
+//     public:
+//     SmallInt(int i=0):val(i)
+//     {
+//         if(i<0||i>255)
+//         throw std:: out_of_range("Bad SmallInt value");
+
+//     }
+//     operator int()const {return val;}
+//     private:
+//     std::size_t val;
+// };
+
+// int main()
+// {
+//     SmallInt si;
+//     si=4;
+//     si+3;
+//     return 0;
+// }
+
+// #include<string>
+// #include<iostream>
+// class PrintSting{
+//     public:
+//     PrintSting(ostream&o=cout,char c=' '):os(o),sep(c){}
+//     void operator()(const string &s)const {os<<s<<sep;}
+
+//     private:
+//     ostream &os;
+//     char sep;
+// };
+
+// int main()
+// {
+//     std::string s="ddd";
+//     PrintSting printer;
+//     printer(s);
+//     PrintSting errors(cerr,'\n');
+//     errors(s);
+//     return 0;
+// }
+
+// class IfThemElse
+// {
+// public:
+//   IfThemElse(){}
+//     IfThemElse(int a , int b , int c ) : A(a), B(b), C(c) {}
+//     int operator()(int a, int b, int c) const
+//     {
+//         if (a > 3)
+//             return b;
+//         else
+//             return c;
+//     }
+
+// private:
+//     int A;
+//     int B;
+//     int C;
+// };
+
+// int main()
+// {
+//     IfThemElse i;
+//     auto a = i(1, 2, 4);
+//     return 0;
+// }
+
+// #include <string>
+// #include <iostream>
+// class ReadString
+// {
+// public:
+//     ReadString(istream &is = cin) : is(is) {}
+//     std::string operator()()
+//     {
+
+//         std::string line;
+//         if (!getline(is, line))
+//         {
+//             line = " ";
+//         }
+//         return line;
+//     }
+
+// private:
+//     istream &is;
+// };
+// #include<vector>
+// #include<iostream>
+// int main()
+// {
+//     std::string s;
+//     std::vector<std::string> svec;
+//     while(cin>>s)
+//     {
+//     ReadString rs(cin);
+//      svec.push_back(rs());
+//     }
+//     return 0;
+// }
+
+// class IntCompare{
+//     public:
+//     IntCompare(int v):val(v){}
+//     bool operator()(int v){return val==v;}
+//     private:
+//     int val;
+// };
+
+// #include<algorithm>
+// #include<vector>
+// int main()
+// {
+//     std::vector<int>vec={1,2,3,4};
+//     const int oldValue=2;
+//     const int newValue=200;
+//     IntCompare icmp(oldValue);
+//     std::replace_if(vec.begin(),vec.end(),icmp,newValue);
+
+//     return 0;
+
+// }
+
+// #include <ctime>
+// #include <vector>
+// #include <iostream>
+// struct A
+// {
+//     /* data */
+//     double a;
+//     double b;
+//     double c;
+//     double d;
+//     A() : a(1.0), b(1.0), c(1.0), d(1.0) {}
+//     A(double a1, double b1, double c1, double d1) : a(a1),
+//                                                     b(b1), c(c1), d(d1) {}
+// };
+// struct B
+// {
+//     /* data */
+
+//     std::vector<double> B1;
+//     B() : B1(std::vector<double>(4, 1.0)) {}
+// };
+// inline B operator*(const double &d, const B &b)
+// {
+//     B b1;
+//     b1.B1[0] = d * b.B1[0];
+//     b1.B1[1] = d * b.B1[1];
+//     b1.B1[2] = d * b.B1[2];
+//     b1.B1[3] = d * b.B1[3];
+//     return b1;
+// }
+// inline A operator*(const B &b1, const A &a1)
+// {
+//     return A(b1.B1[0] * a1.a, b1.B1[1] * a1.b, b1.B1[2] * a1.c, b1.B1[3] * a1.d);
+// }
+// int main()
+// {
+//     // A a;
+//     std::vector<std::vector<A>> avec;
+//     // std::vector<std::vector<std::vector<double>>> avec1;
+//     int as = 3000;
+//     B B2;
+//     std::clock_t start, end;
+//     start = std::clock();
+//     avec.resize(as);
+//     for (int i = 0; i < as; ++i)
+//         avec[i].resize(as);
+//     for (int i = 0; i < as; ++i)
+//         for (int j = 0; j < as; ++i)
+//             auto a23 = B2 * avec[i][j];
+//     // avec1.resize(as);
+//     // for (size_t i = 0; i < as; ++i)
+//     // {
+//     //     avec1[i].resize(as);
+//     //     for (size_t j = 0; j < as; ++j)
+//     //         avec1[i][j].resize(4);
+//     // }
+//     // end = std::clock();
+//     double time_dura = double(end - start);
+//     std::cout << time_dura << std::endl;
+//     std::system("pause");
+
 //     return 0;
 // }

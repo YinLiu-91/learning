@@ -61,7 +61,13 @@
         "functional": "cpp",
         "iterator": "cpp",
         "xhash": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "bit": "cpp",
+        "compare": "cpp",
+        "ctime": "cpp",
+        "random": "cpp"
     },
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "python.analysis.memory.keepLibraryLocalVariables": true,
+    "python.autoComplete.addBrackets": true
 }
