@@ -9083,11 +9083,25 @@ int main()
 // }
 
 
-#include<memory>
-#include<string>
-#include<unordered_map>
-int main()
-{
-    using UPtrMapSS=std::unique_ptr<std::unordered_map<std::string,std::string>>;
-    return 0;
-}
+// #include<memory>
+// #include<string>
+// #include<unordered_map>
+// int main()
+// {
+//     using UPtrMapSS=std::unique_ptr<std::unordered_map<std::string,std::string>>;
+//     return 0;
+// }
+
+// #include<vector>
+// #include<algorithm>
+// #include<iostream>
+// using namespace std;
+// int main()
+// {
+//     vector<vector<double>> dvec={{1,2,3},{2,3,4}};
+//     auto de=min_element(dvec.begin(),dvec.end(),[](const vector<double>&v1,const vector<double>&v2){return });
+//     auto de1=min_element((*de).begin(),(*de).end());
+//     auto dev=*de1;
+//     auto dev=1+1;
+//     return 0;
+// }
