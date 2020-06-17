@@ -8440,7 +8440,7 @@ int main()
 //     elements = data.first;
 //     first_free = cap = data.second;
 //     return *this;
-// } 
+// }
 // void StrVec::push_back(const std::string &s)
 // {
 //     chk_n_alloc(); //確保有足夠的空間容納新元素
@@ -9082,7 +9082,6 @@ int main()
 
 // }
 
-
 // #include<memory>
 // #include<string>
 // #include<unordered_map>
@@ -9102,6 +9101,129 @@ int main()
 //     auto de=min_element(dvec.begin(),dvec.end(),[](const vector<double>&v1,const vector<double>&v2){return });
 //     auto de1=min_element((*de).begin(),(*de).end());
 //     auto dev=*de1;
+
 //     auto dev=1+1;
 //     return 0;
 // }
+
+// // 今日学习第12章，动态内存
+// //使用pad远程电脑操作
+// #include <string>
+// #include <memory>
+// #include <vector>
+// #include <stdexcept>
+// using namespace std;
+// class StrBlob
+// {
+// public:
+//     typedef std::vector<std::string>::size_type size_type;
+//     StrBlob();
+//     StrBlob(std::initializer_list<std::string> i1);
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加元素
+//     void push_back(const std::string &t) { data->push_back(t); }
+//     void pop_back();
+//     std::string &front();
+//     std::string &back();
+//     const std::string& front()const;
+//     const std::string &back()const ;
+// private:
+//     std::shared_ptr<std::vector<std::string>> data;
+//     //如果data[i]不合法，抛出一个异常
+//     void check(size_type i, const std::string &msg) const;
+// };
+// StrBlob::StrBlob() : data(std::make_shared<std::vector<std::string>>()) {}
+// StrBlob::StrBlob(std::initializer_list<std::string> i1) : data(std::make_shared<std::vector<std::string>>(i1)) {}
+// void StrBlob::check(size_type i, const std::string &msg) const
+// {
+//     if (i >= data->size())
+//         throw out_of_range(msg);
+// }
+// std::string &StrBlob::front()
+// {
+//     check(0, "front on empty strblob");
+//     return data->front();
+// }
+// std::string &StrBlob::back()
+// {
+//     check(0, "back on empty strblob");
+//     return data->back();
+// }
+
+// const std::string &StrBlob::front()const
+// {
+//     check(0, "front on empty strblob");
+//     return data->front();
+// }
+// const std::string &StrBlob::back()const
+// {
+//     check(0, "back on empty strblob");
+//     return data->back();
+// }
+// void StrBlob::pop_back()
+// {
+//     check(0, "pop_back on empty strblob");
+//     data->pop_back();
+// }
+
+// int main()
+// {
+//     StrBlob s, s1;
+//     s.push_back("rer");
+//     s1 = s;
+//     s.push_back("is");
+//     auto size = s1.size();
+//     return 0;
+// }
+
+// #include <memory>
+// #include <string>
+// #include <iostream>
+// #include <vector>
+// using namespace std;
+// int main()
+// {
+//     // int n = 10;
+//     // allocator<string> alloc;
+//     // auto const p = alloc.allocate(n);
+//     // auto q = p;
+//     // alloc.construct(q++, "ss");
+//     // auto ss = *(q - 1);
+//     // cout << ss << endl;
+//     vector<double> ivec(4, 3);
+//     allocator<int> alloc;
+//     auto p = alloc.allocate(ivec.size() * 2);
+//     auto q = uninitialized_copy(ivec.begin(), ivec.end(), p);
+//     auto end = uninitialized_fill_n(q, ivec.size(), 3);
+//     while (end != p)
+//     {
+//         alloc.destroy(--end) ;
+//     }
+//     auto maxs=alloc.max_size();
+    
+//     return 0;
+// }
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+int main()
+{
+    const char *c1="hello";
+    const char *c2="world";
+    //字符串所需空间等于字符数+1
+    char *r=new char[strlen(c1)+strlen(c2)+1];
+
+    strcpy(r,c1);
+    strcat(r,c2);
+    cout<<r<<endl;
+
+    string s1="hello";
+    string s2="world";
+    strcpy(r,(s1+s2).c_str());//拷贝连接结果
+    cout <<r<<endl;
+
+    delete[]r;
+    return 0;
+}
