@@ -9323,4 +9323,90 @@ int main()
 //     return 0;
 // }
 
+// #include <boost/lambda/lambda.hpp>
+// #include <iostream>
+// #include <iterator>
+// #include <algorithm>
+
+// int main()
+// {
+//     using namespace boost::lambda;
+//     typedef std::istream_iterator<int> in;
+
+//     std::for_each(
+//         in(std::cin), in(), std::cout << (_1 * 3) << " " );
+//         return 0;
+// }
+
+// template <typename It> //利用尾置返回类型
+// auto fcn(It beg, It end) -> decltype(*beg)
+// {
+//     //
+//     return *beg;
+// }
+
+// #include <string>
+// #include <sstream>
+// #include <iostream>
+// template <typename T>
+// std::string debug_rep(const T &t)
+// {
+//     std::ostringstream ret;
+//     ret << t;
+//     return ret.str(); //返回ret绑定的string的一个副本
+// }
+// //打印指针的值，后跟指针指向的对象
+// //注意此函数不能用于char*
+// template <typename T>
+// std::string debug_rep(T *p)
+// {
+//     std::ostringstream ret;
+//     ret << "pointer" << p;
+//     if (p)
+//     {
+//         ret << " " << debug_rep(*p); //打印p指向的值
+//     }
+//     else
+//         ret << "null pointer"; //  或指出p为空
+//     return ret.str();
+// }
+// std::string debug_rep(const std::string &s)
+// {
+//     return '"' + s + '"';
+// }
+// std::string debug_rep(char *p)
+// {
+//     return debug_rep(std::string(p));
+// }
+// std::string debug_rep(const char *p)
+// {
+//     return debug_rep(std::string(p));
+// }
+// int main()
+// {
+//     //std::string s("hi");
+//     std::cout << debug_rep("hi world") << std::endl;
+//     //std::cout<<debug_rep(s)<<std::endl;
+//     //std::cout<<debug_rep(&s)<<std::endl;
+
+//     return 0;
+// }
+
+// //用来终止递归并打印最后一个元素的函数
+// //此函数必须在可变参数版本的print定义之前声明
+// #include<iostream>
+// using namespace std;
+// template<typename T>
+// std::ostram &print(ostream& os,const T&t)
+// {
+//     return os<<t;//包中最后一个元素之后不打印分隔符
+// }
+// //包中除了最后一个元素之外的其他元素都会调用这个版本的print
+
+// template<typename T,typename... Args>
+// ostream &print(ostream&os,const T&t,const Args&...rest)
+// {
+//     os<<t<<", ";//打印第一个实参
+//     return print(os,rest...);//递归调用，打印其他实参
+// }
 

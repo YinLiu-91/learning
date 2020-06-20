@@ -24,7 +24,10 @@ if( MINGW )
     #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} " )
     set( CMAKE_EXECUTABLE_SUFFIX ".exe" )
 endif() # MINGW
-
+include_directories(
+    20200119 PUBLIC
+    "H:\\Program Files\\boost_1_73_0"
+)
 # include_directories(
 #     20200119 PUBLIC
 #    "H:\\Program Files\\mingw32_gcc10\\include\\c++\\10.1.1"
