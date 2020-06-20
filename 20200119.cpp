@@ -9201,29 +9201,126 @@ int main()
 //         alloc.destroy(--end) ;
 //     }
 //     auto maxs=alloc.max_size();
-    
+
 //     return 0;
 // }
 
-#include<iostream>
-#include<cstring>
-using namespace std;
-int main()
-{
-    const char *c1="hello";
-    const char *c2="world";
-    //字符串所需空间等于字符数+1
-    char *r=new char[strlen(c1)+strlen(c2)+1];
+// #include<iostream>
+// #include<cstring>
+// using namespace std;
+// int main()
+// {
+//     const char *c1="hello";
+//     const char *c2="world";
+//     //字符串所需空间等于字符数+1
+//     char *r=new char[strlen(c1)+strlen(c2)+1];
 
-    strcpy(r,c1);
-    strcat(r,c2);
-    cout<<r<<endl;
+//     strcpy(r,c1);
+//     strcat(r,c2);
+//     cout<<r<<endl;
 
-    string s1="hello";
-    string s2="world";
-    strcpy(r,(s1+s2).c_str());//拷贝连接结果
-    cout <<r<<endl;
+//     string s1="hello";
+//     string s2="world";
+//     strcpy(r,(s1+s2).c_str());//拷贝连接结果
+//     cout <<r<<endl;
 
-    delete[]r;
-    return 0;
-}
+//     delete[]r;
+//     return 0;
+// }
+
+// //p430 文本查询程序
+// #include<iostream>
+// #include<fstream>
+// #include <string>
+// #include<vector>
+// #include<map>
+// #include<set>
+// using namespace std;
+// class TextQuery{
+//     public:
+//     private:
+//     vector<string> file_content;
+
+// };
+
+// void runQueries(ifstream &infile)
+// {
+//     //infile是一个ifstream，指向我们要处理的文件
+//     TextQuery tq(infile);//保存文件并建立查询map
+//     //与用户交互：提示用户输入要查询的单词，完成查询并打印结果
+//     while(true){
+//         cout<<"enter word to look for ,or q to quit:";
+//         string s ;
+//         //若遇到文件尾或用户输入了‘q'时终止
+//         if(!(cin>>s)||s=='q') break;
+//         //指向查询并打印结果
+//         print(cout,tq.query(s))<<endl;
+//     }
+// }
+
+// //c++标准库 算法
+// #include <algorithm>
+// #include <vector>
+// #include <iostream>
+// using namespace std;
+// int main()
+// {
+//     vector<int> coll = {1, 2, 3, 4, 5, 5, 6, 6};
+//     int num;
+//     //等于4的数量
+//     num = count(coll.cbegin(), coll.cend(), 4);
+//     cout << "等于 4 的元素数目" << num << endl;
+
+//     num = count_if(coll.cbegin(), coll.cend(), [](int elem) { return elem % 2 == 0; });
+//     cout << "偶数的数量：" << num << endl;
+
+//     return 0;
+// }
+
+// #include <cstdlib>
+// #include <deque>
+// #include <iostream>
+// #include <algorithm>
+// using namespace std;
+// int main()
+// {
+//     deque<int> coll{-3, -1, 2, 3, 4, 5, 5, 6, 66779, 342, 66779};
+
+//     cout << "最小值" << *min_element(coll.cbegin(), coll.cend()) << endl;
+//     cout << "最大值" << *max_element(coll.cbegin(), coll.cend()) << endl;
+
+//     auto mm = minmax_element(coll.cbegin(), coll.cend());
+//     cout << "最小值" << *mm.first << "最大值" << *mm.second << endl;
+//     cout << "最大值和最小值间的距离" << distance(mm.first, mm.second) << endl;
+//     cout << "绝对值中的最小值" << *min_element(coll.cbegin(), coll.cend(), [](int ele1, int ele2) { return abs(ele1) < abs(ele2); });
+
+//     return 0;
+// }
+
+// #include <list>
+// #include <algorithm>
+// #include <iostream>
+// #include <iterator>
+// using namespace std;
+
+// int main()
+// {
+//     //找到开头和结尾都为4的区间
+//     list<int> coll{1, 2, 3, 4, 5, 5, 6, 4, 6};
+//     list<int>::iterator pos1;
+//     pos1 = find(coll.cbegin(), coll.cend(),4);
+
+//     //发现第2个等于4的位置
+//     list<int>::iterator pos2;
+//     if (pos1 != coll.end())
+//         pos2 = find(++pos1, coll.end(), 4); //不能在这里使用auto定义pos2
+
+//     //将在4，4区间的数打印出来（包括开头和结尾)
+//     if (pos1 != coll.end() && pos2 != coll.end())
+//     {
+//         copy(--pos1, ++pos2, ostream_iterator<int>(cout, " "));
+//     }
+//     return 0;
+// }
+
+
