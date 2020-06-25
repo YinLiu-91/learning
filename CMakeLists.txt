@@ -26,12 +26,18 @@ if( MINGW )
 endif() # MINGW
 include_directories(
     20200119 PUBLIC
-    "H:\\Program Files\\boost_1_73_0"
+    "H:\\Program Files\\boost_1_73_0",
+    "H:\\Program Files\\mingw64\\mingw64\\include",
+    "H:\\Program Files\\boost_1_73_0\\libs\\numeric\\ublas\\test"
+    #H:\\Program Files\\x86_64-5.4.0-release\\mingw64\\include
 )
-# include_directories(
-#     20200119 PUBLIC
+include_directories(
+    20200119 PUBLIC
 #    "H:\\Program Files\\mingw32_gcc10\\include\\c++\\10.1.1"
 #    "H:\\Program Files\\mingw32_gcc10\\include\\c++\\10.1.1\\backward" 
 #    "H:\\Program Files\\mingw32_gcc10\\include"   
-# )
+  
+   
+)
+
 add_executable(20200119 20200119.cpp)

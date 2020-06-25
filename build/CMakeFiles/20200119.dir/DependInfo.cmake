@@ -13,6 +13,8 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../20200119"
   "../PUBLIC"
   "H:/Program Files/boost_1_73_0"
+  "../,"
+  "H:/Program Files/boost_1_73_0/libs/numeric/ublas/test"
   )
 
 # Targets to which this target links.
