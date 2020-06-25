@@ -9691,7 +9691,7 @@ int main()
 //     std::vector<Xy> xyv;
 //     xyv.resize(4);
 //     auto it=std::find_if(xyv.begin(),xyv.end(),[xy1] (const Xy& rhs) {return xy1==rhs;} );
-    
+
 //     std::vector<int>ivec={1,2,3};
 //     std::vector<int> ivec0 = {1, 2, 3, 4, 4, 4, 5, 6, 7};
 //     int des = 4;
@@ -9749,7 +9749,7 @@ int main()
 //   MATRIX A;
 //   MATRIX LU;
 //   MATRIX INV;
-  
+
 //   {
 //     std::istringstream is(matrix_IN);
 //     is >> A;
@@ -9770,7 +9770,7 @@ int main()
 //   permutation_matrix<> PM(temp);
 
 //   permutation_matrix<> pm(3);
-    
+
 //   std::size_t result = lu_factorize<MATRIX, permutation_matrix<> >(A, pm);
 
 //   assertTrue("factorization completed: ", 0 == result);
@@ -9781,8 +9781,339 @@ int main()
 
 //   lu_substitute(A, pm, B);
 
-//   assertTrue("inverse is correct: ", compare(B, INV));    
+//   assertTrue("inverse is correct: ", compare(B, INV));
 
 //   return (getResults().second > 0) ? boost::exit_failure : boost::exit_success;
 // }
+
+// //p81 3.5
+//  #include<iostream>
+//  #include<algorithm>
+//  #include<string>
+//  #include<vector>
+//  using namespace std;
+//  int main()
+//  {
+
+//      string s1="",s2;
+//      while(cin>>s2)
+//      {
+//      s1+=" ";
+//      s1+=s2;
+//      }
+//      return 0;
+//  }
+
+// //p308
+// #include<list>
+// #include<iostream>
+// #include<string>
+// using namespace std;
+// int main()
+// {
+//     string word;
+//     list<string> lst;
+//     auto iter=lst.begin();
+//     while(cin>>word)
+//     {
+//         iter=lst.insert(iter,word);
+//     }
+//     return 0;
+// }
+
+// //p312 9.26 9.28
+// #include <list>
+// #include <forward_list>
+// #include <vector>
+// using namespace std;
+// int main()
+// {
+//     int ia[] = {0, 1, 1, 2, 3, 3, 5, 8, 3, 13, 21, 55, 89};
+//     int i1 = 23, i2 = 13;
+//     vector<int> ivec(begin(ia), end(ia));
+//     list<int> ilst(begin(ia), end(ia));
+//     forward_list<int> iflst(begin(ia), end(ia));
+
+//     // for (auto it = ivec.begin(); it != ivec.end(); ++it)
+//     // {
+//     //     if (*it % 2 == 0)
+//     //     {
+//     //         it = ivec.erase(it); //这里还是利用for循环，但是多运算了一步
+//     //         --it;
+//     //     }
+//     // }
+//     // auto it = ilst.begin();
+//     // while (it != ilst.end())
+//     // {
+//     //     if ((*it % 2) != 0)
+//     //         it = ilst.erase(it); //自动下一个
+//     //     else
+//     //         ++it; //不要忘记++it,否则不对
+//     // }
+
+//     //9.28
+//     auto prev = iflst.before_begin();
+//     auto curr = iflst.begin();
+//     //用bool值记录是否插入
+//     bool inserted = false;
+//     while (curr != iflst.end())
+//     {
+//         //方法1
+//         if (*curr == i1)
+//         {
+//             curr = iflst.insert_after(curr, i2);
+//             ++(++prev); //++两次，list只能每次加一次或者使得prev=curr
+//             ++curr;
+//             inserted = true;
+//         }
+//         else
+//         {
+//             ++curr;
+//             ++prev;
+//         }
+//     }
+//     // //方法2 更简便，效率更高
+//     // while (curr != iflst.end())
+//     // {
+//     //     if (*curr == i1)
+//     //     {
+//     //         curr = iflst.insert_after(curr, i2);
+//     //         inserted = true;
+//     //     }
+//     //     prev = curr;
+//     //     curr++;
+//     // }
+//     if (!inserted)
+//         iflst.insert_after(prev, i2);
+//     return 0;
+// }
+
+// c++primer书中示例String
+#ifndef STRING_H
+#define STRING_H
+
+#include <cstring>
+#include <algorithm>
+#include <cstddef>
+#include <iostream>
+
+#ifdef INITIALIZER_LIST
+#include <initializer_list>
+#endif
+#include <iostream>
+#include <memory>
+class String
+{
+
+    friend String operator+(const String &, const String &);
+    friend String add(const String &，const String &);
+    friend std::ostream &operator<<(std::ostream &, const String &);
+    friend std::ostream &print(std::ostream &, const String &);
+
+public:
+#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+    String() = default;
+#else
+    String() : sz(0), p(nullptr)
+    {
+    }
+#endif
+
+    //cp points to a null terminated array;
+    //allocate new memory & copy the array
+    //先求出p的大小，
+    String(const char *cp) : sz(std::strlen(cp)), p(a.allocate(sz)) { std::uninitialized_copy(cp, cp + sz, p); }
+
+    //copy constructor:allocate a new copy of the characters
+    String(const String &s) : sz(s.sz), p(a.allocate(s.sz)) { std::uninitialized_copy(s.p, s.p + sz, p); }
+
+    //move constructor:copy the pointer ,not the characters
+    //no memory allocation or deallocation
+#ifdef NOEXCEPT
+    String(String &&s) noexcept : sz(s.size()), p(s.p)
+#else
+    String(String &&s) throw() : sz(s.size()), p(s.p)
+#endif
+    {
+        s.p = 0;
+        s.sz = 0;
+    } //move后操作
+    //初始化列表
+    String(size_t n, char c) : sz(n), p(a.allocate(n)) { std::uninitialized_fill_n(p, sz, c); }
+
+    //allocate a new copy of the data in the right-hand operator
+    //delete the memory used by the left-hand operand
+    String &operator=(const String &);
+//move pointers from right- to left-hand operand
+#ifdef NOEXCEPT
+    String &operator=(String &&) noexcept
+#else
+    String &operator=(String &&) throw()
+#endif
+//unconditionally delete the memory because each string
+#ifdef NOEXCEPT
+        ~String() noexcept
+    {
+        if (p)
+            a.deallocate(p, sz);
+    }
+#else
+        ~String() throw()
+    {
+        if (p)
+            a.deallocate(p, sz);
+    }
+#endif
+    //addtional assignment operators
+    String &operator=(const char *);
+    string &operator=(char);
+#ifdef INITIALIZER_LIST
+    String &operator=(std::initializer_list<char>);
+#endif
+    const char *begin()
+    {
+        return p;
+    }
+    const char *begin() const { return p; }
+    const char *end() { return p + sz; }
+    const char *end() const { return p + sz; }
+
+    size_t size() const { return sz; }
+
+    void swap(String &s)
+    {
+        auto tmp = p;
+        p = s.p;
+        s.p = tmp;
+        auto cnt = sz;
+        sz = s.sz;
+        s.sz = cnt;
+    }
+
+private:
+#ifdef IN_CLASS_INITS
+    std::size_t sz = 0;
+    char *p = nullptr;
+#else
+    std::size_t sz;
+    char *p;
+#endif
+    //超过一万行啦2020.06.25 端午节
+    static std::allocator<char> a;
+};
+
+using std::copy;
+using std::strlen;
+#include <cstddef>
+using std::size_t;
+
+using std::iostream;
+
+#include <utility>
+using std::swap;
+
+#ifndef IN_CLASS_INITS
+#include <initializer_list>
+using std::initializer_list;
+#enfif
+
+using std::uninitialized_copy;
+
+//define the static allocator member
+std::allocator<char> String ::a;
+
+//copy-aaignment operator
+String &String::operator=(const String &rhs)
+{
+    //copying the right-hand operand before deleting the left handles self-assignment
+    auto newp = a.allocate(rhs.sz);
+    uninitialized_copy(rhs.p, rhs.p + rhs.sz, newp);
+
+    if (p)
+        a.deallocate(p, sz);
+    p = newp;
+    sz = rhs.sz;
+    return *this;
+}
+//move assignment operator
+#ifdef NOEXCEPT
+String &String::operator=(String &&rhs) noexcept
+#else
+String &String::operator=(String &&rhs) throw()
+#endif
+{
+    //explicit check for self-assignment
+    if (this != &rhs)
+    {
+        if (p)
+            a.deallocate(p, sz); //析构
+        p = rhs.p;
+        sz = rhs.sz;
+        rhs.p = 0;
+        rhs.sz = 0;
+    }
+    return *this;
+}
+
+String &String::operator=(const char*cp)
+{
+    if(p)a.deallocate(p,sz);
+    p=a.allocate(sz=strlen(cp));
+    uninitialized_copy(cp,cp+sz,p);
+    return *this;
+}
+String &String::operator=(char c)
+{
+    if(p)a.deallocate(p,sz);
+    p=a.allocate(sz=1);
+    *p=c;
+    return *this;
+}
+#ifdef INITIALIZER_LIST 
+String &String ::operator=(initializer_list<char> il){
+    //no need to check for self-assignment
+    if(p)
+    a.deallocate(p,sz);
+    p=a.allocate(sz=il.size());
+    uninitialized_copy(il.begin(),il.end(),p);
+    return *this;
+}
+#endif
+//named functions for oerators
+ostream&print(ostream&os,const String &s)
+{
+    auto p=s.begin();
+    whiel(p!=s.end())
+    os<<*p++;
+    return os;
+}
+
+String add(const String&lhs,const String&rhs)
+{
+    String ret;
+    res.sz=rhs.size()+lhs.size();//字串大小之和
+    ret.p=String::a.allocate(ret.sz);
+    uninitialized_copy  (lhs.begin(),lhs.end(),ret.p);
+    uninitialized_copy(rhs.begin(),rhs.end(),ret.p+lhs.sz);
+    return ret;
+}
+
+// return plural version of word if ctr isn't 1
+String make_plural(size_t ctr, const String &word,
+                               const String &ending)
+{
+        return (ctr != 1) ?  add(word, ending) : word;
+}
+
+// chapter 14 will explain overloaded operators
+ostream &operator<<(ostream &os, const String &s)
+{
+	return print(os, s);
+}
+
+String operator+(const String &lhs, const String &rhs) 
+{
+	return add(lhs, rhs);
+}
+
 
