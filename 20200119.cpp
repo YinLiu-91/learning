@@ -9888,232 +9888,398 @@ int main()
 //     return 0;
 // }
 
-// c++primer书中示例String
-#ifndef STRING_H
-#define STRING_H
+// // c++primer书中示例String
+// //#ifndef STRING_H
+// #define STRING_H
 
-#include <cstring>
+// #include <cstring>
+// #include <algorithm>
+// #include <cstddef>
+// #include <iostream>
+
+// #ifdef INITIALIZER_LIST
+// #include <initializer_list>
+// #endif
+// #include <iostream>
+// #include <memory>
+// class String
+// {
+
+//     friend String operator+(const String &, const String &);
+//     friend String add(const String &,const String &);
+//     friend std::ostream &operator<<(std::ostream &, const String &);
+//     friend std::ostream &print(std::ostream &, const String &);
+
+// public:
+// #if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
+//     String() = default;
+// #else
+//     String() : sz(0), p(nullptr)
+//     {
+//     }
+// #endif
+
+//     //cp points to a null terminated array;
+//     //allocate new memory & copy the array
+//     //先求出p的大小，
+//     String(const char *cp) : sz(std::strlen(cp)), p(a.allocate(sz)) { std::uninitialized_copy(cp, cp + sz, p); }
+
+//     //copy constructor:allocate a new copy of the characters
+//     String(const String &s) : sz(s.sz), p(a.allocate(s.sz)) { std::uninitialized_copy(s.p, s.p + sz, p); }
+
+//     //move constructor:copy the pointer ,not the characters
+//     //no memory allocation or deallocation
+// #ifdef NOEXCEPT
+//     String(String &&s) noexcept : sz(s.size()), p(s.p)
+// #else
+//     String(String &&s) throw() : sz(s.size()), p(s.p)
+// #endif
+//     {
+//         s.p = 0;
+//         s.sz = 0;
+//     } //move后操作
+//     //初始化列表
+//     String(size_t n, char c) : sz(n), p(a.allocate(n)) { std::uninitialized_fill_n(p, sz, c); }
+
+//     //allocate a new copy of the data in the right-hand operator
+//     //delete the memory used by the left-hand operand
+//     String &operator=(const String &);
+// //move pointers from right- to left-hand operand
+// #ifdef NOEXCEPT
+//     String &operator=(String &&) noexcept
+// #else
+//     String &operator=(String &&) throw();
+// #endif
+// //unconditionally delete the memory because each string
+// #ifdef NOEXCEPT
+//         ~String() noexcept
+//     {
+//         if (p)
+//             a.deallocate(p, sz);
+//     }
+// #else
+//         ~String() throw()
+//     {
+//         if (p)
+//             a.deallocate(p, sz);
+//     }
+// #endif
+//     //addtional assignment operators
+//     String &operator=(const char *);
+//     String &operator=(char);
+// #ifdef INITIALIZER_LIST
+//     String &operator=(std::initializer_list<char>);
+// #endif
+//     const char *begin()
+//     {
+//         return p;
+//     }
+//     const char *begin() const { return p; }
+//     const char *end() { return p + sz; }
+//     const char *end() const { return p + sz; }
+
+//     size_t size() const { return sz; }
+
+//     void swap(String &s)
+//     {
+//         auto tmp = p;
+//         p = s.p;
+//         s.p = tmp;
+//         auto cnt = sz;
+//         sz = s.sz;
+//         s.sz = cnt;
+//     }
+
+// private:
+// #ifdef IN_CLASS_INITS
+//     std::size_t sz = 0;
+//     char *p = nullptr;
+// #else
+//     std::size_t sz;
+//     char *p;
+// #endif
+//     //超过一万行啦2020.06.25 端午节
+//     static std::allocator<char> a;
+// };
+
+// using std::copy;
+// using std::strlen;
+// #include <cstddef>
+// using std::size_t;
+
+// using std::iostream;
+
+// #include <utility>
+// using std::swap;
+
+// #ifndef IN_CLASS_INITS
+// #include <initializer_list>
+// using std::initializer_list;
+// #endif
+
+// using std::uninitialized_copy;
+
+// //define the static allocator member
+// std::allocator<char> String ::a;
+
+// //copy-aaignment operator
+// String &String::operator=(const String &rhs)
+// {
+//     //copying the right-hand operand before deleting the left handles self-assignment
+//     auto newp = a.allocate(rhs.sz);
+//     uninitialized_copy(rhs.p, rhs.p + rhs.sz, newp);
+
+//     if (p)
+//         a.deallocate(p, sz);
+//     p = newp;
+//     sz = rhs.sz;
+//     return *this;
+// }
+// //move assignment operator
+// #ifdef NOEXCEPT
+// String &String::operator=(String &&rhs) noexcept
+// #else
+// String &String::operator=(String &&rhs) throw()
+// #endif
+// {
+//     //explicit check for self-assignment
+//     if (this != &rhs)
+//     {
+//         if (p)
+//             a.deallocate(p, sz); //析构
+//         p = rhs.p;
+//         sz = rhs.sz;
+//         rhs.p = 0;
+//         rhs.sz = 0;
+//     }
+//     return *this;
+// }
+
+// String &String::operator=(const char*cp)
+// {
+//     if(p)a.deallocate(p,sz);
+//     p=a.allocate(sz=strlen(cp));
+//     uninitialized_copy(cp,cp+sz,p);
+//     return *this;
+// }
+// String &String::operator=(char c)
+// {
+//     if(p)a.deallocate(p,sz);
+//     p=a.allocate(sz=1);
+//     *p=c;
+//     return *this;
+// }
+// #ifdef INITIALIZER_LIST
+// String &String ::operator=(initializer_list<char> il){
+//     //no need to check for self-assignment
+//     if(p)
+//     a.deallocate(p,sz);
+//     p=a.allocate(sz=il.size());
+//     uninitialized_copy(il.begin(),il.end(),p);
+//     return *this;
+// }
+// #endif
+// //named functions for oerators
+// std::ostream& print(std::ostream&os,const String &s)
+// {
+//     auto p=s.begin();
+//     while(p!=s.end())
+//     os<<*p++;
+//     return os;
+// }
+
+// String add(const String&lhs,const String&rhs)
+// {
+//     String ret;
+//     ret.sz=rhs.size()+lhs.size();//字串大小之和
+//     ret.p=String::a.allocate(ret.sz);
+//     uninitialized_copy  (lhs.begin(),lhs.end(),ret.p);
+//     uninitialized_copy(rhs.begin(),rhs.end(),ret.p+lhs.sz);
+//     return ret;
+// }
+
+// // return plural version of word if ctr isn't 1
+// String make_plural(size_t ctr, const String &word,
+//                                const String &ending)
+// {
+//         return (ctr != 1) ?  add(word, ending) : word;
+// }
+
+// // chapter 14 will explain overloaded operators
+// std::ostream &operator<<(std::ostream &os, const String &s)
+// {
+// 	return print(os, s);
+// }
+
+// String operator+(const String &lhs, const String &rhs)
+// {
+// 	return add(lhs, rhs);
+// }
+
+// int main()
+// {
+//     String s;
+//     return 0;
+// }
+
+// #include<vector>
+// #include<algorithm>
+// using namespace std;
+// int main()
+// {
+//      vector<int>ivec={1,2,3,4,5,3,6,7};
+//      auto i=remove(ivec.begin(),ivec.end(),3);
+//      return 0;
+// }
+
+#include <list>
 #include <algorithm>
-#include <cstddef>
-#include <iostream>
-
-#ifdef INITIALIZER_LIST
-#include <initializer_list>
-#endif
-#include <iostream>
-#include <memory>
-class String
-{
-
-    friend String operator+(const String &, const String &);
-    friend String add(const String &，const String &);
-    friend std::ostream &operator<<(std::ostream &, const String &);
-    friend std::ostream &print(std::ostream &, const String &);
-
-public:
-#if defined(IN_CLASS_INITS) && defined(DEFAULT_FCNS)
-    String() = default;
-#else
-    String() : sz(0), p(nullptr)
-    {
-    }
-#endif
-
-    //cp points to a null terminated array;
-    //allocate new memory & copy the array
-    //先求出p的大小，
-    String(const char *cp) : sz(std::strlen(cp)), p(a.allocate(sz)) { std::uninitialized_copy(cp, cp + sz, p); }
-
-    //copy constructor:allocate a new copy of the characters
-    String(const String &s) : sz(s.sz), p(a.allocate(s.sz)) { std::uninitialized_copy(s.p, s.p + sz, p); }
-
-    //move constructor:copy the pointer ,not the characters
-    //no memory allocation or deallocation
-#ifdef NOEXCEPT
-    String(String &&s) noexcept : sz(s.size()), p(s.p)
-#else
-    String(String &&s) throw() : sz(s.size()), p(s.p)
-#endif
-    {
-        s.p = 0;
-        s.sz = 0;
-    } //move后操作
-    //初始化列表
-    String(size_t n, char c) : sz(n), p(a.allocate(n)) { std::uninitialized_fill_n(p, sz, c); }
-
-    //allocate a new copy of the data in the right-hand operator
-    //delete the memory used by the left-hand operand
-    String &operator=(const String &);
-//move pointers from right- to left-hand operand
-#ifdef NOEXCEPT
-    String &operator=(String &&) noexcept
-#else
-    String &operator=(String &&) throw()
-#endif
-//unconditionally delete the memory because each string
-#ifdef NOEXCEPT
-        ~String() noexcept
-    {
-        if (p)
-            a.deallocate(p, sz);
-    }
-#else
-        ~String() throw()
-    {
-        if (p)
-            a.deallocate(p, sz);
-    }
-#endif
-    //addtional assignment operators
-    String &operator=(const char *);
-    string &operator=(char);
-#ifdef INITIALIZER_LIST
-    String &operator=(std::initializer_list<char>);
-#endif
-    const char *begin()
-    {
-        return p;
-    }
-    const char *begin() const { return p; }
-    const char *end() { return p + sz; }
-    const char *end() const { return p + sz; }
-
-    size_t size() const { return sz; }
-
-    void swap(String &s)
-    {
-        auto tmp = p;
-        p = s.p;
-        s.p = tmp;
-        auto cnt = sz;
-        sz = s.sz;
-        s.sz = cnt;
-    }
-
-private:
-#ifdef IN_CLASS_INITS
-    std::size_t sz = 0;
-    char *p = nullptr;
-#else
-    std::size_t sz;
-    char *p;
-#endif
-    //超过一万行啦2020.06.25 端午节
-    static std::allocator<char> a;
-};
-
-using std::copy;
-using std::strlen;
-#include <cstddef>
-using std::size_t;
-
-using std::iostream;
-
 #include <utility>
-using std::swap;
+#include <functional>
+#include <iostream>
+#include <iterator>
+#include<vector>
+#include <set>
+//#include<multiset>
+using namespace std;
+using namespace std::placeholders;
 
-#ifndef IN_CLASS_INITS
-#include <initializer_list>
-using std::initializer_list;
-#enfif
+// int main()
+// {
+//     list<int> coll = {1, 2, 3, 4, 5, 6, 7, 3, 677};
+//     remove_copy(coll.begin(), coll.end(), ostream_iterator<int>(cout, " "), 3);
+//     cout << endl;
 
-using std::uninitialized_copy;
+//     // //lambda
+//     // remove_copy(coll.begin(), coll.end(), ostream_iterator<int>(cout, " "), [](int elem) { return elem > 4; });
+//     // cout<< endl;
 
-//define the static allocator member
-std::allocator<char> String ::a;
+//     // //bind
+//     // multiset<int> coll2;
+//     // remove_copy(coll.begin(),coll.end(),inserter(coll2,coll2.end()),bind(less<int>(),_1,4));
 
-//copy-aaignment operator
-String &String::operator=(const String &rhs)
-{
-    //copying the right-hand operand before deleting the left handles self-assignment
-    auto newp = a.allocate(rhs.sz);
-    uninitialized_copy(rhs.p, rhs.p + rhs.sz, newp);
+//     return 0;
+// }
 
-    if (p)
-        a.deallocate(p, sz);
-    p = newp;
-    sz = rhs.sz;
-    return *this;
+// int main()
+// {
+//     int source[]={1,4,4,6,1,2,2,3,1,6,6,5,7,5,4,4};
+//     list<int> coll;
+//     copy(begin(source),end(source),back_inserter(coll));
+//     //auto pos=unique(coll.begin(),coll.end());
+
+//      return 0;
+// }
+
+// int main()
+// {
+//     set<int> coll = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     set<int>::const_iterator pos = next(coll.cbegin());
+//     rotate_copy(coll.cbegin(), pos, coll.cend(), ostream_iterator<int>(cout, " "));
+//     cout << endl;
+
+//     pos = coll.cend();
+//     advance(pos, -2);
+
+//     rotate_copy(coll.cbegin(), pos, coll.end(), ostream_iterator<int>(cout, " "));
+//     cout << endl;
+
+//     //在4的位置旋转
+//     rotate_copy(coll.cbegin(),coll.find(4),coll.cend(),ostream_iterator<int>(cout," "));
+
+//     cout<<endl;
+
+//     return 0;
+// }
+
+// int main()
+// {
+//     vector<int> coll={1,2,3,4,5,6,3,5,888888888,7777777};
+//    next_permutation(coll.begin(),coll.end());
+
+    
+//     return 0;
+// }
+
+// int main()
+// {
+//     vector<int> coll={1,6,33,7,22,4,11,33,2,7,0,42,5};
+//     vector<int> evenColl;
+//     vector<int> oddColl;
+
+//     partition_copy(coll.begin(),coll.end(),back_inserter(evenColl),back_inserter(oddColl),[](int elem){return elem%2==0;});
+
+//      return 0;
+// }
+
+#include <boost/format.hpp>
+#include <boost/histogram.hpp>
+#include <cassert>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+int main() {
+  using namespace boost::histogram;
+
+  /*
+    Create a histogram which can be configured dynamically at run-time. The axis
+    configuration is first collected in a vector of axis::variant type, which
+    can hold different axis types (those in its template argument list). Here,
+    we use a variant that can store a regular and a category axis.
+  */
+  using reg = axis::regular<>;
+  using cat = axis::category<std::string>;
+  using variant = axis::variant<axis::regular<>, axis::category<std::string>>;
+  std::vector<variant> axes;
+  axes.emplace_back(cat({"red", "blue"}));
+  axes.emplace_back(reg(3, 0.0, 1.0, "x"));
+  axes.emplace_back(reg(3, 0.0, 1.0, "y"));
+  // passing an iterator range also works here
+  auto h = make_histogram(std::move(axes));
+
+  // fill histogram with data, usually this happens in a loop
+  h("red", 0.1, 0.2);
+  h("blue", 0.7, 0.3);
+  h("red", 0.3, 0.7);
+  h("red", 0.7, 0.7);
+
+  /*
+    Print histogram by iterating over bins.
+    Since the [bin type] of the category axis cannot be converted into a double,
+    it cannot be handled by the polymorphic interface of axis::variant. We use
+    axis::get to "cast" the variant type to the actual category type.
+  */
+
+  // get reference to category axis, performs a run-time checked static cast
+  const auto& cat_axis = axis::get<cat>(h.axis(0));
+  std::ostringstream os;
+  for (auto&& x : indexed(h)) {
+    os << boost::format("(%i, %i, %i) %4s [%3.1f, %3.1f) [%3.1f, %3.1f) %3.0f\n")
+          % x.index(0) % x.index(1) % x.index(2)
+          % cat_axis.bin(x.index(0))
+          % x.bin(1).lower() % x.bin(1).upper()
+          % x.bin(2).lower() % x.bin(2).upper()
+          % *x;
+  }
+
+  std::cout << os.str() << std::flush;
+  assert(os.str() == "(0, 0, 0)  red [0.0, 0.3) [0.0, 0.3)   1\n"
+                     "(1, 0, 0) blue [0.0, 0.3) [0.0, 0.3)   0\n"
+                     "(0, 1, 0)  red [0.3, 0.7) [0.0, 0.3)   0\n"
+                     "(1, 1, 0) blue [0.3, 0.7) [0.0, 0.3)   0\n"
+                     "(0, 2, 0)  red [0.7, 1.0) [0.0, 0.3)   0\n"
+                     "(1, 2, 0) blue [0.7, 1.0) [0.0, 0.3)   1\n"
+                     "(0, 0, 1)  red [0.0, 0.3) [0.3, 0.7)   0\n"
+                     "(1, 0, 1) blue [0.0, 0.3) [0.3, 0.7)   0\n"
+                     "(0, 1, 1)  red [0.3, 0.7) [0.3, 0.7)   0\n"
+                     "(1, 1, 1) blue [0.3, 0.7) [0.3, 0.7)   0\n"
+                     "(0, 2, 1)  red [0.7, 1.0) [0.3, 0.7)   0\n"
+                     "(1, 2, 1) blue [0.7, 1.0) [0.3, 0.7)   0\n"
+                     "(0, 0, 2)  red [0.0, 0.3) [0.7, 1.0)   1\n"
+                     "(1, 0, 2) blue [0.0, 0.3) [0.7, 1.0)   0\n"
+                     "(0, 1, 2)  red [0.3, 0.7) [0.7, 1.0)   0\n"
+                     "(1, 1, 2) blue [0.3, 0.7) [0.7, 1.0)   0\n"
+                     "(0, 2, 2)  red [0.7, 1.0) [0.7, 1.0)   1\n"
+                     "(1, 2, 2) blue [0.7, 1.0) [0.7, 1.0)   0\n");
 }
-//move assignment operator
-#ifdef NOEXCEPT
-String &String::operator=(String &&rhs) noexcept
-#else
-String &String::operator=(String &&rhs) throw()
-#endif
-{
-    //explicit check for self-assignment
-    if (this != &rhs)
-    {
-        if (p)
-            a.deallocate(p, sz); //析构
-        p = rhs.p;
-        sz = rhs.sz;
-        rhs.p = 0;
-        rhs.sz = 0;
-    }
-    return *this;
-}
-
-String &String::operator=(const char*cp)
-{
-    if(p)a.deallocate(p,sz);
-    p=a.allocate(sz=strlen(cp));
-    uninitialized_copy(cp,cp+sz,p);
-    return *this;
-}
-String &String::operator=(char c)
-{
-    if(p)a.deallocate(p,sz);
-    p=a.allocate(sz=1);
-    *p=c;
-    return *this;
-}
-#ifdef INITIALIZER_LIST 
-String &String ::operator=(initializer_list<char> il){
-    //no need to check for self-assignment
-    if(p)
-    a.deallocate(p,sz);
-    p=a.allocate(sz=il.size());
-    uninitialized_copy(il.begin(),il.end(),p);
-    return *this;
-}
-#endif
-//named functions for oerators
-ostream&print(ostream&os,const String &s)
-{
-    auto p=s.begin();
-    whiel(p!=s.end())
-    os<<*p++;
-    return os;
-}
-
-String add(const String&lhs,const String&rhs)
-{
-    String ret;
-    res.sz=rhs.size()+lhs.size();//字串大小之和
-    ret.p=String::a.allocate(ret.sz);
-    uninitialized_copy  (lhs.begin(),lhs.end(),ret.p);
-    uninitialized_copy(rhs.begin(),rhs.end(),ret.p+lhs.sz);
-    return ret;
-}
-
-// return plural version of word if ctr isn't 1
-String make_plural(size_t ctr, const String &word,
-                               const String &ending)
-{
-        return (ctr != 1) ?  add(word, ending) : word;
-}
-
-// chapter 14 will explain overloaded operators
-ostream &operator<<(ostream &os, const String &s)
-{
-	return print(os, s);
-}
-
-String operator+(const String &lhs, const String &rhs) 
-{
-	return add(lhs, rhs);
-}
-
-
