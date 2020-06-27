@@ -9906,7 +9906,7 @@ int main()
 // {
 
 //     friend String operator+(const String &, const String &);
-//     friend String add(const String &,const String &);
+//     friend String add(const String &, const String &);
 //     friend std::ostream &operator<<(std::ostream &, const String &);
 //     friend std::ostream &print(std::ostream &, const String &);
 
@@ -9922,10 +9922,14 @@ int main()
 //     //cp points to a null terminated array;
 //     //allocate new memory & copy the array
 //     //先求出p的大小，
-//     String(const char *cp) : sz(std::strlen(cp)), p(a.allocate(sz)) { std::uninitialized_copy(cp, cp + sz, p); }
+//     String(const char *cp) : sz(std::strlen(cp)), p(a.allocate(sz)) {
+//         std::cout<<"使用拷贝构造函数"<<std::endl;
+//         std::uninitialized_copy(cp, cp + sz, p); }
 
 //     //copy constructor:allocate a new copy of the characters
-//     String(const String &s) : sz(s.sz), p(a.allocate(s.sz)) { std::uninitialized_copy(s.p, s.p + sz, p); }
+//     String(const String &s) : sz(s.sz), p(a.allocate(s.sz)) {
+//         std::cout<<"调用拷贝构造函数String形式"<<std::endl;
+//         std::uninitialized_copy(s.p, s.p + sz, p); }
 
 //     //move constructor:copy the pointer ,not the characters
 //     //no memory allocation or deallocation
@@ -9935,6 +9939,7 @@ int main()
 //     String(String &&s) throw() : sz(s.size()), p(s.p)
 // #endif
 //     {
+//         std::cout<<"调用右值引用构造"<<std::endl;
 //         s.p = 0;
 //         s.sz = 0;
 //     } //move后操作
@@ -9958,9 +9963,11 @@ int main()
 //             a.deallocate(p, sz);
 //     }
 // #else
-//         ~String() throw()
+//     ~String() throw()
 //     {
-//         if (p)
+//         if (p) //判断p指针存在
+//                //调用deallocate前，是否使用destroy
+// //拷贝构造函数用到了allocate，故要释放内存
 //             a.deallocate(p, sz);
 //     }
 // #endif
@@ -10049,76 +10056,89 @@ int main()
 //             a.deallocate(p, sz); //析构
 //         p = rhs.p;
 //         sz = rhs.sz;
-//         rhs.p = 0;
+//         rhs.p = 0;//右值引用后源对象的变化
 //         rhs.sz = 0;
 //     }
 //     return *this;
 // }
 
-// String &String::operator=(const char*cp)
+// String &String::operator=(const char *cp)
 // {
-//     if(p)a.deallocate(p,sz);
-//     p=a.allocate(sz=strlen(cp));
-//     uninitialized_copy(cp,cp+sz,p);
+//     std::cout<<"将char*赋值给String"<<std::endl;
+//     if (p)
+//         a.deallocate(p, sz);
+//     p = a.allocate(sz = strlen(cp));
+//     uninitialized_copy(cp, cp + sz, p);
 //     return *this;
 // }
 // String &String::operator=(char c)
 // {
-//     if(p)a.deallocate(p,sz);
-//     p=a.allocate(sz=1);
-//     *p=c;
+//     std::cout<<"使用char拷贝赋值"<<std::endl;
+//     if (p)
+//         a.deallocate(p, sz);
+//     p = a.allocate(sz = 1);
+//     *p = c;
 //     return *this;
 // }
 // #ifdef INITIALIZER_LIST
-// String &String ::operator=(initializer_list<char> il){
+// String &String ::operator=(initializer_list<char> il)
+// {
 //     //no need to check for self-assignment
-//     if(p)
-//     a.deallocate(p,sz);
-//     p=a.allocate(sz=il.size());
-//     uninitialized_copy(il.begin(),il.end(),p);
+//     if (p)
+//         a.deallocate(p, sz);
+//     p = a.allocate(sz = il.size());
+//     uninitialized_copy(il.begin(), il.end(), p);
 //     return *this;
 // }
 // #endif
 // //named functions for oerators
-// std::ostream& print(std::ostream&os,const String &s)
+// std::ostream &print(std::ostream &os, const String &s)
 // {
-//     auto p=s.begin();
-//     while(p!=s.end())
-//     os<<*p++;
+//     auto p = s.begin();
+//     while (p != s.end())
+//         os << *p++;
 //     return os;
 // }
 
-// String add(const String&lhs,const String&rhs)
+// String add(const String &lhs, const String &rhs)
 // {
 //     String ret;
-//     ret.sz=rhs.size()+lhs.size();//字串大小之和
-//     ret.p=String::a.allocate(ret.sz);
-//     uninitialized_copy  (lhs.begin(),lhs.end(),ret.p);
-//     uninitialized_copy(rhs.begin(),rhs.end(),ret.p+lhs.sz);
+//     ret.sz = rhs.size() + lhs.size(); //字串大小之和
+//     ret.p = String::a.allocate(ret.sz);
+//     uninitialized_copy(lhs.begin(), lhs.end(), ret.p);
+//     uninitialized_copy(rhs.begin(), rhs.end(), ret.p + lhs.sz);
 //     return ret;
 // }
 
 // // return plural version of word if ctr isn't 1
 // String make_plural(size_t ctr, const String &word,
-//                                const String &ending)
+//                    const String &ending)
 // {
-//         return (ctr != 1) ?  add(word, ending) : word;
+//     return (ctr != 1) ? add(word, ending) : word;
 // }
 
 // // chapter 14 will explain overloaded operators
 // std::ostream &operator<<(std::ostream &os, const String &s)
 // {
-// 	return print(os, s);
+//     return print(os, s);
 // }
 
 // String operator+(const String &lhs, const String &rhs)
 // {
-// 	return add(lhs, rhs);
+//     return add(lhs, rhs);
 // }
 
 // int main()
 // {
-//     String s;
+//     String s("dfdf");
+//     String s1(s);
+//     String s2(std::move(s1));
+//     std::cout<<"开始s3"<<std::endl;
+
+//     String s3;
+//     s3="dfs";//拷贝赋值
+//     //构造s4；
+//     String s4="sdf";//拷贝构造
 //     return 0;
 // }
 
@@ -10132,17 +10152,17 @@ int main()
 //      return 0;
 // }
 
-#include <list>
-#include <algorithm>
-#include <utility>
-#include <functional>
-#include <iostream>
-#include <iterator>
-#include<vector>
-#include <set>
-//#include<multiset>
-using namespace std;
-using namespace std::placeholders;
+// #include <list>
+// #include <algorithm>
+// #include <utility>
+// #include <functional>
+// #include <iostream>
+// #include <iterator>
+// #include<vector>
+// #include <set>
+// //#include<multiset>
+// using namespace std;
+// using namespace std::placeholders;
 
 // int main()
 // {
@@ -10197,7 +10217,6 @@ using namespace std::placeholders;
 //     vector<int> coll={1,2,3,4,5,6,3,5,888888888,7777777};
 //    next_permutation(coll.begin(),coll.end());
 
-    
 //     return 0;
 // }
 
@@ -10212,74 +10231,272 @@ using namespace std::placeholders;
 //      return 0;
 // }
 
-#include <boost/format.hpp>
-#include <boost/histogram.hpp>
-#include <cassert>
-#include <iostream>
-#include <sstream>
-#include <string>
+// //c++primer 中StrVec的实现
+// // #ifndef STRVEC_H
+// #define StRVEC_H
 
-int main() {
-  using namespace boost::histogram;
+// #include <iostream>
+// #include <memory>
+// #include <utility>
+// #include <cstring>
+// #ifdef INIT_LIST
+// #include <initializer_list>
+// #endif
 
-  /*
-    Create a histogram which can be configured dynamically at run-time. The axis
-    configuration is first collected in a vector of axis::variant type, which
-    can hold different axis types (those in its template argument list). Here,
-    we use a variant that can store a regular and a category axis.
-  */
-  using reg = axis::regular<>;
-  using cat = axis::category<std::string>;
-  using variant = axis::variant<axis::regular<>, axis::category<std::string>>;
-  std::vector<variant> axes;
-  axes.emplace_back(cat({"red", "blue"}));
-  axes.emplace_back(reg(3, 0.0, 1.0, "x"));
-  axes.emplace_back(reg(3, 0.0, 1.0, "y"));
-  // passing an iterator range also works here
-  auto h = make_histogram(std::move(axes));
+// //simplified implementation of the memory allocation strategy for
+// //for a vector-like class
+// class StrVec
+// {
+// public:
+//     //copy control members
+//     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) { std::cout << "使用默认构造函数" << std::endl; }
+//     StrVec(const char *p);
+//     StrVec(const StrVec &);            //copy constructor
+//     StrVec &operator=(const StrVec &); //copy assignment
 
-  // fill histogram with data, usually this happens in a loop
-  h("red", 0.1, 0.2);
-  h("blue", 0.7, 0.3);
-  h("red", 0.3, 0.7);
-  h("red", 0.7, 0.7);
+// #ifdef NOEXCEPT
+//     StrVec(StrVec &&) noexcept; //move constructor
+//     StrVec &operator=(StrVec &&) noexcept;
+//     ~StrVec();
+// #else
+//     StrVec(StrVec &&) noexcept; //move constructor
+//     StrVec &operator=(StrVec &&) noexcept;
+//     ~StrVec();
+// #endif
 
-  /*
-    Print histogram by iterating over bins.
-    Since the [bin type] of the category axis cannot be converted into a double,
-    it cannot be handled by the polymorphic interface of axis::variant. We use
-    axis::get to "cast" the variant type to the actual category type.
-  */
+// #ifdef INIT_LIST
+//     //addtional constructor
+//     StrVec(std::initializer_list<std::string>);
+// #else //define a constructor that takes pointers to a range of elements
+//     StrVec(const std::string *, const std::string *);
+// #endif
 
-  // get reference to category axis, performs a run-time checked static cast
-  const auto& cat_axis = axis::get<cat>(h.axis(0));
-  std::ostringstream os;
-  for (auto&& x : indexed(h)) {
-    os << boost::format("(%i, %i, %i) %4s [%3.1f, %3.1f) [%3.1f, %3.1f) %3.0f\n")
-          % x.index(0) % x.index(1) % x.index(2)
-          % cat_axis.bin(x.index(0))
-          % x.bin(1).lower() % x.bin(1).upper()
-          % x.bin(2).lower() % x.bin(2).upper()
-          % *x;
-  }
+//     void push_back(const std::string &); //copy the element
+//     void push_back(std::string &&);      //move the element
 
-  std::cout << os.str() << std::flush;
-  assert(os.str() == "(0, 0, 0)  red [0.0, 0.3) [0.0, 0.3)   1\n"
-                     "(1, 0, 0) blue [0.0, 0.3) [0.0, 0.3)   0\n"
-                     "(0, 1, 0)  red [0.3, 0.7) [0.0, 0.3)   0\n"
-                     "(1, 1, 0) blue [0.3, 0.7) [0.0, 0.3)   0\n"
-                     "(0, 2, 0)  red [0.7, 1.0) [0.0, 0.3)   0\n"
-                     "(1, 2, 0) blue [0.7, 1.0) [0.0, 0.3)   1\n"
-                     "(0, 0, 1)  red [0.0, 0.3) [0.3, 0.7)   0\n"
-                     "(1, 0, 1) blue [0.0, 0.3) [0.3, 0.7)   0\n"
-                     "(0, 1, 1)  red [0.3, 0.7) [0.3, 0.7)   0\n"
-                     "(1, 1, 1) blue [0.3, 0.7) [0.3, 0.7)   0\n"
-                     "(0, 2, 1)  red [0.7, 1.0) [0.3, 0.7)   0\n"
-                     "(1, 2, 1) blue [0.7, 1.0) [0.3, 0.7)   0\n"
-                     "(0, 0, 2)  red [0.0, 0.3) [0.7, 1.0)   1\n"
-                     "(1, 0, 2) blue [0.0, 0.3) [0.7, 1.0)   0\n"
-                     "(0, 1, 2)  red [0.3, 0.7) [0.7, 1.0)   0\n"
-                     "(1, 1, 2) blue [0.3, 0.7) [0.7, 1.0)   0\n"
-                     "(0, 2, 2)  red [0.7, 1.0) [0.7, 1.0)   1\n"
-                     "(1, 2, 2) blue [0.7, 1.0) [0.7, 1.0)   0\n");
-}
+//     //add elements
+//     size_t size() const { return first_free - elements; }
+//     size_t capacity() const { return cap - elements; }
+
+//     //iterator interface
+//     std::string *begin() { return elements; }
+//     std::string *end() { return first_free; }
+//     const std::string *cbegin() const { return elements; }
+//     const std::string *cend() const { return first_free; }
+
+// #ifdef INIT_LIST //no real substitute for initializer_list in assignments
+//     //operator funcions in chapter 14
+//     StrVec &operator=(std::initializer_list<std::string>);
+// #endif
+//     std::string &operator[](std::size_t n)
+//     {
+//         return elements[n];
+//     }
+//     const std::string &operator[](std::size_t n) const
+//     {
+//         return elements[n];
+//     }
+// #ifdef VARIADICS //no direct substitute for variadic functions
+//     //emplace member covered in chapter 16
+//     template <class... Args>
+//     void emplace_back(Args &&...);
+// #endif
+
+// private:
+//     //allocates the elements
+//     static std::allocator<std::string> alloc;
+
+//     //utility functions:
+//     // used by members that add elements to the StrVec
+//     void chk_n_alloc()
+//     {
+//         if (size() == capacity())
+//             reallocate();
+//     }
+
+//     //used by the copy constructor,assignment operator,and destructor
+//     std::pair<std::string *, std::string *> alloc_n_copy(const std::string *, const std::string *);
+//     void free();             //destroy the elements and free the space
+//     void reallocate();       //1.get more space and  2.copy the existing elements
+//     std::string *elements;   //pointer to the first element in the array
+//     std::string *first_free; //pointer to the first free element in the array
+//     std::string *cap;        //pointer to one past the end of the array
+// };
+// #include <algorithm>
+// inline
+// #ifdef NOEXCEPT
+//     StrVec::~StrVec() noexcept
+// {
+//     free();
+// }
+// #else
+//     StrVec::~StrVec() throw()
+// {
+//     free();
+// }
+// #endif
+
+// inline std::pair<std::string *, std ::string *>
+// StrVec::alloc_n_copy(const std::string *b, const std::string *e)
+// {
+//     //allocate space to hold as many elements as are in the range
+//     auto data = alloc.allocate(e - b);
+
+// #ifdef LIST_INIT
+//     return {data, uninitialized_copy(b, e, data)}; //uninitialized_copy返回构造后的下一个位置指针
+// #else
+//     return make_pair(data, uninitialized_copy(b, e, data));
+// #endif
+// }
+
+// inline
+// #ifdef NOEXCEPT
+//     StrVec::StrVec(StrVec &&s) noexcept
+// #else
+//     StrVec::StrVec(StrVec &&s) throw()
+// #endif
+//     : elements(s.elements), first_free(s.elements), cap(s.cap)
+// {
+//     std::cout << "使用移动构造" << std::endl;
+//     s.elements = s.first_free = s.cap = nullptr; //右值的源处理
+// }
+
+// inline StrVec::StrVec(const StrVec &s)
+// {
+//     std::cout << "使用构造函数" << std::endl;
+//     //alloc_n_copy to allocate exactly as many elements as in s
+//     auto newdata = alloc_n_copy(s.cbegin(), s.cend()); //此返回值为一个pair，分别指向构造好的vector的首尾
+//     elements = newdata.first;
+//     first_free = cap = newdata.second;
+// }
+// inline void StrVec::free()
+// {
+//     //may not pass deallocate a 0 pointer;if elements is 0,
+//     //there is no work to do
+//     if (elements)
+//     {
+//         for (auto p = first_free; p != elements; /*empty*/)
+//             alloc.destroy(--p);
+//         alloc.deallocate(elements, cap - elements);
+//     }
+// }
+
+// #ifdef INIT_LIST
+// inline StrVec &StrVec::operator=(std::inializer_list<std::string> il)
+// {
+//     //alloc_n_copy allocates space and copies elements from the given range
+//     auto data = alloc_n_copy(il.begin(), il.end());
+//     free(); //执行自己的析构
+//     elements = data.first;
+//     cap = first_free = data.second;
+//     return *this;
+// }
+// #endif
+
+// inline
+// #ifdef NOEXCEPT
+//     StrVec &
+//     StrVec::operator=(StrVec &&rhs) noexcept
+// #else
+//     StrVec &
+//     StrVec::operator=(StrVec &&rhs) throw()
+// #endif
+// {
+//     if (this != &rhs)
+//     {
+//         free();
+//         elements = rhs.elements;
+//         first_free = rhs.first_free;
+//         cap = rhs.cap;
+//         rhs.elements = rhs.cap = rhs.first_free = nullptr;
+//     }
+//     return *this;
+// }
+
+// inline StrVec &StrVec::operator=(const StrVec &rhs)
+// {
+//     auto data = alloc_n_copy(rhs.cbegin(), rhs.cend());
+//     free();
+//     elements = data.first;
+//     first_free = cap = data.second;
+//     return *this;
+// }
+
+// inline void StrVec::reallocate()
+// {
+//     //we will allocate sapce for twice as many elements as the current size
+//     auto newcapacity = size() ? 2 * size() : 1; //不为零，则*2，为0则变为1
+
+//     //allocate new memory
+//     auto newdata = alloc.allocate(newcapacity);
+
+//     //move the data from the old memory to the new
+//     //这里使用move而不是allocate_n_copy，更快
+//     auto dest = newdata;  //points to the next free position to the new array
+//     auto elem = elements; //points to the next element in the old array
+//     for (size_t i = 0; i != size(); ++i)
+//         alloc.construct(dest++, std::move(*elem++));
+
+//     free(); //free the old sapce once we are moved the elements
+//     //update our data structure to point to the new data
+//     elements = newdata;
+//     first_free = dest;
+//     cap = elements + newcapacity;
+// }
+
+// #ifdef INIT_LIST
+// inline StrVec::StrVec(std::initialize_list<std::string> il)
+// {
+//     auto newdata = alloc_n_copy(il.begin(), il.end());
+//     elements = newdata.first;
+//     first_free = cap = newdata.second;
+// }
+// #endif
+
+// inline void StrVec::push_back(const std::string &s)
+// {
+//     chk_n_alloc(); // ensure that there is room for another element
+//     // construct a copy of s in the element to which first_free points
+//     alloc.construct(first_free++, s);
+// }
+
+// inline void StrVec::push_back(std::string &&s)
+// {
+//     chk_n_alloc(); // reallocates the StrVec if necessary
+//     alloc.construct(first_free++, std::move(s));
+// }
+
+// #ifdef VARIADICS // no direct substitute for variadic functions
+// // emplace member covered in chapter 16
+// template <class... Args>
+// inline void StrVec::emplace_back(Args &&... args)
+// {
+//     chk_n_alloc(); // reallocates the StrVec if necessary
+//     alloc.construct(first_free++, std::forward<Args>(args)...);
+// }
+// #endif
+
+// StrVec::StrVec(const char *p)
+// {
+    
+//     //we will allocate sapce for twice as many elements as the current size
+//     std::size_t newcapacity = 2; //不为零，则*2，为0则变为1
+
+//     //allocate new memory
+//     auto newdata = alloc.allocate(newcapacity);
+//     alloc.construct(newdata,std::string(p));
+//     elements=newdata;
+//     first_free=elements+1;
+//     cap=newdata+2;
+// }
+
+// std::allocator<std::string> StrVec::alloc;
+// int main()
+// {
+//     StrVec sv;
+//     StrVec sv1("dd");
+//     sv.push_back("33");//定义了char*转strvec的构造函数
+//     std::cout<<*sv1.begin()<<std::endl;
+//     auto sv1s=sv1.capacity();
+//     return 0;
+// }
