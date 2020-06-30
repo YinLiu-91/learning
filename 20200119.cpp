@@ -1,3 +1,9 @@
+/*
+ * @Author: lingang.liuyin 
+ * @Date: 2020-06-30 22:34:26 
+ * @Last Modified by:   lingang.liuyin
+ * @Last Modified time: 2020-06-30 22:34:26 
+ */
 ////ָ��λ�ú��� p99,Ŀ��������ִ�е��ٶȡ�2020��01��19
 //#include<iostream>
 //using namespace std;
@@ -10478,7 +10484,7 @@ int main()
 
 // StrVec::StrVec(const char *p)
 // {
-    
+
 //     //we will allocate sapce for twice as many elements as the current size
 //     std::size_t newcapacity = 2; //不为零，则*2，为0则变为1
 
@@ -10498,5 +10504,127 @@ int main()
 //     sv.push_back("33");//定义了char*转strvec的构造函数
 //     std::cout<<*sv1.begin()<<std::endl;
 //     auto sv1s=sv1.capacity();
+//     return 0;
+// }
+
+// #include<vector>
+// #include<iostream>
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// int main()
+// {
+//     vector<int> ivec(10,3);
+//     char c=',';
+//     ostream &os=cout;//ostream对象的用法；
+//     for_each(ivec.begin(),ivec.end(),[&,c](const int &i){os<<i<<c;});
+//     return 0;
+// }
+
+// //2020.06.30
+// #include <list>
+// #include<vector>
+// #include <iterator>
+// using namespace std;
+// int main()
+// {
+//     list<int> lst = {1, 2, 3, 4};
+//     list<int> lst2, lst3;
+//     vector<int> ivec;
+//     //拷贝完成之后，lst2包含4，3，2，1
+//     copy(lst.cbegin(), lst.cend(), front_inserter(lst2));
+//     //拷贝完成之后，lst3包含1，2，3，4
+//     copy(lst.cbegin(), lst.cend(), inserter(lst3, lst3.begin()));
+
+//     copy(lst.cbegin(),lst.cend(),back_inserter(ivec));
+
+//     return 0;
+// }
+
+// //p359 10.27
+// #include <vector>
+// #include <list>
+// #include <iterator>
+// #include <algorithm>
+// using namespace std;
+// int main()
+
+// {
+
+//     vector<int> ivec = {1, 2, 2, 3, 4, 4, 5};
+//     list<int> lst;
+//     unique_copy(ivec.cbegin(), ivec.cend(), back_inserter(lst)); //还可以使用front_inserter（排序会反过来),inserter
+//     return 0;
+// }
+
+// #include <iostream>
+// #include <iterator>
+// #include <vector>
+// using namespace std;
+// int main()
+// {
+//     vector<int> ivec;
+//     istream_iterator<int> in_iter(cin); //从cin读取int
+//     istream_iterator<int> eof;          //istream 尾后迭代器
+//     while (in_iter != eof)
+//         //后置递增运算读取流，返回迭代器的旧值
+//         //解引用迭代器，获得从流读取的前一个值
+//         ivec.push_back(*in_iter++);
+
+//     return 0;
+// }
+
+// //p362 10.30 10.31 
+// #include <iostream>
+// #include <iterator>
+// #include <vector>
+// #include <algorithm>
+// #include <numeric>
+// using namespace std;
+// int main()
+// {
+//     // //读取数据并求和
+//     // istream_iterator<int> in(cin),eof;
+//     // cout<<accumulate(in,eof,0)<<endl;
+
+//     //打印数据,利用copy算法加输出迭代器打印数据!!!
+//     vector<int> ivec = {1, 6, 1, 3, 3, 4, 5};
+//     sort(ivec.begin(), ivec.end());
+//     ostream_iterator<int> out_iter(cout, ",");
+//     copy(ivec.cbegin(), ivec.cend(), out_iter);
+//     cout<<endl;
+//     unique_copy(ivec.cbegin(), ivec.cend(), out_iter);
+
+//     return 0;
+// }
+
+// // p363 10.33 
+// #include<iostream>
+// #include<fstream>
+// #include<iterator>
+// #include<algorithm>
+// using namespace std;
+// void trans_out(ifstream &in,ofstream &o1,ofstream& o2)
+// {
+    
+//     istream_iterator<int> in_it(in),eof;
+//     ostream_iterator<int> o1_it(o1," "),o2_it(o2,"\n");
+//     while(in_it!=eof)
+//     if(*in_it%2==0)
+//     (*o2_it++)=(*in_it++);
+//     else 
+//     (*o1_it++)=(*in_it++);
+// }
+// int main()
+// {
+//     ifstream in;
+//     ofstream o1,o2;
+//     in.open("int.txt");
+//     o1.open("sigular.txt");
+//     o2.open("odd.txt");
+//     trans_out(in,o1, o2);
+//     in.close();
+//     o2.close();
+//     o1.close();
 //     return 0;
 // }
