@@ -1,4 +1,12 @@
 /*
+ * @Author: your name
+ * @Date: 2020-06-05 21:25:05
+ * @LastEditTime: 2020-07-07 22:17:53
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \20200119-1\20200119.cpp
+ */
+/*
  * @Author: lingang.liuyin 
  * @Date: 2020-06-30 22:34:26 
  * @Last Modified by:   lingang.liuyin
@@ -10574,7 +10582,7 @@ int main()
 //     return 0;
 // }
 
-// //p362 10.30 10.31 
+// //p362 10.30 10.31
 // #include <iostream>
 // #include <iterator>
 // #include <vector>
@@ -10598,33 +10606,184 @@ int main()
 //     return 0;
 // }
 
-// // p363 10.33 
-// #include<iostream>
-// #include<fstream>
-// #include<iterator>
-// #include<algorithm>
+// // p363 10.33
+// #include <iostream>
+// #include <fstream>
+// #include <iterator>
+// #include <algorithm>
 // using namespace std;
-// void trans_out(ifstream &in,ofstream &o1,ofstream& o2)
+// /**
+//  * @description:
+//  * @param {type}
+//  * @return:
+//  *
+//  */
+
+// void trans_out(ifstream &in, ofstream &o1, ofstream &o2)
 // {
-    
-//     istream_iterator<int> in_it(in),eof;
-//     ostream_iterator<int> o1_it(o1," "),o2_it(o2,"\n");
-//     while(in_it!=eof)
-//     if(*in_it%2==0)
-//     (*o2_it++)=(*in_it++);
-//     else 
-//     (*o1_it++)=(*in_it++);
+
+//     istream_iterator<int> in_it(in), eof;
+//     ostream_iterator<int> o1_it(o1, " "), o2_it(o2, "\n"); //注意是" ""
+//     while (in_it != eof)
+//         if (*in_it % 2 == 0)
+//             (*o2_it++) = (*in_it++);
+//         else
+//             (*o1_it++) = (*in_it++);
 // }
 // int main()
 // {
 //     ifstream in;
-//     ofstream o1,o2;
+//     ofstream o1, o2;
 //     in.open("int.txt");
 //     o1.open("sigular.txt");
 //     o2.open("odd.txt");
-//     trans_out(in,o1, o2);
+//     trans_out(in, o1, o2);
 //     in.close();
 //     o2.close();
 //     o1.close();
 //     return 0;
 // }
+
+//    #include<iterator>
+//    #include<string>
+//    #include<iostream>
+//    #include<vector>
+//    #include<algorithm>
+//    using namespace std;
+//    int main()
+//    {
+//        string ss="sfds,sfa";
+//        auto comma=find(ss.crbegin(),ss.crend(),',');
+//        cout<<string(ss.crbegin(),comma)<<endl;//字符会变反
+//        cout<<string(comma.base(),ss.cend());//ss需要为cend才行
+//        return 0;
+//    }
+
+// #include <stdio.h>
+
+// int func(void)
+// {
+//     return 3;
+// }
+
+// int main(void)
+// {
+//     int a = 0;
+
+//     a = func();
+//     printf("%d\n", a);
+//     return 0;
+// }
+
+// //p386 11.21
+// #include <map>
+// #include <iterator>
+// #include <string>
+// #include <iostream>
+// using namespace std;
+// int main()
+// {
+//     int i1=-1;
+//     int i2=-1;
+//     string s1=to_string(i1);
+//     s1=s1+to_string(i2);
+//     auto i3=stoi(s1);
+//     string word;
+//     map<string, size_t> word_count;
+
+//     while (cin >> word)
+//         ++word_count.insert({word, 0}).first->second;
+//     return 0;
+// }
+
+// //p405
+// #include <vector>
+// #include <memory>
+// #include <string>
+// #include <stdexcept>
+// //要点是将一个指向存放string的vector的指针封装在一个类中
+// class StrBlob
+// {
+// public:
+//     typedef std::vector<std::string>::size_type size_type;
+//     StrBlob();
+//     StrBlob(std::initializer_list<std::string> il);
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加和删除元素
+//     void push_back(const std::string &t) { data->push_back(t); }
+//     void pop_back();
+//     //元素访问
+//     std::string &front();
+//     std::string &back();
+//     const std::string &front() const;
+//     const std::string &back() const;
+
+// private:
+//     std::shared_ptr<std::vector<std::string>> data;
+//     //如果data[i]不合法，抛出一个异常
+//     void check(size_type i, const std::string &msg) const;
+// };
+// StrBlob::StrBlob() : data(std::make_shared<std::vector<std::string>>()) {}
+// StrBlob::StrBlob(std::initializer_list<std::string> il) : data(std::make_shared<std::vector<std::string>>(il)) {}
+// void StrBlob::check(size_type i, const std::string &msg) const
+// {
+//     if (i >= data->size())
+//         throw std::out_of_range(msg);
+// }
+// std::string &StrBlob::front()
+// {
+//     //如果vector为空，check会抛出一个异常
+//     check(0, "front on empty StrBlob");
+//     return data->front();
+// }
+// std::string &StrBlob::back()
+// {
+//     check(0, "bakc on empty StrBlob");
+//     return data->back();
+// }
+
+// void StrBlob::pop_back()
+// {
+//     check(0, "pop_bakc on empty StrBlob");
+//     data->pop_back();
+// }
+// const std::string &StrBlob::front() const
+// {
+//     //如果vector为空，check会抛出一个异常
+//     check(0, "front on empty StrBlob");
+//     return data->front();
+// }
+// const std::string &StrBlob::back() const
+// {
+//     check(0, "bakc on empty StrBlob");
+//     return data->back();
+// }
+
+// int main()
+// {
+//     return 0;
+// }
+
+//c++primer 新篇章十七章
+#include <tuple>
+#include <string>
+#include <vector>
+#include <list>
+int main()
+{
+    std::tuple<size_t, size_t, size_t> threeD;
+    std::tuple<std::string, std::vector<double>, int, std::list<int>> somVal("contensts", {3.14, 2.718}, 42, {0, 1, 3});
+    //auto 推断类型的不同
+    auto item = std::make_tuple(std::string("0-1-3"), 3, 20.00);
+    std::tuple<std::string, int, double> item2 = std::make_tuple(std::string("0-1-3"), 3, 20.00);
+    auto item1 = std::make_tuple("0-1-3", 3, 20.00);
+    std::tuple<const char *, int, double> item3 = std::make_tuple("0-1-3", 3, 20.00);
+
+    //获取tuple成员数量和类型
+    typedef decltype(item) trans;
+    size_t z = std::tuple_size<trans>::value; //
+
+    std::tuple_element<0, trans>::type cnt = std::get<0>(item);
+    return 0;
+}
