@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-05 21:25:05
- * @LastEditTime: 2020-07-07 22:17:53
+ * @LastEditTime: 2020-07-10 22:19:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \20200119-1\20200119.cpp
@@ -10696,94 +10696,123 @@ int main()
 //     return 0;
 // }
 
-// //p405
-// #include <vector>
-// #include <memory>
-// #include <string>
-// #include <stdexcept>
-// //要点是将一个指向存放string的vector的指针封装在一个类中
-// class StrBlob
-// {
-// public:
-//     typedef std::vector<std::string>::size_type size_type;
-//     StrBlob();
-//     StrBlob(std::initializer_list<std::string> il);
-//     size_type size() const { return data->size(); }
-//     bool empty() const { return data->empty(); }
-//     //添加和删除元素
-//     void push_back(const std::string &t) { data->push_back(t); }
-//     void pop_back();
-//     //元素访问
-//     std::string &front();
-//     std::string &back();
-//     const std::string &front() const;
-//     const std::string &back() const;
-
-// private:
-//     std::shared_ptr<std::vector<std::string>> data;
-//     //如果data[i]不合法，抛出一个异常
-//     void check(size_type i, const std::string &msg) const;
-// };
-// StrBlob::StrBlob() : data(std::make_shared<std::vector<std::string>>()) {}
-// StrBlob::StrBlob(std::initializer_list<std::string> il) : data(std::make_shared<std::vector<std::string>>(il)) {}
-// void StrBlob::check(size_type i, const std::string &msg) const
-// {
-//     if (i >= data->size())
-//         throw std::out_of_range(msg);
-// }
-// std::string &StrBlob::front()
-// {
-//     //如果vector为空，check会抛出一个异常
-//     check(0, "front on empty StrBlob");
-//     return data->front();
-// }
-// std::string &StrBlob::back()
-// {
-//     check(0, "bakc on empty StrBlob");
-//     return data->back();
-// }
-
-// void StrBlob::pop_back()
-// {
-//     check(0, "pop_bakc on empty StrBlob");
-//     data->pop_back();
-// }
-// const std::string &StrBlob::front() const
-// {
-//     //如果vector为空，check会抛出一个异常
-//     check(0, "front on empty StrBlob");
-//     return data->front();
-// }
-// const std::string &StrBlob::back() const
-// {
-//     check(0, "bakc on empty StrBlob");
-//     return data->back();
-// }
-
-// int main()
-// {
-//     return 0;
-// }
-
-//c++primer 新篇章十七章
-#include <tuple>
-#include <string>
+//p405
 #include <vector>
-#include <list>
+#include <memory>
+#include <string>
+#include <stdexcept>
+//要点是将一个指向存放string的vector的指针封装在一个类中
+class StrBlobPtr;
+class StrBlob
+{
+    friend StrBlobPtr;
+
+public:
+    typedef std::vector<std::string>::size_type size_type;
+    StrBlob();
+    StrBlob(std::initializer_list<std::string> il);
+    size_type size() const { return data->size(); }
+    bool empty() const { return data->empty(); }
+    //添加和删除元素
+    void push_back(const std::string &t) { data->push_back(t); }
+    void pop_back();
+    //元素访问
+    std::string &front();
+    std::string &back();
+    const std::string &front() const;
+    const std::string &back() const;
+
+private:
+    std::shared_ptr<std::vector<std::string>> data;
+    //如果data[i]不合法，抛出一个异常
+    void check(size_type i, const std::string &msg) const;
+};
+StrBlob::StrBlob() : data(std::make_shared<std::vector<std::string>>()) {}
+StrBlob::StrBlob(std::initializer_list<std::string> il) : data(std::make_shared<std::vector<std::string>>(il)) {}
+void StrBlob::check(size_type i, const std::string &msg) const
+{
+    if (i >= data->size())
+        throw std::out_of_range(msg);
+}
+std::string &StrBlob::front()
+{
+    //如果vector为空，check会抛出一个异常
+    check(0, "front on empty StrBlob");
+    return data->front();
+}
+std::string &StrBlob::back()
+{
+    check(0, "bakc on empty StrBlob");
+    return data->back();
+}
+
+void StrBlob::pop_back()
+{
+    check(0, "pop_bakc on empty StrBlob");
+    data->pop_back();
+}
+const std::string &StrBlob::front() const
+{
+    //如果vector为空，check会抛出一个异常
+    check(0, "front on empty StrBlob");
+    return data->front();
+}
+const std::string &StrBlob::back() const
+{
+    check(0, "bakc on empty StrBlob");
+    return data->back();
+}
+
+class StrBlobPtr
+{
+public:
+    StrBlobPtr() : curr(0) {}
+    StrBlobPtr(StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
+    std::string &deref() const;
+    StrBlobPtr &incr(); //前缀递增
+
+private:
+    //若检查成功，check返回一个指向vector的shared_ptr
+    std::shared_ptr<std::vector<std::string>>
+    check(std::size_t, const std::string &) const;
+    //保存一个weak_ptr，意味着底层vector可能被销毁
+    std::weak_ptr<std::vector<std::string>> wptr;
+    std::size_t curr; //在数组中的当前位置
+};
+std::shared_ptr<std::vector<std::string>> StrBlobPtr::check(std::size_t i, const std::string &msg) const
+{
+    auto ret = wptr.lock(); //vector还存在吗
+    if (!ret)
+        throw std::runtime_error("unboundd StrBlobPtr");
+    if (i >= ret->size())
+        throw std::out_of_range(msg);
+    return ret; //否则，返回指向vector的shared_ptr
+}
+
 int main()
 {
-    std::tuple<size_t, size_t, size_t> threeD;
-    std::tuple<std::string, std::vector<double>, int, std::list<int>> somVal("contensts", {3.14, 2.718}, 42, {0, 1, 3});
-    //auto 推断类型的不同
-    auto item = std::make_tuple(std::string("0-1-3"), 3, 20.00);
-    std::tuple<std::string, int, double> item2 = std::make_tuple(std::string("0-1-3"), 3, 20.00);
-    auto item1 = std::make_tuple("0-1-3", 3, 20.00);
-    std::tuple<const char *, int, double> item3 = std::make_tuple("0-1-3", 3, 20.00);
-
-    //获取tuple成员数量和类型
-    typedef decltype(item) trans;
-    size_t z = std::tuple_size<trans>::value; //
-
-    std::tuple_element<0, trans>::type cnt = std::get<0>(item);
     return 0;
 }
+
+// //c++primer 新篇章十七章
+// #include <tuple>
+// #include <string>
+// #include <vector>
+// #include <list>
+// int main()
+// {
+//     std::tuple<size_t, size_t, size_t> threeD;
+//     std::tuple<std::string, std::vector<double>, int, std::list<int>> somVal("contensts", {3.14, 2.718}, 42, {0, 1, 3});
+//     //auto 推断类型的不同
+//     auto item = std::make_tuple(std::string("0-1-3"), 3, 20.00);
+//     std::tuple<std::string, int, double> item2 = std::make_tuple(std::string("0-1-3"), 3, 20.00);
+//     auto item1 = std::make_tuple("0-1-3", 3, 20.00);
+//     std::tuple<const char *, int, double> item3 = std::make_tuple("0-1-3", 3, 20.00);
+
+//     //获取tuple成员数量和类型
+//     typedef decltype(item) trans;
+//     size_t z = std::tuple_size<trans>::value; //
+
+//     std::tuple_element<0, trans>::type cnt = std::get<0>(item);
+//     return 0;
+// }
