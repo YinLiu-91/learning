@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-05 21:25:05
- * @LastEditTime: 2020-07-10 22:19:36
+ * @LastEditTime: 2020-07-12 20:35:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \20200119-1\20200119.cpp
@@ -3485,8 +3485,12 @@ int main()
 // #include <string>
 // #include <iostream>
 // //
+// template <class T>
+// class std::hash; //友元声明所需要的
+
 // class Sales_data
 // {
+//     friend class std::hash<Sales_data>;
 //     //ΪSales-data��ķǳ�Ա������������Ԫ����
 //     //Sales_data�ķǳ�Ա����
 //     friend Sales_data add(const Sales_data &, const Sales_data &);
@@ -3581,7 +3585,7 @@ int main()
 //         item = Sales_data(); //����ʧ�ܣ����󱻸���Ĭ�ϵ�״̬
 //     return is;
 // }
-// Sales_data operator+(const Sales_data &lhs,const Sales_data &rhs)
+// Sales_data operator+(const Sales_data &lhs, const Sales_data &rhs)
 // { // ����Ԫ���� ����ģ���Ϊ���ص�ֵ����߶����޹أ���һ����ֵ
 //     Sales_data sum = lhs;
 //     sum += rhs;
@@ -3606,26 +3610,26 @@ int main()
 //     revenue += rhs.revenue;
 //     return *this;
 // }
-// //p627 hash���������汾
-// //��std�����ռ䣬�Ա�������std::hash
+// //能处理Sales_data的特例化hash版本
+
 // namespace std
 // {
-// template <> //�������ڶ���һ���������汾��ģ�����ΪSales_data
-// struct hasn<Sales_data>
-// {
-//     //����ɢ��һ���������������ͱ���Ҫ��������leixing
-//     typedef size_t resul_type;
-//     typedef Sales_data argument_type; //Ĭ������£���������Ҫ==
-//     size_t operator()(const Sales_data &s) const;
-//     //���ǵ���ʹ�úϳɵĿ������Ƴ�Ա��Ĭ�Ϲ��캯��
-// };
-// size_t
-// hash<Sales_data>::operator()(const Sales_data &s) const
-// {
-//     return hasn<string>()(s.bookNo) ^
-//            hash<unsigned>()(s.units_sold) ^
-//            hash<double>()(s.revenue);
-// }
+//     template <> //我们正在定义一个特例化版本，模板参数为Sales_data
+//     struct hash<Sales_data>
+//     {
+//         /* data */
+//         //用来散列一个无须容器的类型必须要定义一下类型
+//         typedef size_t result_type;
+//         typedef Sales_data argument_type; //默认情况下，此类型需要==
+//         size_t operator()(const Sales_data &s) const;
+//     };
+//     size_t hash<Sales_data>::operator()(const Sales_data &s) const
+//     {
+//         return hash<std::string>()(s.bookNo) ^
+//                hash<unsigned>()(s.units_sold) ^
+//                hash<double>()(s.revenue);
+//     }
+
 // } // namespace std
 
 // //����Screen��
@@ -10696,103 +10700,124 @@ int main()
 //     return 0;
 // }
 
-//p405
-#include <vector>
-#include <memory>
-#include <string>
-#include <stdexcept>
-//要点是将一个指向存放string的vector的指针封装在一个类中
-class StrBlobPtr;
-class StrBlob
-{
-    friend StrBlobPtr;
+// //p405
+// #include <vector>
+// #include <memory>
+// #include <string>
+// #include <stdexcept>
+// //要点是将一个指向存放string的vector的指针封装在一个类中
+// class StrBlobPtr;
+// class StrBlob
+// {
+//     friend StrBlobPtr;
 
-public:
-    typedef std::vector<std::string>::size_type size_type;
-    StrBlob();
-    StrBlob(std::initializer_list<std::string> il);
-    size_type size() const { return data->size(); }
-    bool empty() const { return data->empty(); }
-    //添加和删除元素
-    void push_back(const std::string &t) { data->push_back(t); }
-    void pop_back();
-    //元素访问
-    std::string &front();
-    std::string &back();
-    const std::string &front() const;
-    const std::string &back() const;
+// public:
+//     //返回指向首元素和尾元素的StrBlobPtr
+//     StrBlobPtr begin() { return StrBlobPtr(*this); }
+//     StrBlobPtr end()
+//     {
+//         auto ret = StrBlobPtr(*this, data->size());
+//         return ret;
+//     }
+//     typedef std::vector<std::string>::size_type size_type;
+//     StrBlob();
+//     StrBlob(std::initializer_list<std::string> il);
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加和删除元素
+//     void push_back(const std::string &t) { data->push_back(t); }
+//     void pop_back();
+//     //元素访问
+//     std::string &front();
+//     std::string &back();
+//     const std::string &front() const;
+//     const std::string &back() const;
 
-private:
-    std::shared_ptr<std::vector<std::string>> data;
-    //如果data[i]不合法，抛出一个异常
-    void check(size_type i, const std::string &msg) const;
-};
-StrBlob::StrBlob() : data(std::make_shared<std::vector<std::string>>()) {}
-StrBlob::StrBlob(std::initializer_list<std::string> il) : data(std::make_shared<std::vector<std::string>>(il)) {}
-void StrBlob::check(size_type i, const std::string &msg) const
-{
-    if (i >= data->size())
-        throw std::out_of_range(msg);
-}
-std::string &StrBlob::front()
-{
-    //如果vector为空，check会抛出一个异常
-    check(0, "front on empty StrBlob");
-    return data->front();
-}
-std::string &StrBlob::back()
-{
-    check(0, "bakc on empty StrBlob");
-    return data->back();
-}
+// private:
+//     std::shared_ptr<std::vector<std::string>> data;
+//     //如果data[i]不合法，抛出一个异常
+//     void check(size_type i, const std::string &msg) const;
+// };
+// StrBlob::StrBlob() : data(std::make_shared<std::vector<std::string>>()) {}
+// StrBlob::StrBlob(std::initializer_list<std::string> il) : data(std::make_shared<std::vector<std::string>>(il)) {}
+// void StrBlob::check(size_type i, const std::string &msg) const
+// {
+//     if (i >= data->size())
+//         throw std::out_of_range(msg);
+// }
+// std::string &StrBlob::front()
+// {
+//     //如果vector为空，check会抛出一个异常
+//     check(0, "front on empty StrBlob");
+//     return data->front();
+// }
+// std::string &StrBlob::back()
+// {
+//     check(0, "bakc on empty StrBlob");
+//     return data->back();
+// }
 
-void StrBlob::pop_back()
-{
-    check(0, "pop_bakc on empty StrBlob");
-    data->pop_back();
-}
-const std::string &StrBlob::front() const
-{
-    //如果vector为空，check会抛出一个异常
-    check(0, "front on empty StrBlob");
-    return data->front();
-}
-const std::string &StrBlob::back() const
-{
-    check(0, "bakc on empty StrBlob");
-    return data->back();
-}
+// void StrBlob::pop_back()
+// {
+//     check(0, "pop_bakc on empty StrBlob");
+//     data->pop_back();
+// }
+// const std::string &StrBlob::front() const
+// {
+//     //如果vector为空，check会抛出一个异常
+//     check(0, "front on empty StrBlob");
+//     return data->front();
+// }
+// const std::string &StrBlob::back() const
+// {
+//     check(0, "bakc on empty StrBlob");
+//     return data->back();
+// }
 
-class StrBlobPtr
-{
-public:
-    StrBlobPtr() : curr(0) {}
-    StrBlobPtr(StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string &deref() const;
-    StrBlobPtr &incr(); //前缀递增
+// class StrBlobPtr
+// {
+// public:
+//     StrBlobPtr() : curr(0) {}
+//     StrBlobPtr(StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
+//     std::string &deref() const;
+//     StrBlobPtr &incr(); //前缀递增
 
-private:
-    //若检查成功，check返回一个指向vector的shared_ptr
-    std::shared_ptr<std::vector<std::string>>
-    check(std::size_t, const std::string &) const;
-    //保存一个weak_ptr，意味着底层vector可能被销毁
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr; //在数组中的当前位置
-};
-std::shared_ptr<std::vector<std::string>> StrBlobPtr::check(std::size_t i, const std::string &msg) const
-{
-    auto ret = wptr.lock(); //vector还存在吗
-    if (!ret)
-        throw std::runtime_error("unboundd StrBlobPtr");
-    if (i >= ret->size())
-        throw std::out_of_range(msg);
-    return ret; //否则，返回指向vector的shared_ptr
-}
+// private:
+//     //若检查成功，check返回一个指向vector的shared_ptr
+//     std::shared_ptr<std::vector<std::string>>
+//     check(std::size_t, const std::string &) const;
+//     //保存一个weak_ptr，意味着底层vector可能被销毁
+//     std::weak_ptr<std::vector<std::string>> wptr;
+//     std::size_t curr; //在数组中的当前位置
+// };
+// std::shared_ptr<std::vector<std::string>> StrBlobPtr::check(std::size_t i, const std::string &msg) const
+// {
+//     auto ret = wptr.lock(); //vector还存在吗
+//     if (!ret)
+//         throw std::runtime_error("unboundd StrBlobPtr");
+//     if (i >= ret->size())
+//         throw std::out_of_range(msg);
+//     return ret; //否则，返回指向vector的shared_ptr
+// }
 
-int main()
-{
-    return 0;
-}
+// std::string &StrBlobPtr::deref() const
+// {
+//     auto p = check(curr, "dereference past end");
+//     return (*p)[curr]; //(*p)是对象所指向的vector
+// }
+// //前缀递增：返回递增后的对象的引用
+// StrBlobPtr &StrBlobPtr::incr()
+// {
+//     //如果curr已经指向容器的尾后位置，就不能递增它
+//     check(curr, "increment past and StrBlobPtr");
+//     ++curr; //推进当前位置
+//     return *this;
+// }
+
+// int main()
+// {
+//     return 0;
+// }
 
 // //c++primer 新篇章十七章
 // #include <tuple>
@@ -10816,3 +10841,85 @@ int main()
 //     std::tuple_element<0, trans>::type cnt = std::get<0>(item);
 //     return 0;
 // }
+
+// //p629
+// //16.63
+// #include <iostream>
+// #include <vector>
+// #include <cstring>
+// using namespace std;
+// template <typename T>
+// int occur(vector<T> &vec, const T &v)
+// {
+//     int ret = 0;
+//     for (auto a : vec)
+//         if (a == v)
+//             ret++;
+//     return ret;
+// }
+// template <>
+// int occur(vector<char *> &vec, char *const &v)
+// {
+//     int ret = 0;
+//     for (auto a : vec)
+//         if (!strcmp(a, v))
+//             ret++;
+//     return ret;
+// }
+// int main()
+// {
+//     vector<int> ivec = {1, 2, 3, 4, 4, 4};
+//     return 0;
+// }
+
+// //p615
+// //打印我们不能处理的类型
+// #include <string>
+// #include <sstream>
+// #include <iostream>
+// template <typename T>
+// std::string debug_rep(const T &t)
+// {
+//     std::ostringstream ret; //
+//     ret << t;               //使用T的输出运算符打印t的一个表示形式
+//     return ret.str();       //返回ret绑定的string的一个副本
+// }
+// //打印指针的之，后跟指针指向的对象
+// //注意：此函数不能用于char*
+// template <typename T>
+// std::string debug_rep(T *p)
+// {
+//     std::ostringstream ret;
+//     // std::cout << "重载了指针 版本" << std::endl;
+//     ret << "pointer:" << p; //打印指针本身的值
+//     if (p)
+//         ret << " " << debug_rep(*p); //打印p指向的值
+//     else
+//         ret << " null pointer"; //或指出p为空
+//     return ret.str();           //返回ret绑定的string的一个副本
+// }
+// std::string debug_rep(const std::string &s) //非模板函数，更加特例化
+// {
+//     std::cout << "带引号的" << std::endl;
+//     return '"' + s + '"';
+// }
+
+// //将字符指针转换为string，并调用string版本的debug_reg
+// std::string debug_rep(char *p)
+// {
+//     return debug_rep(std::string(p));
+// }
+// std::string debug_rep(const char *p)
+// {
+//     return debug_rep(std::string(p));
+// }
+// int main()
+// {
+//     std::string s("hi");
+//     int i1 = 1;
+//     std::cout << debug_rep(i1) << std::endl;
+//     std::cout << debug_rep(&s) << std::endl;
+//     std::cout << debug_rep(s) << std::endl;
+//     return 0;
+// }
+
