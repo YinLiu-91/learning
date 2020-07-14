@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-05 21:25:05
- * @LastEditTime: 2020-07-12 20:35:54
+ * @LastEditTime: 2020-07-14 23:29:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \20200119-1\20200119.cpp
@@ -9195,6 +9195,45 @@ int main()
 //     return 0;
 // }
 
+// //p584类模板
+// #include <memory>
+// #include <string>
+// #include <vector>
+// template <typename T>
+// class Blob
+// {
+// public:
+//     typedef T value_type;
+//     typedef typename std::vector<T>::size_type size_type;
+//     //构造函数
+//     Blob();
+//     Blob(std::initializer_list<T> il);
+//     //Blob中的元素数目
+//     size_type size() const { return data->size(); }
+//     bool empty() const { return data->empty(); }
+//     //添加和删除元素
+//     void push_back(const T &t) { data->push_back(t); }
+
+//     //移动版本,
+//     void push_back(const T &&t) { data->push_back(std::move(t)); }
+//     void pop_back();
+//     //元素访问
+//     T &back();
+//     T &operator[](size_type i);
+
+// private:
+//     std::shared_ptr<std::vector<T>> data;
+//     //若data无效，则抛出msg
+//     void check(size_type i, const std::string &msg) const;
+// };
+
+// int main()
+// {
+//    // Blob<int> i={1,2};
+//     //i.push_back(1);
+//     return 0;
+// }
+
 // #include <memory>
 // #include <string>
 // #include <iostream>
@@ -10923,3 +10962,40 @@ int main()
 //     return 0;
 // }
 
+#include <iostream>
+class Base
+{
+private:
+    int x;
+
+public:
+    virtual void mf1() = 0;
+    virtual void mf1(int i) { std::cout << "调用基类带参数mf1" << std::endl; }
+    virtual void mf2() { std::cout << "调用基类bu带参数mf2" << std::endl; }
+    void mf3() { std::cout << "调用基类bu带参数mf3" << std::endl; }
+    void mf3(double d) { std::cout << "调用基类dai参数mf3" << std::endl; }
+};
+class Derived : public Base
+{
+public:
+    //using Base::mf1;
+   // using Base::mf3;
+    virtual void mf1() { std::cout << "调用派生类bu带参数mf1" << std::endl; }
+    void mf3() { std::cout << "调用派生类bu带参数mf3" << std::endl; }
+    void mf4() { std::cout << "调用派生类bu带参数mf4" << std::endl; }
+};
+
+int main()
+{
+    Derived d;
+
+    int x = 1;
+    d.mf1();
+   // d.mf1(x); //调用失败
+    d.Base::mf1(x);
+    d.mf2();
+    d.mf3();
+   // d.mf3(x); //调用失败
+    d.Base::mf3(x);
+    return 0;
+}
