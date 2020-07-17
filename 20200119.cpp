@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-05 21:25:05
- * @LastEditTime: 2020-07-14 23:29:42
+ * @LastEditTime: 2020-07-17 22:05:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \20200119-1\20200119.cpp
@@ -9227,9 +9227,32 @@ int main()
 //     void check(size_type i, const std::string &msg) const;
 // };
 
+// template <typename T>
+// void Blob<T>::check(size_type i, const std::string &msg) const
+// {
+//     if (i >= data->size())
+//         throw std::out_of_range(msg);
+// }
+// template <typename T>
+// T &Blob<T>::back()
+// {
+//     check(0, "bakc on empty Blob");
+//     return data->back();
+// }
+
+// template <typename T>
+// T &Blob<T>::operator[](size_type i)
+// {
+//     check(i, "subscript out of range");
+//     return (*data)[i];
+// }
+// template <typename T>
+// Blob<T>::Blob() : data(std::make_shared<std::vector<T>>()) {}
+// template <typename T>
+// Blob<T>::Blob(std::initializer_list<T> il) : data(std::make_shared<std::vector<T>>(il)) {}
 // int main()
 // {
-//    // Blob<int> i={1,2};
+//     // Blob<int> i={1,2};
 //     //i.push_back(1);
 //     return 0;
 // }
@@ -9412,7 +9435,7 @@ int main()
 //     ret << t;
 //     return ret.str(); //����ret�󶨵�string��һ������
 // }
-// //��ӡָ���ֵ�����ָ��ָ��Ķ���
+// //��ӡָ���ֵ�����ָ������Ķ���
 // //ע��˺�����������char*
 // template <typename T>
 // std::string debug_rep(T *p)
@@ -10962,40 +10985,10 @@ int main()
 //     return 0;
 // }
 
-#include <iostream>
-class Base
-{
-private:
-    int x;
 
-public:
-    virtual void mf1() = 0;
-    virtual void mf1(int i) { std::cout << "调用基类带参数mf1" << std::endl; }
-    virtual void mf2() { std::cout << "调用基类bu带参数mf2" << std::endl; }
-    void mf3() { std::cout << "调用基类bu带参数mf3" << std::endl; }
-    void mf3(double d) { std::cout << "调用基类dai参数mf3" << std::endl; }
-};
-class Derived : public Base
-{
-public:
-    //using Base::mf1;
-   // using Base::mf3;
-    virtual void mf1() { std::cout << "调用派生类bu带参数mf1" << std::endl; }
-    void mf3() { std::cout << "调用派生类bu带参数mf3" << std::endl; }
-    void mf4() { std::cout << "调用派生类bu带参数mf4" << std::endl; }
-};
-
+#include"Blob.h"
 int main()
 {
-    Derived d;
-
-    int x = 1;
-    d.mf1();
-   // d.mf1(x); //调用失败
-    d.Base::mf1(x);
-    d.mf2();
-    d.mf3();
-   // d.mf3(x); //调用失败
-    d.Base::mf3(x);
+    
     return 0;
 }
