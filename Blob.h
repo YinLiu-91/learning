@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-07-17 21:24:23
- * @LastEditTime: 2020-07-17 23:24:22
+ * @LastEditTime: 2020-07-18 08:55:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \20200119-1\Blob.h
@@ -229,10 +229,11 @@ public:
         return &this->operator*();
     }
 
-    BlobPtr &oeprator++(); //前置
+    BlobPtr &operator++(); //前置
     BlobPtr &operator--();
-    BlobPtr &oeprator++(int); //后置
-    BlobPtr &operator--(int);
+
+    BlobPtr operator++(int); //后置
+    BlobPtr operator--(int);
 
 private:
     //check returns a shared_ptr to the vector if the check succeeds
@@ -243,5 +244,63 @@ private:
     std::weak_ptr<std::vector<T>> wptr;
     std::size_t curr; //current position within the array
 };
+
+//t
+template <typename T>
+bool operator==(const BlobPtr<T> &lhs, const BlobPtr<T> &rhs)
+{
+    return lhs.wptr.lock().get() == rhs.wptr.lock().get() && lhs.curr == rhs.curr;
+}
+template <typename T>
+bool operator!=(const BlobPtr<T> &lhs, const BlobPtr<T> &rhs)
+{
+    return !(rhs == lhs);
+}
+
+template <typename T>
+std::shared_ptr<std::vector<T>>
+BlobPtr<T>::check(std::size_t i, const std ::string &msg) const
+{
+    auto ret = wptr.lock(); //is  the vector still around ?
+    if (!ret)
+        throw std::runtime_error("unbound BlobPtr");
+    if (i >= ret->size())
+        throw std::out_of_range(msg);
+    return ret;
+}
+///
+template <typename T>
+BlobPtr<T> BlobPtr<T>::operator++(int)
+{
+    BlobPtr ret = *this; //先取出值，载调用前置递增
+    ++*this;
+    return ret;
+}
+
+template <typename T>
+BlobPtr<T> BlobPtr<T>::operator--(int)
+{
+    BlobPtr ret = *this;
+    --*this;
+    return ret;
+}
+
+template <typename T>
+BlobPtr<T> &BlobPtr<T>::operator++()
+{
+    check(curr, "increment past end of BlobPtr");
+    ++curr;
+    return *this;
+}
+template<typename T>
+BlobPtr<T>&BlobPtr<T>::operator--()
+
+{
+    --curr;//先递减，再检查
+    //check(-1,"decrement past begin of BlobPtr");//不应该是curr
+    check(curr,"decrement past begin of BlobPtr");
+
+    return *this;
+}
 
 #endif
