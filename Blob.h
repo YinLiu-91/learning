@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-07-17 21:24:23
- * @LastEditTime: 2020-07-18 08:55:34
+ * @LastEditTime: 2020-07-18 08:56:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \20200119-1\Blob.h
@@ -297,7 +297,7 @@ BlobPtr<T>&BlobPtr<T>::operator--()
 
 {
     --curr;//先递减，再检查
-    //check(-1,"decrement past begin of BlobPtr");//不应该是curr
+    //check(-1,"decrement past begin of BlobPtr");//不应该是curr?是否修改成如下形式?
     check(curr,"decrement past begin of BlobPtr");
 
     return *this;
