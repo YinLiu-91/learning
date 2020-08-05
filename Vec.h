@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-07-19 22:24:46
- * @LastEditTime: 2020-07-20 21:37:34
+ * @LastEditTime: 2020-07-20 21:44:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \20200119-1\Vec.h
@@ -137,7 +137,8 @@ inline
 }
 
 template <typename T>
-inline void Vec<T>::Vec(const Vec &s)
+inline
+ Vec<T>::Vec(const Vec &s)
 {
     auto newdata = alloc_n_copy(s.begin(), s.end());
     elements = newdata.first;
@@ -239,4 +240,5 @@ inline void Vec<T>::emplace_back(Args &&... args)
     chk_n_copy();
     alloc.construct(first_free++, std::forward<Args>(args)...);
 }
+#endif
 #endif

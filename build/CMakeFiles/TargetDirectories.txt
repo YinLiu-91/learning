@@ -1,3 +1,3 @@
-F:/personal/course/c-plus/20200119-1/build/CMakeFiles/edit_cache.dir
 F:/personal/course/c-plus/20200119-1/build/CMakeFiles/20200119.dir
-F:/personal/course/c-plus/20200119-1/build/CMakeFiles/rebuild_cache.dir
+F:/personal/course/c-plus/20200119-1/build/CMakeFiles/ALL_BUILD.dir
+F:/personal/course/c-plus/20200119-1/build/CMakeFiles/ZERO_CHECK.dir
