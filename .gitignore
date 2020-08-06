@@ -1,6 +1,9 @@
 *
+!/build
 !*.c
 !*.cpp
 !*.h
 !*.hpp
+*.cmake
+*.txt
 

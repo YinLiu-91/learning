@@ -302,6 +302,7 @@
 
 #include "NoDefault.h"
 #include"Employee.h"
+#include"StrBlobPtr.h"
 int main()
 {
 	C c;
