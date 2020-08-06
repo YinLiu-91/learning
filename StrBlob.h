@@ -5,7 +5,7 @@
 #include<string>
 #include<exception>
 #include<stdexcept>
-#include<StrBlobPtr.h>
+#include"StrBlobPtr.h"
 class StrBlobPtr;
 class StrBlob {
 	friend StrBlobPtr;
