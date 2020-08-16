@@ -9,6 +9,7 @@
 class StrBlobPtr;
 class StrBlob {
 	friend StrBlobPtr;
+	
 public:
 	typedef std::vector<std::string>::size_type size_type;
 	StrBlob();
@@ -19,6 +20,7 @@ public:
 	bool empty()const { return data->empty(); }
 	//添加和删除元素
 	void push_back(const std::string& t) { data->push_back(t); }
+	void push_back(std::string&& t) { data->push_back(std::move(t)); }
 	void pop_back();
 	//元素访问
 	std::string& front();

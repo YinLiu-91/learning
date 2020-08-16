@@ -303,11 +303,34 @@
 #include "NoDefault.h"
 #include"Employee.h"
 #include"StrBlobPtr.h"
+#include<vector>
+#include"HasPtr.h"
+#include <vector>
+#include<string>
+//#include "StrVec.h"
+#include<algorithm>
 int main()
 {
+	std::vector<int> ivec0(10, 1);
+	std::vector<int>ivec1 = std::move(ivec0);
+	ivec0 = ivec1;//移后源对象可以被赋值 
+	//StrVec stv;
+	//stv.reserve(10);
+	//stv.resize(5,std::string( "liu"));
+	std::vector<int>ivec(10, 1);
+	ivec.resize(5, 1);
 	C c;
 	Employee em;
 	Employee em1 = em;
+
+	//p13.31调用<号
+	std::vector<HasPtr> HasPtrVec;
+	for (int i = 10; i > 0; --i)
+		HasPtrVec.push_back(std::to_string(i));
+	std::sort(HasPtrVec.begin(), HasPtrVec.end());
+	std::cout << "共计调用了 " << HasPtr::icount << "次比较函数" << std::endl;
+	HasPtr::icount = 0;//归零
+	
 	return 0;
 
 }
