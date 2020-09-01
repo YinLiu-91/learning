@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-08-02 10:01:07
+ * @LastEditTime: 2020-08-30 23:08:25
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \20200119-1\Sales_data.h
+ */
 #pragma once
 
 //p233 7.3
@@ -5,7 +13,12 @@
 #include<string>
 using namespace std;
 class Sales_data {
-
+	friend istream& operator>>(istream& in, const Sales_data&);
+	friend ostream& operator<<(ostream& out, const Sales_data&);
+	friend const Sales_data operator+(const Sales_data&, const Sales_data&);
+	friend bool operator==(const Sales_data& rhs,const Sales_data &lhs);
+	friend bool operator!=(const Sales_data& lhs, const Sales_data& rhs);
+	//friend Sales_data operator+(const Sales_data& lhs, const  Sales_data& rhs);
 private:
 	string bookNo;//书籍编号，隐式初始化为空串
 	unsigned units_sold = 0;//销售量，显式初始化为0
@@ -17,6 +30,8 @@ private:
 public:
 	friend istream& read(istream& is, Sales_data& item);
 	friend ostream& print(ostream& os, const Sales_data& item);
+	
+	Sales_data& operator+=( const Sales_data&);
 	//isbn函数只有一条语句，返回bookNo
 	string isbn()const { return bookNo; }//进行了类的封装
 	//combine 函数用于把两个ISBN相同的销售记录合并在一起
@@ -66,4 +81,33 @@ Sales_data& Sales_data:: operator=(const Sales_data& rhs)
 	return *this;
 }
 
- 
+ istream& operator>>(istream& in, const Sales_data&s)
+{
+	 return in;
+}
+ ostream& operator<<(ostream& out, const Sales_data&s)
+{
+	 return out;
+}
+Sales_data& Sales_data:: operator+=( const Sales_data&rhs)
+{
+	units_sold += rhs.units_sold;
+	return *this;
+}
+bool operator==(const Sales_data&rhs,const Sales_data &lhs)
+{
+	return rhs.isbn() == lhs.isbn() &&
+		rhs.units_sold == lhs.units_sold &&
+		rhs.revenue == lhs.revenue;
+}
+bool operator!=(const Sales_data& lhs, const Sales_data& rhs)
+{
+	return !(lhs == rhs);
+}
+Sales_data const operator+(const Sales_data& lhs, const Sales_data& rhs)
+{
+	Sales_data s1;
+	s1 = lhs;
+	s1 += rhs;
+	return s1;
+}

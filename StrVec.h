@@ -11,6 +11,10 @@ public:
 	StrVec(const StrVec&);//拷贝构造函数
 	StrVec& operator=(StrVec&& rhs)noexcept;
 	StrVec& operator=(const StrVec&);//拷贝赋值
+	StrVec& operator=(std::initializer_list<std::string>);
+	std::string& operator[](std::size_t n) { return elements[n]; }
+	const std::string& operator[](std::size_t n)const { return elements[n]; }
+	
 	~StrVec();//析构函数
 	void push_back(const std::string&);
 	void push_back(std::string&&);
@@ -163,4 +167,13 @@ StrVec& StrVec::operator=(StrVec&& rhs)
 void StrVec::push_back(std::string&& rhs) {
 	chk_n_alloc();
 	alloc.construct(first_free++, std::move(rhs));
+}
+StrVec& StrVec::operator=(std::initializer_list<std::string>il)
+{
+	//alloc_n_copy分配内存空间并从给定范围内拷贝元素
+	auto data = alloc_n_copy(il.begin(), il.end());
+	free();
+	elements = data.first;
+	first_free = cap = data.second;
+	return *this;
 }

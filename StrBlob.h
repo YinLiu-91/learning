@@ -9,7 +9,8 @@
 class StrBlobPtr;
 class StrBlob {
 	friend StrBlobPtr;
-	
+	friend bool operator==(const StrBlob& lhs, const StrBlob& rhs);
+	friend bool operator!=(const StrBlob& lhs, const StrBlob& rhs);
 public:
 	typedef std::vector<std::string>::size_type size_type;
 	StrBlob();
@@ -27,8 +28,10 @@ public:
 	std::string& back();
 	const std::string& front()const;//因为要返回常量引用，所以函数必须为const
 	const std::string& back()const;
+	std::string& operator[](std::size_t n) { return (*data)[n]; }
+	const std::string& operator[](std::size_t n)const { return (*data)[n]; }
 private:
-	std::shared_ptr<std::vector<std::string>>data;
+	std::shared_ptr<std::vector<std::string>>data;                                                                                                                                                                                                                                                                                                                                                                                                         
 	//如果data[i]不合法，会抛出一个异常
 	void check(size_type i, const std::string& msg)const;
 };
@@ -74,4 +77,12 @@ StrBlob& StrBlob:: operator=(const StrBlob& rhs)
 	auto newp = std::make_shared<std::vector<std::string>>(*rhs.data);
 	data = newp;
 	return *this;
+}
+bool operator==(const StrBlob& lhs, const StrBlob& rhs)
+{
+	return *lhs.data == *rhs.data;
+}
+bool operator!=(const StrBlob& lhs, const StrBlob& rhs)
+{
+	return !(lhs == rhs);
 }
