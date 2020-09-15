@@ -307,10 +307,43 @@
 #include"HasPtr.h"
 #include <vector>
 #include<string>
+#include <stdio.h>
+#include <stdlib.h>
+#include "PrintString.h"
 //#include "StrVec.h"
 #include<algorithm>
+#include "InputString.h"
+#include "StringLength.h"
+
 int main()
 {
+	/*-----------------------------------p509 14.38-------------------------------------------------------*/
+	std::vector<std::string> vs1{ "1","22","333","4444","55555","7777777" };
+	std::vector<int> s_cnt(10, 0);
+	for ( std::vector<std::string>::iterator  it = vs1.begin(); it != vs1.end(); ++it)
+	{
+		for (int i = 1; i <= 10; ++i)
+		{
+			StringLength s(i);
+			if (s(*it))
+				s_cnt[i - 1] += 1;
+		}
+	}
+	/*-----------------------------------p508-------------------------------------------------------*/
+	InputString i1;
+	i1();
+
+	/*-----------------------------------p507-------------------------------------------------------*/
+	std::string s = "lllll";
+	PrintString printer(std::cout, '\n');;
+	printer(s);
+
+	PrintString errors(std::cerr, '\n');
+	errors(s);
+
+	std::vector<std::string> vs{ "liu","yin","1991" };
+	std::for_each(vs.begin(), vs.end(), PrintString(std::cout, '.'));
+
 	std::vector<int> ivec0(10, 1);
 	std::vector<int>ivec1 = std::move(ivec0);
 	ivec0 = ivec1;//移后源对象可以被赋值 
