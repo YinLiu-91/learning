@@ -309,60 +309,135 @@
 #include<string>
 #include <stdio.h>
 #include <stdlib.h>
+#include "Blob.h"
+#include "StrBlob.h"
 #include "PrintString.h"
 //#include "StrVec.h"
 #include<algorithm>
 #include "InputString.h"
 #include "StringLength.h"
-
+#include "connection.h"
+#include <vector>
+#include <ctime>
+#define MAX (2E4)
 int main()
 {
-	/*-----------------------------------p509 14.38-------------------------------------------------------*/
-	std::vector<std::string> vs1{ "1","22","333","4444","55555","7777777" };
-	std::vector<int> s_cnt(10, 0);
-	for ( std::vector<std::string>::iterator  it = vs1.begin(); it != vs1.end(); ++it)
-	{
-		for (int i = 1; i <= 10; ++i)
-		{
-			StringLength s(i);
-			if (s(*it))
-				s_cnt[i - 1] += 1;
-		}
-	}
-	/*-----------------------------------p508-------------------------------------------------------*/
-	InputString i1;
-	i1();
 
-	/*-----------------------------------p507-------------------------------------------------------*/
-	std::string s = "lllll";
-	PrintString printer(std::cout, '\n');;
-	printer(s);
 
-	PrintString errors(std::cerr, '\n');
-	errors(s);
+///*-------------------标准库与指针比较1.287s----------------------------------------------*/
+//	std::clock_t st, end;
+//	st = std::clock();
+//	
+//	//c：1.275s
+//	float* a, * b, ** c;
+//	a = new float[MAX];
+//	b = new float[MAX];
+//	c = new float* [MAX];
+//	for (size_t i = 0; i < MAX; i++)
+//	{
+//		a[i] = i;
+//	}
+//	for (size_t i = 0; i < MAX; i++)
+//	{
+//		b[i] = i;
+//	}
+//	for (size_t i = 0; i < MAX; i++)
+//	{
+//		c[i] = new float[MAX];
+//	}
+//
+//	for (size_t i = 0; i < MAX; i++)
+//	{
+//		for (size_t j = 0; j < MAX; j++)
+//		{
+//			c[i][j] = a[i] * b[j];
+//		}
+//	}
 
-	std::vector<std::string> vs{ "liu","yin","1991" };
-	std::for_each(vs.begin(), vs.end(), PrintString(std::cout, '.'));
+	///*------------------------------------*/
+	////标准库：1.366s
+	//std::vector<float> a1, b1;
+	//std::vector<std::vector<float>>c1;
+	//a1.resize(MAX);
+	//b1.resize(MAX);
+	//c1.resize(MAX);
+	//for (int i = 0; i < MAX; ++i)
+	//	c1[i].resize(MAX);
+	//for (int i = 0; i < MAX; ++i)
+	//{
+	//	a1[i] = b1[i]=i;
+	//	//b1[i] = i;
+	//}
+	//for (size_t i = 0; i < MAX; ++i)
+	//{
+	//	for (size_t j = 0; j < MAX; ++j)
+	//	{
+	//		c1[i][j] = a1[i] * b1[j];
+	//	}
+	//}
 
-	std::vector<int> ivec0(10, 1);
-	std::vector<int>ivec1 = std::move(ivec0);
-	ivec0 = ivec1;//移后源对象可以被赋值 
-	//StrVec stv;
-	//stv.reserve(10);
-	//stv.resize(5,std::string( "liu"));
-	std::vector<int>ivec(10, 1);
-	ivec.resize(5, 1);
-	C c;
-	Employee em;
-	Employee em1 = em;
+	end = std::clock();
 
-	//p13.31调用<号
-	std::vector<HasPtr> HasPtrVec;
-	for (int i = 10; i > 0; --i)
-		HasPtrVec.push_back(std::to_string(i));
-	std::sort(HasPtrVec.begin(), HasPtrVec.end());
-	std::cout << "共计调用了 " << HasPtr::icount << "次比较函数" << std::endl;
-	HasPtr::icount = 0;//归零
+	
+	std::cout << "time " << double(end - st) / 1000.0 << "\n";
+	///*-----------------------------------------------------------------------------------------------------------*/
+	////p417 12.14
+	//destination d;
+	//f(d);
+	//f1(d);
+	///*-----------------------------------------------------------------------------------------------------------*/
+
+	//StrBlob sb1;
+	//sb1.push_back("ssss");
+	//auto sb2 = sb1;
+	//auto sb_sz=sb2.size();
+
+	///*-----------------------------------p509 14.38-------------------------------------------------------*/
+	//std::vector<std::string> vs1{ "1","22","333","4444","55555","7777777" };
+	//std::vector<int> s_cnt(10, 0);
+	//for ( std::vector<std::string>::iterator  it = vs1.begin(); it != vs1.end(); ++it)
+	//{
+	//	for (int i = 1; i <= 10; ++i)
+	//	{
+	//		StringLength s(i);               
+	//		if (s(*it))
+	//			s_cnt[i - 1] += 1;
+	//	}
+	//}
+	///*-----------------------------------p508-------------------------------------------------------*/
+	//InputString i1;
+	//i1();
+
+	///*-----------------------------------p507-------------------------------------------------------*/
+	//std::string s = "lllll";
+	//PrintString printer(std::cout, '\n');;
+	//printer(s);
+
+	//PrintString errors(std::cerr, '\n');
+	//errors(s);
+
+	//std::vector<std::string> vs{ "liu","yin","1991" };
+	//std::for_each(vs.begin(), vs.end(), PrintString(std::cout, '.'));
+
+	//std::vector<int> ivec0(10, 1);
+	//std::vector<int>ivec1 = std::move(ivec0);
+	//ivec0 = ivec1;//移后源对象可以被赋值 
+	////StrVec stv;
+	////stv.reserve(10);
+	////stv.resize(5,std::string( "liu"));
+	//std::vector<int>ivec(10, 1);
+	//ivec.resize(5, 1);
+	//C c;
+	//Employee em;
+	//Employee em1 = em;
+
+	////p13.31调用<号
+	//std::vector<HasPtr> HasPtrVec;
+	//for (int i = 10; i > 0; --i)
+	//	HasPtrVec.push_back(std::to_string(i));
+	//std::sort(HasPtrVec.begin(), HasPtrVec.end());
+	//std::cout << "共计调用了 " << HasPtr::icount << "次比较函数" << std::endl;
+	//HasPtr::icount = 0;//归零
 	
 	return 0;
 
